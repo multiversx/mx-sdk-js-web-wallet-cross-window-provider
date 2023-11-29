@@ -8,6 +8,9 @@ import {
 
 interface ICrossWindowWalletAccount {
   address: string;
+  /*
+   * What does name represent?
+   */
   name?: string;
   signature?: string;
 }
@@ -64,17 +67,13 @@ export class CrossWindowProvider {
   }
 
   async handshake(): Promise<boolean> {
-    console.log('handshake!');
     if (!this.walletWindow) {
-      console.log('open wallet');
       this.walletWindow = window.open(this.walletUrl, this.walletUrl);
     } else {
-      console.log('open existing wallet');
       window.open('', this.walletUrl);
     }
 
     if (this.handshakeEstablished) {
-      console.log('handshake already established');
       return true;
     }
 
@@ -82,7 +81,6 @@ export class CrossWindowProvider {
     if (type !== 'handshake' || !payload) {
       throw new Error('Handshake could not be established');
     }
-    console.log('handshake event received');
 
     this.walletWindow?.postMessage(
       { type: 'mxDappHandshake', payload: true },
@@ -96,7 +94,6 @@ export class CrossWindowProvider {
       }
     });
     const isRelogin = await this.isConnected();
-    console.log('send connect event');
     this.walletWindow?.postMessage(
       {
         type: 'mxDappConnect',
@@ -109,13 +106,11 @@ export class CrossWindowProvider {
         type: connectType,
         payload: { address, signature }
       } = await this.listenOnce();
-      console.log('connect response received');
       if (connectType !== 'connect') {
         throw new Error(
           `Could not connect. received ${connectType} event instead of connect`
         );
       }
-      console.log('connect is correct');
       this.account.address = address;
       this.account.signature = signature;
     }
@@ -125,9 +120,7 @@ export class CrossWindowProvider {
   }
 
   private async onHandshakeChangeListener() {
-    console.log('add handshake change listener');
     const walletUrl = this.walletUrl;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
     window.addEventListener('message', function eventHandler(event) {
       try {
@@ -135,12 +128,10 @@ export class CrossWindowProvider {
         const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
         if (isWalletEvent && type === 'handshake') {
-          console.log('handshake changed! ', payload);
           if (payload === false) {
             self.walletWindow?.close();
             self.handshakeEstablished = false;
             self.walletWindow = null;
-            console.log('remove handshake!!@#s');
             window.removeEventListener('message', eventHandler);
           }
         }
@@ -197,19 +188,22 @@ export class CrossWindowProvider {
   static prepareWalletTransaction(transaction: Transaction): any {
     const plainTransaction = transaction.toPlainObject();
 
-    // We adjust the data field, in order to make it compatible with what the web wallet expects.
-    if (plainTransaction.data) {
-      plainTransaction.data = Buffer.from(
-        plainTransaction.data,
-        'base64'
-      ).toString();
-      // TODO: do the same for:
-      // receiverUsername
-      // senderUsername
-    } else {
-      // The web wallet expects the data field to be a string, even if it's empty (early 2023).
-      plainTransaction.data = '';
-    }
+    const keysToTransform: Array<keyof typeof plainTransaction> = [
+      'data',
+      'receiverUsername',
+      'senderUsername'
+    ];
+
+    keysToTransform.forEach((field) => {
+      let currentField = plainTransaction[field];
+      if (currentField) {
+        (plainTransaction as any)[field] = Buffer.from(
+          String(currentField)
+        ).toString('base64');
+      } else {
+        (plainTransaction as any)[field] = '';
+      }
+    });
 
     return plainTransaction;
   }
@@ -314,7 +308,6 @@ export class CrossWindowProvider {
 
     const { type, payload: signedPlainTransactions }: any =
       await this.listenOnce();
-    console.log('transaction resp received: ', signedPlainTransactions);
 
     if (type === 'cancel') {
       throw new Error('Transaction canceled.');
@@ -323,14 +316,10 @@ export class CrossWindowProvider {
     if (!signedPlainTransactions || !signedPlainTransactions.length) {
       throw new Error('Could not sign transactions');
     }
-    console.log('prepare transactions!');
     const signedTransactions = signedPlainTransactions.map((tx: any) => {
-      console.log('tx to transform: ', tx);
       const transaction = Transaction.fromPlainObject(tx);
       return transaction;
     });
-
-    console.log('signed transactions: ', signedTransactions);
 
     return signedTransactions;
   }
@@ -338,7 +327,6 @@ export class CrossWindowProvider {
   async signMessage(message: SignableMessage): Promise<SignableMessage> {
     this.ensureConnected();
     await this.handshake();
-    console.log('continue with sign message');
     const payloadQueryString = this.buildWalletQueryString({
       params: {
         message: message.message.toString()
@@ -348,19 +336,15 @@ export class CrossWindowProvider {
       { type: 'mxDappSignMessage', payload: payloadQueryString },
       this.walletUrl
     );
-    console.log('listen for sign response');
     const {
       type,
       payload: { status, signature }
     } = await this.listenOnce();
-    console.log('sign response received', type, status, signature);
     if (type !== 'signMessage') {
-      console.log('error!');
       throw new Error(
         `Could not connect. received ${type} event instead of signMessage`
       );
     }
-    console.log('sign response correct');
 
     if (status !== 'signed') {
       throw new Error('Could not sign message');
