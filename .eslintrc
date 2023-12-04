@@ -70,6 +70,7 @@
     "arrow-body-style": "off",
     "implicit-arrow-linebreak": "off",
     "func-names": "off",
+    "curly": ["error", "all"],
     "operator-linebreak": "off",
     "function-paren-newline": "off",
     "no-shadow": "off",

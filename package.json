@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Signing provider for dApps: Cross Window",
   "main": "out/index.js",
-  "types": "out/index.d.js",
+  "types": "out/index.d.ts",
   "files": [
     "out/**/*"
   ],
@@ -35,7 +35,6 @@
     "@multiversx/sdk-core": ">= 12.1.0"
   },
   "dependencies": {
-    "@multiversx/sdk-core": "^12.15.0",
     "@types/qs": "^6.9.10",
     "qs": "^6.11.2"
   }

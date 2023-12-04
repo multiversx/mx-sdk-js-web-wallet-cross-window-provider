@@ -1,4 +1,4 @@
-import { SignableMessage } from '@multiversx/sdk-core';
+import { IPlainTransactionObject, SignableMessage } from '@multiversx/sdk-core';
 import { Transaction } from '@multiversx/sdk-core';
 import qs from 'qs';
 import {
@@ -14,6 +14,8 @@ interface ICrossWindowWalletAccount {
   name?: string;
   signature?: string;
 }
+
+console.log('\x1b[42m%s\x1b[0m', 'Link active ???');
 
 export const DAPP_WINDOW_NAME = window.location.origin;
 
@@ -36,7 +38,7 @@ export class CrossWindowProvider {
     window.addEventListener('beforeunload', () => {
       if (this.walletWindow && window.opener) {
         return this.walletWindow?.postMessage(
-          { type: 'mxDappHandshake', payload: false },
+          { type: 'mxDappHandshake', payload: false }, // TODO: use const here
           this.walletUrl
         );
       }
@@ -121,47 +123,56 @@ export class CrossWindowProvider {
 
   private async onHandshakeChangeListener() {
     const walletUrl = this.walletUrl;
-    const self = this;
-    window.addEventListener('message', function eventHandler(event) {
+
+    // TODO: use strong types here
+    const handler = (event: MessageEvent) => {
       try {
         const { type, payload } = event.data;
         const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
         if (isWalletEvent && type === 'handshake') {
           if (payload === false) {
-            self.walletWindow?.close();
-            self.handshakeEstablished = false;
-            self.walletWindow = null;
-            window.removeEventListener('message', eventHandler);
+            this.walletWindow?.close();
+            this.handshakeEstablished = false;
+            this.walletWindow = null;
+            window.removeEventListener('message', handler);
           }
         }
       } catch {}
-    });
+    };
+
+    window.addEventListener('message', handler);
   }
 
+  // TODO: remove any
   async listenOnce(): Promise<any> {
     if (!this.walletWindow) {
       throw new Error('Wallet window is not instantiated');
     }
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
 
     return await new Promise((resolve) => {
       const walletUrl = this.walletUrl;
-      window.addEventListener('message', async function eventHandler(event) {
+
+      // TODO: change handler to relevant name if needed
+      const handler = async (event: MessageEvent) => {
         try {
-          const { type, payload } = event.data;
+          const { type, payload } = event.data; // TODO: use strong types here
           const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
-          const isRelogin = await self.isConnected();
-          if (isRelogin && type === 'connect') return;
+          const isRelogin = await this.isConnected();
+
+          if (isRelogin && type === 'connect' /* // TODO: use const here */) {
+            return;
+          }
 
           if (isWalletEvent) {
-            window.removeEventListener('message', eventHandler);
+            window.removeEventListener('message', handler);
             resolve({ type, payload });
           }
         } catch {}
-      });
+      };
+
+      window.addEventListener('message', handler);
     });
   }
 
@@ -181,11 +192,21 @@ export class CrossWindowProvider {
 
     await this.handshake();
 
-    return this.account.address;
+    console.log('\x1b[42m%s\x1b[0m', '???');
+
+    setTimeout(() => {
+      console.log('\x1b[42m%s\x1b[0m', 11);
+
+      this.walletWindow?.close();
+    }, 1000);
+
+    return this.account.address; // TODO: whee is the signature ?
   }
   //----------------------------------------------------------------------------------------------------------------------------------
 
-  static prepareWalletTransaction(transaction: Transaction): any {
+  static prepareWalletTransaction(
+    transaction: Transaction
+  ): IPlainTransactionObject {
     const plainTransaction = transaction.toPlainObject();
 
     const keysToTransform: Array<keyof typeof plainTransaction> = [
@@ -195,7 +216,7 @@ export class CrossWindowProvider {
     ];
 
     keysToTransform.forEach((field) => {
-      let currentField = plainTransaction[field];
+      const currentField = plainTransaction[field];
       if (currentField) {
         (plainTransaction as any)[field] = Buffer.from(
           String(currentField)
@@ -220,7 +241,8 @@ export class CrossWindowProvider {
           jsonToSend[txProp] = [];
         }
 
-        jsonToSend[txProp].push(plainTx[txProp]);
+        const currentField = plainTx[txProp as keyof typeof plainTx];
+        jsonToSend[txProp].push(currentField);
       }
     });
 
@@ -245,11 +267,11 @@ export class CrossWindowProvider {
         'CrossWindow provider is not initialised, call init() first'
       );
     }
+    this.ensureConnected();
+    await this.handshake();
     try {
       this.disconnect();
-      if (this.walletWindow) {
-        this.walletWindow.close();
-      }
+      this.walletWindow?.close();
     } catch (error) {
       console.warn('CrossWindow origin url is already cleared!', error);
     }
