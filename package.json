@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Signing provider for dApps: Cross Window",
   "main": "out/index.js",
-  "types": "out/index.d.ts",
+  "types": "out/index.d.js",
   "files": [
     "out/**/*"
   ],

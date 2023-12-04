@@ -15,8 +15,6 @@ interface ICrossWindowWalletAccount {
   signature?: string;
 }
 
-console.log('\x1b[42m%s\x1b[0m', 'Link active ???');
-
 export const DAPP_WINDOW_NAME = window.location.origin;
 
 export class CrossWindowProvider {
@@ -96,9 +94,11 @@ export class CrossWindowProvider {
       }
     });
     const isRelogin = await this.isConnected();
+
+    // TODO: handshake should not handle login logic
     this.walletWindow?.postMessage(
       {
-        type: 'mxDappConnect',
+        type: 'mxDappConnect', // TODO: use const here
         payload: { queryString: payloadQueryString, isRelogin }
       },
       this.walletUrl
@@ -191,14 +191,6 @@ export class CrossWindowProvider {
     this.accessToken = options.token;
 
     await this.handshake();
-
-    console.log('\x1b[42m%s\x1b[0m', '???');
-
-    setTimeout(() => {
-      console.log('\x1b[42m%s\x1b[0m', 11);
-
-      this.walletWindow?.close();
-    }, 1000);
 
     return this.account.address; // TODO: whee is the signature ?
   }
