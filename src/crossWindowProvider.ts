@@ -1,10 +1,17 @@
-import { IPlainTransactionObject, SignableMessage } from '@multiversx/sdk-core';
-import { Transaction } from '@multiversx/sdk-core';
+import {
+  IPlainTransactionObject,
+  SignableMessage,
+  Transaction
+} from '@multiversx/sdk-core';
 import qs from 'qs';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction
 } from './errors';
+import {
+  buildTransactionsQueryString,
+  buildWalletQueryString
+} from './helpers';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -42,6 +49,7 @@ export class CrossWindowProvider {
       }
       this.walletWindow?.close();
     });
+
     window.name = window.name = DAPP_WINDOW_NAME;
     CrossWindowProvider._instance = this;
   }
@@ -88,7 +96,7 @@ export class CrossWindowProvider {
     );
     this.onHandshakeChangeListener();
 
-    const payloadQueryString = this.buildWalletQueryString({
+    const payloadQueryString = buildWalletQueryString({
       params: {
         token: this.accessToken
       }
@@ -314,7 +322,7 @@ export class CrossWindowProvider {
     this.ensureConnected();
     await this.handshake();
 
-    const payloadQueryString = this.buildTransactionsQueryString(transactions);
+    const payloadQueryString = buildTransactionsQueryString(transactions);
     this.walletWindow?.postMessage(
       { type: 'mxDappSignTransactions', payload: payloadQueryString },
       this.walletUrl
@@ -322,6 +330,8 @@ export class CrossWindowProvider {
 
     const { type, payload: signedPlainTransactions }: any =
       await this.listenOnce();
+
+    this.walletWindow?.close();
 
     if (type === 'cancel') {
       throw new Error('Transaction canceled.');
