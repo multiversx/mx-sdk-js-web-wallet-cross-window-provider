@@ -35,7 +35,6 @@ export class CrossWindowProvider {
   private accessToken: string | undefined = undefined;
 
   private constructor() {
-    console.log("provider v1");
     if (CrossWindowProvider._instance) {
       throw new Error(
         'Error: Instantiation failed: Use CrossWindowProvider.getInstance() instead of new.'
@@ -206,64 +205,8 @@ export class CrossWindowProvider {
 
     return this.account.address; // TODO: whee is the signature ?
   }
-  //----------------------------------------------------------------------------------------------------------------------------------
 
-  static prepareWalletTransaction(
-    transaction: Transaction
-  ): IPlainTransactionObject {
-    const plainTransaction = transaction.toPlainObject();
 
-    const keysToTransform: Array<keyof typeof plainTransaction> = [
-      'data',
-      'receiverUsername',
-      'senderUsername'
-    ];
-
-    keysToTransform.forEach((field) => {
-      const currentField = plainTransaction[field];
-      if (currentField) {
-        (plainTransaction as any)[field] = Buffer.from(
-          String(currentField)
-        ).toString('base64');
-      } else {
-        (plainTransaction as any)[field] = '';
-      }
-    });
-
-    return plainTransaction;
-  }
-
-  private buildTransactionsQueryString(transactions: Transaction[]): string {
-    const jsonToSend: any = {};
-    transactions.map((tx) => {
-      const plainTx = CrossWindowProvider.prepareWalletTransaction(tx);
-      for (const txProp in plainTx) {
-        if (
-          plainTx.hasOwnProperty(txProp) &&
-          !jsonToSend.hasOwnProperty(txProp)
-        ) {
-          jsonToSend[txProp] = [];
-        }
-
-        const currentField = plainTx[txProp as keyof typeof plainTx];
-        jsonToSend[txProp].push(currentField);
-      }
-    });
-
-    return this.buildWalletQueryString({
-      params: jsonToSend
-    });
-  }
-
-  private buildWalletQueryString(options: { params?: any }): string {
-    const callbackUrl = this.callbackUrl || window.location.href;
-    const partialQueryString = qs.stringify(options.params || {});
-    const fullQueryString = partialQueryString
-      ? `${partialQueryString}&callbackUrl=${callbackUrl}`
-      : `callbackUrl=${callbackUrl}`;
-
-    return fullQueryString;
-  }
 
   async logout(): Promise<boolean> {
     if (!this.initialized) {
@@ -355,7 +298,7 @@ export class CrossWindowProvider {
   async signMessage(message: SignableMessage): Promise<SignableMessage> {
     this.ensureConnected();
     await this.handshake();
-    const payloadQueryString = this.buildWalletQueryString({
+    const payloadQueryString = buildWalletQueryString({
       params: {
         message: message.message.toString()
       }
