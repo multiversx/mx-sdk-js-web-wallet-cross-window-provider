@@ -35,6 +35,7 @@ export class CrossWindowProvider {
   private accessToken: string | undefined = undefined;
 
   private constructor() {
+    console.log("provider v1");
     if (CrossWindowProvider._instance) {
       throw new Error(
         'Error: Instantiation failed: Use CrossWindowProvider.getInstance() instead of new.'
@@ -153,6 +154,7 @@ export class CrossWindowProvider {
   }
 
   // TODO: remove any
+  //param for specific action to listen to
   async listenOnce(): Promise<any> {
     if (!this.walletWindow) {
       throw new Error('Wallet window is not instantiated');
@@ -199,6 +201,8 @@ export class CrossWindowProvider {
     this.accessToken = options.token;
 
     await this.handshake();
+
+    this.walletWindow?.close();
 
     return this.account.address; // TODO: whee is the signature ?
   }
@@ -364,6 +368,9 @@ export class CrossWindowProvider {
       type,
       payload: { status, signature }
     } = await this.listenOnce();
+
+    this.walletWindow?.close();
+
     if (type !== 'signMessage') {
       throw new Error(
         `Could not connect. received ${type} event instead of signMessage`
