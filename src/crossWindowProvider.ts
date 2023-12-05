@@ -76,19 +76,37 @@ export class CrossWindowProvider {
 
   async handshake(): Promise<boolean> {
     if (!this.walletWindow) {
+      console.log('In HANDSHAKE: ', 'opening new wallet window');
       this.walletWindow = window.open(this.walletUrl, this.walletUrl);
     } else {
-      window.open('', this.walletUrl);
+      console.log('In HANDSHAKE: ', 'opening Existing window');
+      window.open('', this.walletUrl); // TODO: since walletWindow is always closed, is this needed?
     }
 
+    // TODO: is this needed?
     if (this.handshakeEstablished) {
+      console.log(
+        'In HANDSHAKE: ',
+        'handshakeEstablished',
+        this.handshakeEstablished
+      );
       return true;
     }
+
+    console.log(
+      'In HANDSHAKE: ',
+      'start listening for handshake event from wallet'
+    );
 
     const { type, payload } = await this.listenOnce();
     if (type !== 'handshake' || !payload) {
       throw new Error('Handshake could not be established');
     }
+
+    console.log('In HANDSHAKE: ', 'Listen once event received: ', {
+      type,
+      payload
+    });
 
     this.walletWindow?.postMessage(
       { type: 'mxDappHandshake', payload: true },
@@ -103,6 +121,10 @@ export class CrossWindowProvider {
     });
     const isRelogin = await this.isConnected();
 
+    console.log('In HANDSHAKE: ', 'Posting mxDappHandshake `true` to wallet', {
+      isRelogin
+    });
+
     // TODO: handshake should not handle login logic
     this.walletWindow?.postMessage(
       {
@@ -111,7 +133,18 @@ export class CrossWindowProvider {
       },
       this.walletUrl
     );
+
+    console.log(
+      'In HANDSHAKE: ',
+      'Posting mxDappConnect connect intent to wallet',
+      {
+        type: 'mxDappConnect', // TODO: use const here
+        payload: { queryString: payloadQueryString, isRelogin }
+      }
+    );
+
     if (!isRelogin) {
+      console.log('In HANDSHAKE: ', 'Waiting for connect event from wallet');
       const {
         type: connectType,
         payload: { address, signature }
@@ -123,7 +156,13 @@ export class CrossWindowProvider {
       }
       this.account.address = address;
       this.account.signature = signature;
+      console.log('In HANDSHAKE: ', 'Is first login', {
+        address,
+        signature
+      });
     }
+
+    console.log('In HANDSHAKE: ', 'handshakeEstablished done');
 
     this.handshakeEstablished = true;
     return true;
