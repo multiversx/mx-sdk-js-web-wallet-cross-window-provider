@@ -124,7 +124,7 @@ export class CrossWindowProvider {
     this.walletWindow?.postMessage(
       {
         type: 'mxDappConnect', // TODO: use const here
-        payload: { queryString: payloadQueryString, isRelogin }
+        payload: { queryString: payloadQueryString }
       },
       this.walletUrl
     );
@@ -134,7 +134,7 @@ export class CrossWindowProvider {
       'Posting mxDappConnect connect intent to wallet',
       {
         type: 'mxDappConnect', // TODO: use const here
-        payload: { queryString: payloadQueryString, isRelogin }
+        payload: { queryString: payloadQueryString }
       }
     );
 
