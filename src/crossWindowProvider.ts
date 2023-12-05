@@ -165,26 +165,27 @@ export class CrossWindowProvider {
   }
 
   private async onHandshakeChangeListener() {
+    console.log('add handshake change listener');
     const walletUrl = this.walletUrl;
-
-    // TODO: use strong types here
-    const handler = (event: MessageEvent) => {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
+    window.addEventListener('message', function eventHandler(event) {
       try {
         const { type, payload } = event.data;
         const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
         if (isWalletEvent && type === 'handshake') {
+          console.log('handshake changed! ', payload);
           if (payload === false) {
-            this.walletWindow?.close();
-            this.handshakeEstablished = false;
-            this.walletWindow = null;
-            window.removeEventListener('message', handler);
+            self.walletWindow?.close();
+            self.handshakeEstablished = false;
+            self.walletWindow = null;
+            console.log('remove handshake!!@#s');
+            window.removeEventListener('message', eventHandler);
           }
         }
       } catch {}
-    };
-
-    window.addEventListener('message', handler);
+    });
   }
 
   // TODO: remove any
@@ -193,30 +194,27 @@ export class CrossWindowProvider {
     if (!this.walletWindow) {
       throw new Error('Wallet window is not instantiated');
     }
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    const self = this;
 
     return await new Promise((resolve) => {
       const walletUrl = this.walletUrl;
-
-      // TODO: change handler to relevant name if needed
-      const handler = async (event: MessageEvent) => {
+      window.addEventListener('message', async function eventHandler(event) {
         try {
-          const { type, payload } = event.data; // TODO: use strong types here
+          const { type, payload } = event.data;
           const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
-          const isRelogin = await this.isConnected();
-
-          if (isRelogin && type === 'connect' /* // TODO: use const here */) {
+          const isRelogin = await self.isConnected();
+          if (isRelogin && type === 'connect') {
             return;
           }
 
           if (isWalletEvent) {
-            window.removeEventListener('message', handler);
+            window.removeEventListener('message', eventHandler);
             resolve({ type, payload });
           }
         } catch {}
-      };
-
-      window.addEventListener('message', handler);
+      });
     });
   }
 
