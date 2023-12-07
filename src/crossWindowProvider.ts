@@ -109,32 +109,45 @@ export class CrossWindowProvider {
     });
   }
 
-  async listenOnce(
-    action: CrossWindowProviderResponseEnums
-  ): Promise<ReplyWithPostMessageType> {
+  async listenOnce<T extends CrossWindowProviderResponseEnums>(
+    action: T
+  ): Promise<{
+    type: T;
+    payload: ReplyWithPostMessageType<T>['payload'];
+  }> {
     if (!this.walletWindow) {
       throw new ErrWalletWindowNotInstantiated();
     }
 
     return await new Promise((resolve) => {
       const walletUrl = this.walletUrl;
-      window.addEventListener('message', async function eventHandler(event) {
-        const { type, payload }: ReplyWithPostMessageType = event.data;
-        const isWalletEvent = event.origin === new URL(walletUrl).origin;
-        const isCurrentAction =
-          action === type ||
-          type === CrossWindowProviderResponseEnums.cancelResponse;
 
-        if (!isCurrentAction) {
-          return;
-        }
-        console.log('respond listen once: ', type);
+      window.addEventListener(
+        'message',
+        async function eventHandler(
+          event: MessageEvent<{
+            type: T;
+            payload: ReplyWithPostMessageType<T>['payload'];
+          }>
+        ) {
+          const { type, payload } = event.data;
+          const isWalletEvent = event.origin === new URL(walletUrl).origin;
+          const isCurrentAction =
+            action === type ||
+            type === CrossWindowProviderResponseEnums.cancelResponse;
 
-        if (isWalletEvent) {
-          window.removeEventListener('message', eventHandler);
-          resolve({ type, payload });
+          if (!isCurrentAction) {
+            return;
+          }
+
+          console.log('respond listen once: ', type);
+
+          if (isWalletEvent) {
+            window.removeEventListener('message', eventHandler);
+            resolve({ type, payload });
+          }
         }
-      });
+      );
     });
   }
 
@@ -297,7 +310,7 @@ export class CrossWindowProvider {
       throw new ErrCouldNotSignMessage();
     }
 
-    message.applySignature(Buffer.from(signature, 'hex'));
+    message.applySignature(Buffer.from(String(signature), 'hex'));
 
     return message;
   }
