@@ -1,5 +1,19 @@
 import { IPlainTransactionObject } from '@multiversx/sdk-core';
 
+export interface PrivateMethodsType {
+  ensureConnected(): void;
+  connectWallet(): Promise<void>;
+  handshake(): Promise<boolean>;
+  walletWindow: Window | null;
+  walletUrl: string;
+  listenOnce<T extends CrossWindowProviderResponseEnums>(
+    action: T
+  ): Promise<{
+    type: T;
+    payload: ReplyWithPostMessageType<T>['payload'];
+  }>;
+}
+
 export enum CrossWindowProviderRequestEnums {
   signTransactionsRequest = 'SIGN_TRANSACTIONS_REQUEST',
   signMessageRequest = 'SIGN_MESSAGE_REQUEST',

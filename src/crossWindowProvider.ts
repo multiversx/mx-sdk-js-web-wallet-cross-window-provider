@@ -3,22 +3,17 @@ import {
   ErrAccountNotConnected,
   ErrCannotEstablishHandshake,
   ErrCannotSignSingleTransaction,
-  ErrCouldNotSignMessage,
-  ErrCouldNotSignTransaction,
   ErrInstantiationFailed,
   ErrProviderNotInitialized,
-  ErrTransactionCAncelled,
   ErrWalletWindowNotInstantiated
 } from './errors';
-import {
-  buildTransactionsQueryString,
-  buildWalletQueryString
-} from './helpers';
+import { buildWalletQueryString } from './helpers';
+import { signMessage, signTransactions } from './methods';
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums,
-  ReplyWithPostMessageType,
-  SignMessageStatusEnum
+  PrivateMethodsType,
+  ReplyWithPostMessageType
 } from './types';
 
 interface ICrossWindowWalletAccount {
@@ -34,7 +29,6 @@ export class CrossWindowProvider {
   private initialized = false;
   private static _instance: CrossWindowProvider = new CrossWindowProvider();
   walletWindow: Window | null = null;
-  private handshakeEstablished = false;
   private accessToken: string | undefined = undefined;
 
   private constructor() {
@@ -80,8 +74,6 @@ export class CrossWindowProvider {
       throw new ErrCannotEstablishHandshake();
     }
     this.addHandshakeChangeListener();
-
-    this.handshakeEstablished = true;
     return true;
   }
 
@@ -100,7 +92,6 @@ export class CrossWindowProvider {
         ) {
           if (payload === false) {
             self.walletWindow?.close();
-            self.handshakeEstablished = false;
             self.walletWindow = null;
             window.removeEventListener('message', eventHandler);
           }
@@ -137,7 +128,7 @@ export class CrossWindowProvider {
             type === CrossWindowProviderResponseEnums.cancelResponse;
 
           if (!isCurrentAction) {
-            return;
+            return; // TODO: aici nu trebuia reject?
           }
 
           console.log('respond listen once: ', type);
@@ -244,75 +235,27 @@ export class CrossWindowProvider {
     }
   }
 
+  getBindedMethods(): PrivateMethodsType {
+    return {
+      ensureConnected: this.ensureConnected.bind(this),
+      connectWallet: this.connectWallet.bind(this),
+      handshake: this.handshake.bind(this),
+      walletWindow: this.walletWindow,
+      walletUrl: this.walletUrl,
+      listenOnce: this.listenOnce.bind(this)
+    };
+  }
+
   async signTransactions(transactions: Transaction[]): Promise<Transaction[]> {
-    this.ensureConnected();
-    await this.handshake();
-    await this.connectWallet();
-
-    const payloadQueryString = buildTransactionsQueryString(transactions);
-    this.walletWindow?.postMessage(
-      {
-        type: CrossWindowProviderRequestEnums.signTransactionsRequest,
-        payload: payloadQueryString
-      },
-      this.walletUrl
-    );
-
-    const { type, payload: signedPlainTransactions }: any =
-      await this.listenOnce(
-        CrossWindowProviderResponseEnums.signTransactionsResponse
-      );
-
-    this.walletWindow?.close();
-
-    if (type === CrossWindowProviderResponseEnums.cancelResponse) {
-      throw new ErrTransactionCAncelled();
-    }
-
-    const hasTransactions = signedPlainTransactions?.length > 0;
-
-    if (!hasTransactions) {
-      throw new ErrCouldNotSignTransaction();
-    }
-    const signedTransactions = signedPlainTransactions.map((tx: any) => {
-      const transaction = Transaction.fromPlainObject(tx);
-      return transaction;
-    });
-
+    const self = this.getBindedMethods();
+    const signedTransactions = await signTransactions(self)(transactions);
     return signedTransactions;
   }
 
-  async signMessage(message: SignableMessage): Promise<SignableMessage> {
-    this.ensureConnected();
-    await this.handshake();
-    await this.connectWallet();
-    const payloadQueryString = buildWalletQueryString({
-      params: {
-        message: message.message.toString()
-      }
-    });
-    this.walletWindow?.postMessage(
-      {
-        type: CrossWindowProviderRequestEnums.signMessageRequest,
-        payload: payloadQueryString
-      },
-      this.walletUrl
-    );
-    const {
-      payload: { status, signature }
-    } = await this.listenOnce(
-      CrossWindowProviderResponseEnums.signMessageResponse
-    );
-
-    this.walletWindow?.close();
-
-    if (status !== SignMessageStatusEnum.signed) {
-      throw new ErrCouldNotSignMessage();
-    }
-
-    message.applySignature(Buffer.from(String(signature), 'hex'));
-
-    return message;
+  async signMessage(message: SignableMessage) {
+    const self = this.getBindedMethods();
+    const signedMessage = await signMessage(self)(message);
+    return signedMessage;
   }
 
   cancelAction() {
