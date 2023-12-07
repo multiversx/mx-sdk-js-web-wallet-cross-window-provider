@@ -69,6 +69,7 @@ export class CrossWindowProvider {
   }
 
   async handshake(): Promise<boolean> {
+    this..walletWindow?.close();
     this.walletWindow = window.open(this.walletUrl, this.walletUrl);
     const { payload } = await this.listenOnce(CrossWindowProviderResponseEnums.handshakeResponse );
 
@@ -117,9 +118,10 @@ export class CrossWindowProvider {
           const isRelogin = await self.isConnected();
 
 
-          if ((isRelogin && type === 'connect') || !isCurrentAction) {
+          if (!isCurrentAction) {
             return;
           }
+          console.log("respond listen once: ", type);
 
           if (isWalletEvent) {
             window.removeEventListener('message', eventHandler);
