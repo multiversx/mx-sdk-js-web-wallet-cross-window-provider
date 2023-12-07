@@ -235,7 +235,7 @@ export class CrossWindowProvider {
     }
   }
 
-  getBindedMethods(): PrivateMethodsType {
+  private getBindedMethods(): PrivateMethodsType {
     return {
       ensureConnected: this.ensureConnected.bind(this),
       connectWallet: this.connectWallet.bind(this),
