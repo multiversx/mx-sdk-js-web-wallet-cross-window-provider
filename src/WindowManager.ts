@@ -24,7 +24,7 @@ export class WindowManager {
     });
 
     window.name = window.name = DAPP_WINDOW_NAME;
-    WindowManager._instance = this;
+    WindowManager._instance = this; // TODO: remove singleton
   }
 
   public static getInstance(): WindowManager {
