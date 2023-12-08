@@ -39,6 +39,12 @@ export class CrossWindowProvider {
     CrossWindowProvider._instance = this;
   }
 
+  private ensureConnected() {
+    if (!this.account.address) {
+      throw new ErrAccountNotConnected();
+    }
+  }
+
   public static getInstance(): CrossWindowProvider {
     return CrossWindowProvider._instance;
   }
@@ -134,12 +140,6 @@ export class CrossWindowProvider {
     }
 
     return signedTransactions[0];
-  }
-
-  private ensureConnected() {
-    if (!this.account.address) {
-      throw new ErrAccountNotConnected();
-    }
   }
 
   async signTransactions(transactions: Transaction[]): Promise<Transaction[]> {
