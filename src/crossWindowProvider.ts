@@ -54,8 +54,7 @@ export class CrossWindowProvider {
   }
 
   async init(): Promise<boolean> {
-    this.windowManager.init();
-    this.initialized = true;
+    this.initialized = await this.windowManager.init();
     return this.initialized;
   }
 
