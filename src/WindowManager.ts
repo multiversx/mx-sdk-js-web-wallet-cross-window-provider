@@ -1,7 +1,6 @@
-import { responseTypeMap } from './constants';
+import { DAPP_WINDOW_NAME, responseTypeMap } from './constants';
 import {
   ErrCannotEstablishHandshake,
-  ErrInstantiationFailed,
   ErrProviderNotInitialized,
   ErrWalletWindowNotInstantiated
 } from './errors';
@@ -13,33 +12,28 @@ import {
   ResponseTypeMap
 } from './types';
 
-export const DAPP_WINDOW_NAME = window.location.origin;
-
-export class CommunicationUtility {
+export class WindowManager {
   private walletUrl = '';
   private initialized = false;
-  private static _instance: CommunicationUtility = new CommunicationUtility();
+  private static _instance: WindowManager = new WindowManager();
   walletWindow: Window | null = null;
 
-  public constructor() {
-    if (CommunicationUtility._instance) {
-      throw new ErrInstantiationFailed();
-    }
+  constructor() {
     window.addEventListener('beforeunload', () => {
       this.walletWindow?.close();
     });
 
     window.name = window.name = DAPP_WINDOW_NAME;
-    CommunicationUtility._instance = this;
+    WindowManager._instance = this;
   }
 
-  public static getInstance(): CommunicationUtility {
-    return CommunicationUtility._instance;
+  public static getInstance(): WindowManager {
+    return WindowManager._instance;
   }
 
-  public setWalletUrl(url: string): CommunicationUtility {
+  public setWalletUrl(url: string): WindowManager {
     this.walletUrl = url;
-    return CommunicationUtility._instance;
+    return WindowManager._instance;
   }
 
   async init(): Promise<boolean> {
@@ -59,7 +53,6 @@ export class CommunicationUtility {
       throw new ErrCannotEstablishHandshake();
     }
     this.addHandshakeChangeListener();
-
     return true;
   }
 
@@ -128,20 +121,11 @@ export class CommunicationUtility {
     });
   }
 
-  async connectWallet(payloadQueryString: string) {
-    this.walletWindow?.postMessage(
-      {
-        type: CrossWindowProviderRequestEnums.loginRequest,
-        payload: { queryString: payloadQueryString }
-      },
-      this.walletUrl
-    );
-  }
-
-  async close(): Promise<boolean> {
+  async closeConnection(): Promise<boolean> {
     if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
+
     await this.handshake();
     this.walletWindow?.close();
 
@@ -159,7 +143,7 @@ export class CommunicationUtility {
     type: T;
     payload: string;
   }): Promise<{
-    type: ResponseTypeMap[T];
+    type: ResponseTypeMap[T] | CrossWindowProviderResponseEnums.cancelResponse;
     payload: ReplyWithPostMessageType<ResponseTypeMap[T]>['payload'];
   }> {
     await this.handshake();

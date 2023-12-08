@@ -16,3 +16,5 @@ export const responseTypeMap: ResponseTypeMap = {
   [CrossWindowProviderRequestEnums.cancelAction]:
     CrossWindowProviderResponseEnums.cancelResponse
 };
+
+export const DAPP_WINDOW_NAME = window.location.origin;
