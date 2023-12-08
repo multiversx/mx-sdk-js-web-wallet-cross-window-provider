@@ -45,6 +45,10 @@ export class CrossWindowProvider {
     }
   }
 
+  private disconnect() {
+    this.account = { address: '' };
+  }
+
   public static getInstance(): CrossWindowProvider {
     return CrossWindowProvider._instance;
   }
@@ -109,8 +113,9 @@ export class CrossWindowProvider {
       throw new ErrProviderNotInitialized();
     }
     this.ensureConnected();
-    this.account = { address: '' };
+    this.disconnect();
     const connectionClosed = await this.windowManager.closeConnection();
+    // TODO: postMessage to wallet to logout
 
     return connectionClosed;
   }
@@ -119,7 +124,7 @@ export class CrossWindowProvider {
     if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
-    return this.account ? this.account.address : '';
+    return this.account?.address ?? '';
   }
 
   isInitialized(): boolean {

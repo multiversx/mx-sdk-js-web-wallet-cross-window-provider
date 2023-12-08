@@ -45,6 +45,7 @@ export class WindowManager {
   async handshake(): Promise<boolean> {
     this.walletWindow?.close();
     this.walletWindow = window.open(this.walletUrl, this.walletUrl);
+
     const { payload } = await this.listenOnce(
       CrossWindowProviderResponseEnums.handshakeResponse
     );
@@ -52,6 +53,7 @@ export class WindowManager {
     if (!payload) {
       throw new ErrCannotEstablishHandshake();
     }
+
     this.addHandshakeChangeListener();
     return true;
   }
