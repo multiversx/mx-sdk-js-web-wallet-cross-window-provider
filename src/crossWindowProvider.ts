@@ -1,14 +1,12 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
 import {
   ErrAccountNotConnected,
-  ErrCannotEstablishHandshake,
   ErrCannotSignSingleTransaction,
   ErrCouldNotSignMessage,
   ErrCouldNotSignTransaction,
   ErrInstantiationFailed,
   ErrProviderNotInitialized,
-  ErrTransactionCAncelled,
-  ErrWalletWindowNotInstantiated
+  ErrTransactionCancelled
 } from './errors';
 import {
   buildTransactionsQueryString,
@@ -17,36 +15,38 @@ import {
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums,
-  ReplyWithPostMessageType,
   SignMessageStatusEnum
 } from './types';
+import { WindowManager } from './WindowManager';
 
 interface ICrossWindowWalletAccount {
   address: string;
   signature?: string;
 }
 
-export const DAPP_WINDOW_NAME = window.location.origin;
-
 export class CrossWindowProvider {
-  private walletUrl = '';
   public account: ICrossWindowWalletAccount = { address: '' };
   private initialized = false;
+  private windowManager: WindowManager;
   private static _instance: CrossWindowProvider = new CrossWindowProvider();
-  walletWindow: Window | null = null;
-  private handshakeEstablished = false;
   private accessToken: string | undefined = undefined;
 
   private constructor() {
     if (CrossWindowProvider._instance) {
       throw new ErrInstantiationFailed();
     }
-    window.addEventListener('beforeunload', () => {
-      this.walletWindow?.close();
-    });
-
-    window.name = window.name = DAPP_WINDOW_NAME;
+    this.windowManager = WindowManager.getInstance();
     CrossWindowProvider._instance = this;
+  }
+
+  private ensureConnected() {
+    if (!this.account.address) {
+      throw new ErrAccountNotConnected();
+    }
+  }
+
+  private disconnect() {
+    this.account = { address: '' };
   }
 
   public static getInstance(): CrossWindowProvider {
@@ -59,121 +59,13 @@ export class CrossWindowProvider {
   }
 
   public setWalletUrl(url: string): CrossWindowProvider {
-    this.walletUrl = url;
+    this.windowManager.setWalletUrl(url);
     return CrossWindowProvider._instance;
   }
 
   async init(): Promise<boolean> {
-    window.name = DAPP_WINDOW_NAME;
-    this.initialized = true;
+    this.initialized = await this.windowManager.init();
     return this.initialized;
-  }
-
-  async handshake(): Promise<boolean> {
-    this.walletWindow?.close();
-    this.walletWindow = window.open(this.walletUrl, this.walletUrl);
-    const { payload } = await this.listenOnce(
-      CrossWindowProviderResponseEnums.handshakeResponse
-    );
-
-    if (!payload) {
-      throw new ErrCannotEstablishHandshake();
-    }
-    this.addHandshakeChangeListener();
-
-    this.handshakeEstablished = true;
-    return true;
-  }
-
-  private async addHandshakeChangeListener() {
-    const walletUrl = this.walletUrl;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-    window.addEventListener('message', function eventHandler(event) {
-      try {
-        const { type, payload } = event.data;
-        const isWalletEvent = event.origin === new URL(walletUrl).origin;
-
-        if (
-          isWalletEvent &&
-          type === CrossWindowProviderResponseEnums.handshakeResponse
-        ) {
-          if (payload === false) {
-            self.walletWindow?.close();
-            self.handshakeEstablished = false;
-            self.walletWindow = null;
-            window.removeEventListener('message', eventHandler);
-          }
-        }
-      } catch {}
-    });
-  }
-
-  async listenOnce<T extends CrossWindowProviderResponseEnums>(
-    action: T
-  ): Promise<{
-    type: T;
-    payload: ReplyWithPostMessageType<T>['payload'];
-  }> {
-    if (!this.walletWindow) {
-      throw new ErrWalletWindowNotInstantiated();
-    }
-
-    return await new Promise((resolve) => {
-      const walletUrl = this.walletUrl;
-
-      window.addEventListener(
-        'message',
-        async function eventHandler(
-          event: MessageEvent<{
-            type: T;
-            payload: ReplyWithPostMessageType<T>['payload'];
-          }>
-        ) {
-          const { type, payload } = event.data;
-          const isWalletEvent = event.origin === new URL(walletUrl).origin;
-          const isCurrentAction =
-            action === type ||
-            type === CrossWindowProviderResponseEnums.cancelResponse;
-
-          if (!isCurrentAction) {
-            return;
-          }
-
-          console.log('respond listen once: ', type);
-
-          if (isWalletEvent) {
-            window.removeEventListener('message', eventHandler);
-            resolve({ type, payload });
-          }
-        }
-      );
-    });
-  }
-
-  private async connectWallet() {
-    const payloadQueryString = buildWalletQueryString({
-      params: {
-        token: this.accessToken
-      }
-    });
-    const isRelogin = await this.isConnected();
-    this.walletWindow?.postMessage(
-      {
-        type: CrossWindowProviderRequestEnums.loginRequest,
-        payload: { queryString: payloadQueryString }
-      },
-      this.walletUrl
-    );
-
-    if (!isRelogin) {
-      const {
-        payload: { address, signature }
-      } = await this.listenOnce(CrossWindowProviderResponseEnums.loginResponse);
-
-      this.account.address = address;
-      this.account.signature = signature;
-    }
   }
 
   async login(
@@ -185,12 +77,33 @@ export class CrossWindowProvider {
       throw new ErrProviderNotInitialized();
     }
 
+    const isRelogin = await this.isConnected();
+
+    if (isRelogin) {
+      const { address, signature } = this.account;
+      return {
+        address,
+        signature
+      };
+    }
+
     this.accessToken = options.token;
 
-    await this.handshake();
-    await this.connectWallet();
+    const payloadQueryString = buildWalletQueryString({
+      params: {
+        token: this.accessToken
+      }
+    });
 
-    this.walletWindow?.close();
+    const {
+      payload: { address, signature }
+    } = await this.windowManager.postMessage({
+      type: CrossWindowProviderRequestEnums.loginRequest,
+      payload: { queryString: payloadQueryString } as any // TODO: needs to change to plain qyerystirng
+    });
+
+    this.account.address = address;
+    this.account.signature = signature;
 
     return { address: this.account.address, signature: this.account.signature };
   }
@@ -200,22 +113,18 @@ export class CrossWindowProvider {
       throw new ErrProviderNotInitialized();
     }
     this.ensureConnected();
-    await this.handshake();
     this.disconnect();
-    this.walletWindow?.close();
+    const connectionClosed = await this.windowManager.closeConnection();
+    // TODO: postMessage to wallet to logout
 
-    return true;
-  }
-
-  private disconnect() {
-    this.account = { address: '' };
+    return connectionClosed;
   }
 
   async getAddress(): Promise<string> {
     if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
-    return this.account ? this.account.address : '';
+    return this.account?.address ?? '';
   }
 
   isInitialized(): boolean {
@@ -238,35 +147,19 @@ export class CrossWindowProvider {
     return signedTransactions[0];
   }
 
-  private ensureConnected() {
-    if (!this.account.address) {
-      throw new ErrAccountNotConnected();
-    }
-  }
-
   async signTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     this.ensureConnected();
-    await this.handshake();
-    await this.connectWallet();
 
     const payloadQueryString = buildTransactionsQueryString(transactions);
-    this.walletWindow?.postMessage(
-      {
+
+    const { type, payload: signedPlainTransactions } =
+      await this.windowManager.postMessage({
         type: CrossWindowProviderRequestEnums.signTransactionsRequest,
         payload: payloadQueryString
-      },
-      this.walletUrl
-    );
-
-    const { type, payload: signedPlainTransactions }: any =
-      await this.listenOnce(
-        CrossWindowProviderResponseEnums.signTransactionsResponse
-      );
-
-    this.walletWindow?.close();
+      });
 
     if (type === CrossWindowProviderResponseEnums.cancelResponse) {
-      throw new ErrTransactionCAncelled();
+      throw new ErrTransactionCancelled();
     }
 
     const hasTransactions = signedPlainTransactions?.length > 0;
@@ -274,7 +167,8 @@ export class CrossWindowProvider {
     if (!hasTransactions) {
       throw new ErrCouldNotSignTransaction();
     }
-    const signedTransactions = signedPlainTransactions.map((tx: any) => {
+
+    const signedTransactions = signedPlainTransactions.map((tx) => {
       const transaction = Transaction.fromPlainObject(tx);
       return transaction;
     });
@@ -284,27 +178,19 @@ export class CrossWindowProvider {
 
   async signMessage(message: SignableMessage): Promise<SignableMessage> {
     this.ensureConnected();
-    await this.handshake();
-    await this.connectWallet();
+
     const payloadQueryString = buildWalletQueryString({
       params: {
         message: message.message.toString()
       }
     });
-    this.walletWindow?.postMessage(
-      {
-        type: CrossWindowProviderRequestEnums.signMessageRequest,
-        payload: payloadQueryString
-      },
-      this.walletUrl
-    );
+
     const {
       payload: { status, signature }
-    } = await this.listenOnce(
-      CrossWindowProviderResponseEnums.signMessageResponse
-    );
-
-    this.walletWindow?.close();
+    } = await this.windowManager.postMessage({
+      type: CrossWindowProviderRequestEnums.signMessageRequest,
+      payload: payloadQueryString
+    });
 
     if (status !== SignMessageStatusEnum.signed) {
       throw new ErrCouldNotSignMessage();
@@ -316,9 +202,9 @@ export class CrossWindowProvider {
   }
 
   cancelAction() {
-    this.walletWindow?.postMessage(
-      { type: CrossWindowProviderRequestEnums.cancelAction },
-      this.walletUrl
-    );
+    this.windowManager?.postMessage({
+      type: CrossWindowProviderRequestEnums.cancelAction,
+      payload: ''
+    });
   }
 }

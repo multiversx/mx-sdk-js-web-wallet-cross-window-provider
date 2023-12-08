@@ -22,7 +22,6 @@ export class ErrAccountNotConnected extends Err {
   }
 }
 
-
 export class ErrCannotEstablishHandshake extends Err {
   public constructor() {
     super('Handshake could not be established');
@@ -31,7 +30,9 @@ export class ErrCannotEstablishHandshake extends Err {
 
 export class ErrInstantiationFailed extends Err {
   public constructor() {
-    super('Error: Instantiation failed: Use CrossWindowProvider.getInstance() instead of new.');
+    super(
+      'Error: Instantiation failed: Use CrossWindowProvider.getInstance() instead of new.'
+    );
   }
 }
 
@@ -41,15 +42,13 @@ export class ErrWalletWindowNotInstantiated extends Err {
   }
 }
 
-
 export class ErrProviderNotInitialized extends Err {
   public constructor() {
     super('Wallet cross window provider is not initialised, call init() first');
   }
 }
 
-
-export class ErrTransactionCAncelled extends Err {
+export class ErrTransactionCancelled extends Err {
   public constructor() {
     super('Transaction canceled.');
   }
