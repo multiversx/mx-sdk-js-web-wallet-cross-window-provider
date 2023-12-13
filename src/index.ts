@@ -1,1 +1,1 @@
-export * from './CrossWindowProvider';
+export * from './crossWindowProvider';
