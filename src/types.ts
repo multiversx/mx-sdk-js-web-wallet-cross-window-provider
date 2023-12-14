@@ -26,20 +26,36 @@ export enum SignMessageStatusEnum { // TODO: consume in sdk-dapp
 }
 
 type ReplyWithPostMessageObjectType = {
-  [CrossWindowProviderResponseEnums.handshakeResponse]: boolean;
+  [CrossWindowProviderResponseEnums.handshakeResponse]: {
+    data?: boolean;
+    error?: string;
+  };
   [CrossWindowProviderResponseEnums.loginResponse]: {
-    address: string;
-    name?: string;
-    signature?: string;
+    data?: {
+      address: string;
+      accessToken?: string;
+      name?: string;
+      signature?: string;
+    };
+    error?: string;
   };
   [CrossWindowProviderResponseEnums.disconnectResponse]: null;
   [CrossWindowProviderResponseEnums.cancelResponse]: {
-    address: string;
+    data?: {
+      address: string;
+    };
+    error?: string;
   };
-  [CrossWindowProviderResponseEnums.signTransactionsResponse]: IPlainTransactionObject[];
+  [CrossWindowProviderResponseEnums.signTransactionsResponse]: {
+    data?: IPlainTransactionObject[];
+    error?: string;
+  };
   [CrossWindowProviderResponseEnums.signMessageResponse]: {
-    signature?: string;
-    status: SignMessageStatusEnum;
+    data?: {
+      signature?: string;
+      status: SignMessageStatusEnum;
+    };
+    error?: string;
   };
   [CrossWindowProviderResponseEnums.noneResponse]: null;
 };
