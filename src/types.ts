@@ -25,46 +25,41 @@ export enum SignMessageStatusEnum { // TODO: consume in sdk-dapp
   cancelled = 'cancelled'
 }
 
-type ReplyWithPostMessageObjectType = {
-  [CrossWindowProviderResponseEnums.handshakeResponse]: {
-    data?: boolean;
-    error?: string;
-  };
+export type ReplyWithPostMessageObjectType = {
+  [CrossWindowProviderResponseEnums.handshakeResponse]: boolean;
   [CrossWindowProviderResponseEnums.loginResponse]: {
-    data?: {
-      address: string;
-      accessToken?: string;
-      name?: string;
-      signature?: string;
-    };
-    error?: string;
+    address: string;
+    accessToken?: string;
+    /**
+     * used in De-Fi wallet extension as wallet name
+     * */
+    name?: string;
+    signature?: string;
   };
   [CrossWindowProviderResponseEnums.disconnectResponse]: null;
   [CrossWindowProviderResponseEnums.cancelResponse]: {
-    data?: {
-      address: string;
-    };
-    error?: string;
+    address: string;
   };
-  [CrossWindowProviderResponseEnums.signTransactionsResponse]: {
-    data?: IPlainTransactionObject[];
-    error?: string;
-  };
+  [CrossWindowProviderResponseEnums.signTransactionsResponse]: IPlainTransactionObject[];
   [CrossWindowProviderResponseEnums.signMessageResponse]: {
-    data?: {
-      signature?: string;
-      status: SignMessageStatusEnum;
-    };
-    error?: string;
+    signature?: string;
+    status: SignMessageStatusEnum;
   };
   [CrossWindowProviderResponseEnums.noneResponse]: null;
+};
+
+type ReplyWithPostMessagePayloadType<
+  T extends ReplyWithPostMessageObjectType[keyof ReplyWithPostMessageObjectType]
+> = {
+  data?: T;
+  error?: string;
 };
 
 export type ReplyWithPostMessageType<
   T extends CrossWindowProviderResponseEnums
 > = {
   type: T;
-  payload: ReplyWithPostMessageObjectType[T];
+  payload: ReplyWithPostMessagePayloadType<ReplyWithPostMessageObjectType[T]>;
 };
 
 export type ResponseTypeMap = {
