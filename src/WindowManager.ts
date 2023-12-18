@@ -46,13 +46,18 @@ export class WindowManager {
     this.walletWindow?.close();
     this.walletWindow = window.open(this.walletUrl, this.walletUrl);
 
-    const { payload } = await this.listenOnce(
+    const { payload: isWalletReady } = await this.listenOnce(
       CrossWindowProviderResponseEnums.handshakeResponse
     );
 
-    if (!payload) {
+    if (!isWalletReady) {
       throw new ErrCannotEstablishHandshake();
     }
+
+    this.postMessage({
+      type: CrossWindowProviderRequestEnums.finalizeHandshakeRequest,
+      payload: window.location.origin
+    });
 
     this.addHandshakeChangeListener();
     return true;
