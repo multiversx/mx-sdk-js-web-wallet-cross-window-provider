@@ -1,5 +1,4 @@
-import { Transaction } from "@multiversx/sdk-core/out";
-import qs from "qs";
+import qs from 'qs';
 
 export const buildWalletQueryString = (options: { params?: any }): string => {
   const callbackUrl = window.location.href;
@@ -10,7 +9,3 @@ export const buildWalletQueryString = (options: { params?: any }): string => {
 
   return fullQueryString;
 };
-
-
-
-
