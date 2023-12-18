@@ -2,6 +2,7 @@ import { SignableMessage, Transaction } from '@multiversx/sdk-core';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
+  ErrCouldNotLogin,
   ErrCouldNotSignMessage,
   ErrCouldNotSignTransaction,
   ErrInstantiationFailed,
@@ -96,14 +97,18 @@ export class CrossWindowProvider {
     });
 
     const {
-      payload: { address, signature }
+      payload: { data, error }
     } = await this.windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.loginRequest,
       payload: { queryString: payloadQueryString } as any // TODO: needs to change to plain qyerystirng
     });
 
-    this.account.address = address;
-    this.account.signature = signature;
+    if (error || !data) {
+      throw new ErrCouldNotLogin();
+    }
+
+    this.account.address = data.address;
+    this.account.signature = data.signature;
 
     return { address: this.account.address, signature: this.account.signature };
   }
@@ -152,11 +157,19 @@ export class CrossWindowProvider {
 
     const payloadQueryString = buildTransactionsQueryString(transactions);
 
-    const { type, payload: signedPlainTransactions } =
-      await this.windowManager.postMessage({
-        type: CrossWindowProviderRequestEnums.signTransactionsRequest,
-        payload: payloadQueryString
-      });
+    const {
+      type,
+      payload: { data, error }
+    } = await this.windowManager.postMessage({
+      type: CrossWindowProviderRequestEnums.signTransactionsRequest,
+      payload: payloadQueryString
+    });
+
+    if (error || !data) {
+      throw new ErrCouldNotSignTransaction();
+    }
+
+    const signedPlainTransactions = data;
 
     if (type === CrossWindowProviderResponseEnums.cancelResponse) {
       throw new ErrTransactionCancelled();
@@ -186,11 +199,17 @@ export class CrossWindowProvider {
     });
 
     const {
-      payload: { status, signature }
+      payload: { data, error }
     } = await this.windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.signMessageRequest,
       payload: payloadQueryString
     });
+
+    if (error || !data) {
+      throw new ErrCouldNotSignMessage();
+    }
+
+    const { status, signature } = data;
 
     if (status !== SignMessageStatusEnum.signed) {
       throw new ErrCouldNotSignMessage();
@@ -202,7 +221,7 @@ export class CrossWindowProvider {
   }
 
   cancelAction() {
-    this.windowManager?.postMessage({
+    return this.windowManager?.postMessage({
       type: CrossWindowProviderRequestEnums.cancelAction,
       payload: ''
     });
