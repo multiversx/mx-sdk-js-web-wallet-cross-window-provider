@@ -36,7 +36,7 @@ export type ReplyWithPostMessageObjectType = {
     name?: string;
     signature?: string;
   };
-  [CrossWindowProviderResponseEnums.disconnectResponse]: null;
+  [CrossWindowProviderResponseEnums.disconnectResponse]: boolean | null;
   [CrossWindowProviderResponseEnums.cancelResponse]: {
     address: string;
   };
