@@ -114,6 +114,7 @@ export class CrossWindowProvider {
     }
     this.ensureConnected();
     const connectionClosed = await this.windowManager.closeConnection();
+    this.initialized = false;
     this.disconnect();
 
     return connectionClosed;
