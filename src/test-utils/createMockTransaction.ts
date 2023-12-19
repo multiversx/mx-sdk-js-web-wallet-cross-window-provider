@@ -29,6 +29,7 @@ export const createMockTransaction = ({
       ? Buffer.from(senderUsername).toString('base64')
       : undefined,
     gasLimit: 100000,
-    chainID: '1'
+    chainID: '1',
+    value: '0'
   });
 };

@@ -11,9 +11,7 @@ describe('CrossWindowProvider Login', () => {
     WindowManager.getInstance().postMessage = jest
       .fn()
       .mockImplementation(() => ({
-        payload: {
-          data: { address: 'testAddress', signature: 'testSignature' }
-        }
+        payload: {}
       }));
 
     crossWindowProvider = CrossWindowProvider.getInstance();
@@ -29,7 +27,7 @@ describe('CrossWindowProvider Login', () => {
     windowOpenSpy.mockImplementation(() => mockWalletWindow);
   });
 
-  test.skip('should cancel an action correctly', async () => {
+  it('should cancel an action correctly', async () => {
     await crossWindowProvider.init();
     const result = await crossWindowProvider.cancelAction();
     expect(result).toEqual({ payload: {} });

@@ -13,7 +13,10 @@ describe('CrossWindowProvider Login', () => {
       .fn()
       .mockImplementation(() => ({
         payload: {
-          data: { address: 'testAddress', signature: 'testSignature' }
+          data: {
+            status: 'signed',
+            signature: Buffer.from('testSignature').toString('hex')
+          }
         }
       }));
 
@@ -30,17 +33,12 @@ describe('CrossWindowProvider Login', () => {
     windowOpenSpy.mockImplementation(() => mockWalletWindow);
   });
 
-  test.skip('should sign a message correctly', async () => {
+  it('should sign a message correctly', async () => {
     const mockMessage = new SignableMessage({ message: Buffer.from('test') });
     crossWindowProvider.setAddress('testAddress');
     await crossWindowProvider.init();
-
-    // Mocking postMessage to simulate message signing
-    WindowManager.getInstance().postMessage = jest.fn().mockResolvedValue({
-      payload: { data: { status: 'signed', signature: 'testSignature' } }
-    });
-
     const result = await crossWindowProvider.signMessage(mockMessage);
-    expect(result.signature).toBe('testSignature');
+
+    expect(result.signature.toString()).toBe('testSignature');
   });
 });
