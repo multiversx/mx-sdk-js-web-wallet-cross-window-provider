@@ -1,5 +1,5 @@
-import { buildTransactionsQueryString } from '../buildTransactionsQueryString';
 import { createMockTransaction, mockWindowLocation } from '../../test-utils';
+import { buildTransactionsQueryString } from '../buildTransactionsQueryString';
 
 beforeAll(() => {
   mockWindowLocation({ href: 'https://example.com' });
