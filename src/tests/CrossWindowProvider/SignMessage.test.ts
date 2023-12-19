@@ -1,15 +1,19 @@
 import { SignableMessage } from '@multiversx/sdk-core/out';
 import { CrossWindowProvider } from '../../index';
-import { mockWindoManager } from '../../test-utils';
+import {
+  getWalletWindowMock,
+  mockWindoManager,
+  WalletWindowMockType
+} from '../../test-utils';
 import { WindowManager } from '../../WindowManager';
 
 describe('CrossWindowProvider Login', () => {
   let crossWindowProvider: CrossWindowProvider;
-  let mockWalletWindow: { close: jest.Func; postMessage: jest.Func };
+  let walletWindowMock: WalletWindowMockType;
   let windowOpenSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    mockWalletWindow = { close: jest.fn(), postMessage: jest.fn() };
+    walletWindowMock = getWalletWindowMock();
     WindowManager.getInstance().postMessage = jest
       .fn()
       .mockImplementation(() => ({
@@ -22,11 +26,9 @@ describe('CrossWindowProvider Login', () => {
       }));
 
     crossWindowProvider = CrossWindowProvider.getInstance();
-
     mockWindoManager();
-
     windowOpenSpy = jest.spyOn(window, 'open');
-    windowOpenSpy.mockImplementation(() => mockWalletWindow);
+    windowOpenSpy.mockImplementation(() => walletWindowMock);
   });
 
   it('should sign a message correctly', async () => {

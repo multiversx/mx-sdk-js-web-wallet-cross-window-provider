@@ -1,3 +1,4 @@
+import { getWalletWindowMock } from '../test-utils';
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums
@@ -9,10 +10,10 @@ describe('WindowManager', () => {
   let windowCloseSpy: jest.SpyInstance;
   let windowAddListenerSpy: jest.SpyInstance;
   let windowRemoveListenerSpy: jest.SpyInstance;
-  let mockWalletWindow: { close: jest.Func; postMessage: jest.Func };
+  let walletWindowMock: { close: jest.Func; postMessage: jest.Func };
 
   beforeEach(() => {
-    mockWalletWindow = { close: jest.fn(), postMessage: jest.fn() };
+    walletWindowMock = getWalletWindowMock();
 
     windowAddListenerSpy = jest.spyOn(window, 'addEventListener');
     windowAddListenerSpy.mockImplementation(jest.fn());
@@ -24,7 +25,7 @@ describe('WindowManager', () => {
     windowCloseSpy.mockImplementation(jest.fn());
 
     windowOpenSpy = jest.spyOn(window, 'open');
-    windowOpenSpy.mockImplementation(() => mockWalletWindow);
+    windowOpenSpy.mockImplementation(() => walletWindowMock);
   });
 
   afterEach(() => {

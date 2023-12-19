@@ -6,7 +6,6 @@ describe('CrossWindowProvider', () => {
 
   beforeEach(() => {
     crossWindowProvider = CrossWindowProvider.getInstance();
-
     mockWindoManager();
   });
 

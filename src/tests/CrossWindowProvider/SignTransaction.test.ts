@@ -1,17 +1,22 @@
 import { Transaction } from '@multiversx/sdk-core/out';
 import { CrossWindowProvider } from '../../index';
-import { createMockTransaction, mockWindoManager } from '../../test-utils';
+import {
+  createMockTransaction,
+  getWalletWindowMock,
+  mockWindoManager,
+  WalletWindowMockType
+} from '../../test-utils';
 import { WindowManager } from '../../WindowManager';
 
 describe('CrossWindowProvider Login', () => {
   let crossWindowProvider: CrossWindowProvider;
-  let mockWalletWindow: { close: jest.Func; postMessage: jest.Func };
+  let walletWindowMock: WalletWindowMockType;
   let windowOpenSpy: jest.SpyInstance;
 
   let mockTransaction: Transaction;
 
   beforeEach(() => {
-    mockWalletWindow = { close: jest.fn(), postMessage: jest.fn() };
+    walletWindowMock = getWalletWindowMock();
     mockTransaction = createMockTransaction({
       data: 'data',
       receiverUsername: 'receiver',
@@ -27,7 +32,7 @@ describe('CrossWindowProvider Login', () => {
     crossWindowProvider = CrossWindowProvider.getInstance();
     mockWindoManager();
     windowOpenSpy = jest.spyOn(window, 'open');
-    windowOpenSpy.mockImplementation(() => mockWalletWindow);
+    windowOpenSpy.mockImplementation(() => walletWindowMock);
   });
 
   it('should sign a transaction correctly', async () => {
