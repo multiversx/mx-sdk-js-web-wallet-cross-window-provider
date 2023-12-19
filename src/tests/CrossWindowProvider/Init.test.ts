@@ -1,5 +1,5 @@
 import { CrossWindowProvider } from '../../index';
-import { WindowManager } from '../../WindowManager';
+import { mockWindoManager } from '../../test-utils';
 
 describe('CrossWindowProvider', () => {
   let crossWindowProvider: CrossWindowProvider;
@@ -7,12 +7,7 @@ describe('CrossWindowProvider', () => {
   beforeEach(() => {
     crossWindowProvider = CrossWindowProvider.getInstance();
 
-    // Mocking the WindowManager methods
-    WindowManager.getInstance = jest.fn().mockReturnValue({
-      init: jest.fn().mockResolvedValue(true),
-      postMessage: jest.fn().mockResolvedValue({ payload: {} }),
-      closeConnection: jest.fn().mockResolvedValue(true)
-    });
+    mockWindoManager();
   });
 
   it('should be a singleton instance', () => {

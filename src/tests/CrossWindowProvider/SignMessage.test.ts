@@ -1,5 +1,6 @@
 import { SignableMessage } from '@multiversx/sdk-core/out';
 import { CrossWindowProvider } from '../../index';
+import { mockWindoManager } from '../../test-utils';
 import { WindowManager } from '../../WindowManager';
 
 describe('CrossWindowProvider Login', () => {
@@ -22,12 +23,7 @@ describe('CrossWindowProvider Login', () => {
 
     crossWindowProvider = CrossWindowProvider.getInstance();
 
-    // Mocking the WindowManager methods
-    WindowManager.getInstance = jest.fn().mockReturnValue({
-      init: jest.fn().mockResolvedValue(true),
-      postMessage: jest.fn().mockResolvedValue({ payload: {} }),
-      closeConnection: jest.fn().mockResolvedValue(true)
-    });
+    mockWindoManager();
 
     windowOpenSpy = jest.spyOn(window, 'open');
     windowOpenSpy.mockImplementation(() => mockWalletWindow);
