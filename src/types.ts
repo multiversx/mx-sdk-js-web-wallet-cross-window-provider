@@ -26,10 +26,14 @@ export enum SignMessageStatusEnum { // TODO: consume in sdk-dapp
   cancelled = 'cancelled'
 }
 
-type ReplyWithPostMessageObjectType = {
+export type ReplyWithPostMessageObjectType = {
   [CrossWindowProviderResponseEnums.handshakeResponse]: boolean;
   [CrossWindowProviderResponseEnums.loginResponse]: {
     address: string;
+    accessToken?: string;
+    /**
+     * used in De-Fi wallet extension as wallet name
+     * */
     name?: string;
     signature?: string;
   };
@@ -45,11 +49,18 @@ type ReplyWithPostMessageObjectType = {
   [CrossWindowProviderResponseEnums.noneResponse]: null;
 };
 
+type ReplyWithPostMessagePayloadType<
+  T extends ReplyWithPostMessageObjectType[keyof ReplyWithPostMessageObjectType]
+> = {
+  data?: T;
+  error?: string;
+};
+
 export type ReplyWithPostMessageType<
   T extends CrossWindowProviderResponseEnums
 > = {
   type: T;
-  payload: ReplyWithPostMessageObjectType[T];
+  payload: ReplyWithPostMessagePayloadType<ReplyWithPostMessageObjectType[T]>;
 };
 
 export type ResponseTypeMap = {

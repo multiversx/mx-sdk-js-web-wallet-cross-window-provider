@@ -48,6 +48,12 @@ export class ErrProviderNotInitialized extends Err {
   }
 }
 
+export class ErrCouldNotLogin extends Err {
+  public constructor() {
+    super('Could not login');
+  }
+}
+
 export class ErrTransactionCancelled extends Err {
   public constructor() {
     super('Transaction canceled.');
