@@ -1,4 +1,7 @@
-import { CrossWindowProviderResponseEnums } from '../types';
+import {
+  CrossWindowProviderRequestEnums,
+  CrossWindowProviderResponseEnums
+} from '../types';
 import { WindowManager } from '../WindowManager';
 
 describe('WindowManager', () => {
@@ -68,5 +71,17 @@ describe('WindowManager', () => {
     windowManager.listenOnce(CrossWindowProviderResponseEnums.loginResponse);
 
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should call postMessage successfully', async () => {
+    const windowManager = WindowManager.getInstance();
+    windowManager.postMessage({
+      type: CrossWindowProviderRequestEnums.loginRequest,
+      payload: 'login'
+    });
+
+    expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
+    expect(windowOpenSpy).toHaveBeenCalledTimes(1);
+    expect(windowCloseSpy).toHaveBeenCalledTimes(0);
   });
 });

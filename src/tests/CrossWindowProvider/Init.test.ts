@@ -32,44 +32,4 @@ describe('CrossWindowProvider', () => {
     const address = await crossWindowProvider.getAddress();
     expect(address).toBe('testAddress');
   });
-
-  // it('should sign a transaction correctly', async () => {
-  //   const mockTransaction = createMockTransaction({
-  //     data: 'data',
-  //     receiverUsername: 'receiver',
-  //     senderUsername: 'sender'
-  //   });
-  //   crossWindowProvider.setAddress('testAddress');
-  //   await crossWindowProvider.init();
-  //
-  //   // Mocking postMessage to simulate transaction signing
-  //   WindowManager.getInstance().postMessage = jest.fn().mockResolvedValue({
-  //     payload: { data: [mockTransaction] }
-  //   });
-  //
-  //   const result = await crossWindowProvider.signTransaction(mockTransaction);
-  //   expect(result).toBe(mockTransaction);
-  // });
-  //
-  // it('should sign a message correctly', async () => {
-  //   const mockMessage = new SignableMessage({ message: Buffer.from('test') });
-  //   crossWindowProvider.setAddress('testAddress');
-  //   await crossWindowProvider.init();
-  //
-  //   // Mocking postMessage to simulate message signing
-  //   WindowManager.getInstance().postMessage = jest.fn().mockResolvedValue({
-  //     payload: { data: { status: 'signed', signature: 'testSignature' } }
-  //   });
-  //
-  //   const result = await crossWindowProvider.signMessage(mockMessage);
-  //   expect(result.signature).toBe('testSignature');
-  // });
-  //
-  // it('should cancel an action correctly', async () => {
-  //   await crossWindowProvider.init();
-  //   const result = await crossWindowProvider.cancelAction();
-  //   expect(result).toEqual({ payload: {} });
-  // });
-
-  // Additional tests for error handling and other methods
 });
