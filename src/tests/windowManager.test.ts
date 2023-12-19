@@ -1,9 +1,11 @@
+import { CrossWindowProviderResponseEnums } from '../types';
 import { WindowManager } from '../WindowManager';
 
 describe('WindowManager', () => {
   let windowOpenSpy: jest.SpyInstance;
   let windowCloseSpy: jest.SpyInstance;
   let windowAddListenerSpy: jest.SpyInstance;
+  let windowRemoveListenerSpy: jest.SpyInstance;
   let mockWalletWindow: { close: jest.Func; postMessage: jest.Func };
 
   beforeEach(() => {
@@ -11,6 +13,9 @@ describe('WindowManager', () => {
 
     windowAddListenerSpy = jest.spyOn(window, 'addEventListener');
     windowAddListenerSpy.mockImplementation(jest.fn());
+
+    windowRemoveListenerSpy = jest.spyOn(window, 'removeEventListener');
+    windowRemoveListenerSpy.mockImplementation(jest.fn());
 
     windowCloseSpy = jest.spyOn(window, 'close');
     windowCloseSpy.mockImplementation(jest.fn());
@@ -42,7 +47,7 @@ describe('WindowManager', () => {
     expect(windowManager.isInitialized()).toBeTruthy();
   });
 
-  it('should call handshake successfully correctly', async () => {
+  it('should call handshake successfully', async () => {
     const windowManager = WindowManager.getInstance();
     windowManager.handshake();
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
@@ -56,5 +61,12 @@ describe('WindowManager', () => {
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
     expect(windowOpenSpy).toHaveBeenCalledTimes(1);
     expect(windowCloseSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('should call add event listener successfully', async () => {
+    const windowManager = WindowManager.getInstance();
+    windowManager.listenOnce(CrossWindowProviderResponseEnums.loginResponse);
+
+    expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
   });
 });
