@@ -4,8 +4,8 @@
         "target": "es2015",
         "outDir": "out",
         "lib": [
-            "ES2015",
-            "DOM"
+            "es2015",
+            "dom"
         ],
         "sourceMap": true,
         "allowJs": true,
@@ -24,7 +24,6 @@
     ],
     "exclude": [
         "node_modules",
-        "out",
-        "**/*.spec.ts"
+        "out"
     ]
 }
