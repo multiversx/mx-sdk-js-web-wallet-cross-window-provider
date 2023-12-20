@@ -46,13 +46,21 @@ export class WindowManager {
     this.walletWindow?.close();
     this.walletWindow = window.open(this.walletUrl, this.walletUrl);
 
-    const { payload } = await this.listenOnce(
+    const { payload: isWalletReady } = await this.listenOnce(
       CrossWindowProviderResponseEnums.handshakeResponse
     );
 
-    if (!payload) {
+    if (!isWalletReady) {
       throw new ErrCannotEstablishHandshake();
     }
+
+    this.walletWindow?.postMessage(
+      {
+        type: CrossWindowProviderRequestEnums.finalizeHandshakeRequest,
+        payload: DAPP_WINDOW_NAME
+      },
+      this.walletUrl
+    );
 
     this.addHandshakeChangeListener();
     return true;
@@ -103,7 +111,6 @@ export class WindowManager {
           }>
         ) {
           const { type, payload } = event.data;
-
           const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
           const isCurrentAction =
@@ -128,8 +135,10 @@ export class WindowManager {
       throw new ErrProviderNotInitialized();
     }
 
-    await this.handshake();
-    this.walletWindow?.close();
+    await this.postMessage({
+      type: CrossWindowProviderRequestEnums.logoutRequest,
+      payload: ''
+    });
 
     return true;
   }

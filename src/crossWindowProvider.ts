@@ -90,7 +90,7 @@ export class CrossWindowProvider {
 
     this.accessToken = options.token;
 
-    const payloadQueryString = buildWalletQueryString({
+    const payload = buildWalletQueryString({
       params: {
         token: this.accessToken
       }
@@ -100,7 +100,7 @@ export class CrossWindowProvider {
       payload: { data, error }
     } = await this.windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.loginRequest,
-      payload: { queryString: payloadQueryString } as any // TODO: needs to change to plain qyerystirng
+      payload
     });
 
     if (error || !data) {
@@ -118,9 +118,9 @@ export class CrossWindowProvider {
       throw new ErrProviderNotInitialized();
     }
     this.ensureConnected();
-    this.disconnect();
     const connectionClosed = await this.windowManager.closeConnection();
-    // TODO: postMessage to wallet to logout
+    this.initialized = false;
+    this.disconnect();
 
     return connectionClosed;
   }
