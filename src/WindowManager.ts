@@ -68,25 +68,29 @@ export class WindowManager {
 
   private async addHandshakeChangeListener() {
     const walletUrl = this.walletUrl;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-    window.addEventListener('message', function eventHandler(event) {
+
+    // TODO: check any
+    const eventHandler = (event: MessageEvent<any>) => {
       try {
         const { type, payload } = event.data;
         const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
-        if (
+        const shouldCloseWindow =
           isWalletEvent &&
-          type === CrossWindowProviderResponseEnums.handshakeResponse
-        ) {
-          if (payload === false) {
-            self.walletWindow?.close();
-            self.walletWindow = null;
-            window.removeEventListener('message', eventHandler);
-          }
+          type === CrossWindowProviderResponseEnums.handshakeResponse &&
+          payload === false;
+
+        if (!shouldCloseWindow) {
+          return;
         }
+
+        this.walletWindow?.close();
+        this.walletWindow = null;
+        window.removeEventListener('message', eventHandler);
       } catch {}
-    });
+    };
+
+    window.addEventListener('message', eventHandler);
   }
 
   async listenOnce<T extends CrossWindowProviderResponseEnums>(
@@ -115,16 +119,14 @@ export class WindowManager {
 
           const isCurrentAction =
             action === type ||
-            type === CrossWindowProviderResponseEnums.cancelResponse; // TODO: check if this is needed
+            type === CrossWindowProviderResponseEnums.cancelResponse;
 
-          if (!isCurrentAction) {
+          if (!isCurrentAction || !isWalletEvent) {
             return;
           }
 
-          if (isWalletEvent) {
-            window.removeEventListener('message', eventHandler);
-            resolve({ type, payload });
-          }
+          window.removeEventListener('message', eventHandler);
+          resolve({ type, payload });
         }
       );
     });
