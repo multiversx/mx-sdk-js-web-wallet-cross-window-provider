@@ -1,4 +1,4 @@
-import { IPlainTransactionObject } from '@multiversx/sdk-core';
+import type { IPlainTransactionObject, SignableMessage } from '@multiversx/sdk-core';
 
 export enum CrossWindowProviderRequestEnums {
   signTransactionsRequest = 'SIGN_TRANSACTIONS_REQUEST',
@@ -71,3 +71,19 @@ export type ResponseTypeMap = {
   [CrossWindowProviderRequestEnums.cancelAction]: CrossWindowProviderResponseEnums.cancelResponse;
   [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: CrossWindowProviderResponseEnums.noneResponse;
 };
+
+export type RequestPayloadType = {
+  [CrossWindowProviderRequestEnums.loginRequest]: boolean;
+  [CrossWindowProviderRequestEnums.logoutRequest]: boolean;
+  [CrossWindowProviderRequestEnums.signTransactionsRequest]: IPlainTransactionObject[];
+  [CrossWindowProviderRequestEnums.signMessageRequest]: SignableMessage;
+  [CrossWindowProviderRequestEnums.cancelAction]: boolean;
+  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: string;
+};
+
+export type RequestMessageType = {
+  [K in keyof RequestPayloadType]: {
+    type: RequestPayloadType;
+    payload: RequestPayloadType[K];
+  };
+}[keyof RequestPayloadType];
