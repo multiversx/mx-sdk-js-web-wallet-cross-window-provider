@@ -86,7 +86,7 @@ export type RequestPayloadType = {
 
 export type RequestMessageType = {
   [K in keyof RequestPayloadType]: {
-    type: RequestPayloadType;
+    type: CrossWindowProviderRequestEnums;
     payload: RequestPayloadType[K];
   };
 }[keyof RequestPayloadType];
