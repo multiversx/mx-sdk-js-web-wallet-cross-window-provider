@@ -8,6 +8,7 @@ import {
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums,
+  ReplyWithPostMessageEventType,
   ReplyWithPostMessageType,
   ResponseTypeMap
 } from './types';
@@ -68,25 +69,31 @@ export class WindowManager {
 
   private async addHandshakeChangeListener() {
     const walletUrl = this.walletUrl;
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
-    window.addEventListener('message', function eventHandler(event) {
+
+    const eventHandler = (
+      event: MessageEvent<ReplyWithPostMessageEventType>
+    ) => {
       try {
         const { type, payload } = event.data;
         const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
-        if (
-          isWalletEvent &&
-          type === CrossWindowProviderResponseEnums.handshakeResponse
-        ) {
-          if (payload === false) {
-            self.walletWindow?.close();
-            self.walletWindow = null;
-            window.removeEventListener('message', eventHandler);
-          }
+        if (!isWalletEvent) {
+          return;
+        }
+
+        switch (type) {
+          case CrossWindowProviderResponseEnums.handshakeResponse:
+            if (payload === false) {
+              this.walletWindow?.close();
+              this.walletWindow = null;
+              window.removeEventListener('message', eventHandler);
+            }
+            break;
         }
       } catch {}
-    });
+    };
+
+    window.addEventListener('message', eventHandler);
   }
 
   async listenOnce<T extends CrossWindowProviderResponseEnums>(
@@ -115,16 +122,14 @@ export class WindowManager {
 
           const isCurrentAction =
             action === type ||
-            type === CrossWindowProviderResponseEnums.cancelResponse; // TODO: check if this is needed
+            type === CrossWindowProviderResponseEnums.cancelResponse;
 
-          if (!isCurrentAction) {
+          if (!isCurrentAction || !isWalletEvent) {
             return;
           }
 
-          if (isWalletEvent) {
-            window.removeEventListener('message', eventHandler);
-            resolve({ type, payload });
-          }
+          window.removeEventListener('message', eventHandler);
+          resolve({ type, payload });
         }
       );
     });

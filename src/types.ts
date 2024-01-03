@@ -1,4 +1,7 @@
-import type { IPlainTransactionObject, SignableMessage } from '@multiversx/sdk-core';
+import type {
+  IPlainTransactionObject,
+  SignableMessage
+} from '@multiversx/sdk-core';
 
 export enum CrossWindowProviderRequestEnums {
   signTransactionsRequest = 'SIGN_TRANSACTIONS_REQUEST',
@@ -87,3 +90,10 @@ export type RequestMessageType = {
     payload: RequestPayloadType[K];
   };
 }[keyof RequestPayloadType];
+
+export type ReplyWithPostMessageEventType = {
+  [K in keyof ReplyWithPostMessageObjectType]: {
+    type: CrossWindowProviderResponseEnums;
+    payload: ReplyWithPostMessageObjectType[K];
+  };
+}[keyof ReplyWithPostMessageObjectType];
