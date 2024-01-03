@@ -8,6 +8,7 @@ import {
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums,
+  ReplyWithPostMessageEventType,
   ReplyWithPostMessageType,
   ResponseTypeMap
 } from './types';
@@ -69,24 +70,26 @@ export class WindowManager {
   private async addHandshakeChangeListener() {
     const walletUrl = this.walletUrl;
 
-    // TODO: check any
-    const eventHandler = (event: MessageEvent<any>) => {
+    const eventHandler = (
+      event: MessageEvent<ReplyWithPostMessageEventType>
+    ) => {
       try {
         const { type, payload } = event.data;
         const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
-        const shouldCloseWindow =
-          isWalletEvent &&
-          type === CrossWindowProviderResponseEnums.handshakeResponse &&
-          payload === false;
-
-        if (!shouldCloseWindow) {
+        if (!isWalletEvent) {
           return;
         }
 
-        this.walletWindow?.close();
-        this.walletWindow = null;
-        window.removeEventListener('message', eventHandler);
+        switch (type) {
+          case CrossWindowProviderResponseEnums.handshakeResponse:
+            if (payload === false) {
+              this.walletWindow?.close();
+              this.walletWindow = null;
+              window.removeEventListener('message', eventHandler);
+            }
+            break;
+        }
       } catch {}
     };
 
