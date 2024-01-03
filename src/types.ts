@@ -73,12 +73,12 @@ export type ResponseTypeMap = {
 };
 
 export type RequestPayloadType = {
-  [CrossWindowProviderRequestEnums.loginRequest]: boolean;
-  [CrossWindowProviderRequestEnums.logoutRequest]: boolean;
+  [CrossWindowProviderRequestEnums.loginRequest]: undefined;
+  [CrossWindowProviderRequestEnums.logoutRequest]: undefined;
   [CrossWindowProviderRequestEnums.signTransactionsRequest]: IPlainTransactionObject[];
   [CrossWindowProviderRequestEnums.signMessageRequest]: SignableMessage;
-  [CrossWindowProviderRequestEnums.cancelAction]: boolean;
-  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: string;
+  [CrossWindowProviderRequestEnums.cancelAction]: undefined;
+  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: undefined;
 };
 
 export type RequestMessageType = {
