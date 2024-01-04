@@ -19,4 +19,8 @@ export const responseTypeMap: ResponseTypeMap = {
     CrossWindowProviderResponseEnums.noneResponse
 };
 
-export const safeWindow = typeof window !== 'undefined' ? window : ({} as any);
+export const safeWindow:
+  | Window
+  | {
+      [key in keyof Window]?: any | undefined;
+    } = typeof window !== 'undefined' ? window : {};
