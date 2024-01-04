@@ -16,19 +16,25 @@ import {
 export class WindowManager {
   private walletUrl = '';
   private initialized = false;
+  private static _instance: WindowManager = new WindowManager();
   walletWindow: Window | null = null;
 
   constructor() {
-    safeWindow.addEventListener?.('beforeunload', () => {
+    window.addEventListener('beforeunload', () => {
       this.walletWindow?.close();
     });
 
-    safeWindow.name = safeWindow.location?.origin;
+    window.name = safeWindow.location?.origin;
+    WindowManager._instance = this; // TODO: remove singleton
+  }
+
+  public static getInstance(): WindowManager {
+    return WindowManager._instance;
   }
 
   public setWalletUrl(url: string): WindowManager {
     this.walletUrl = url;
-    return this;
+    return WindowManager._instance;
   }
 
   async init(): Promise<boolean> {
