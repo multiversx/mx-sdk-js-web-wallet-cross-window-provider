@@ -1,4 +1,4 @@
-import { CrossWindowProvider } from '../../index';
+import { CrossWindowProvider } from '../../CrossWindowProvider';
 import { mockWindoManager } from '../../test-utils';
 
 describe('CrossWindowProvider', () => {

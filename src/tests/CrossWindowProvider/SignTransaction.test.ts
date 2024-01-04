@@ -1,5 +1,5 @@
 import { Transaction } from '@multiversx/sdk-core/out';
-import { CrossWindowProvider } from '../../index';
+import { CrossWindowProvider } from '../../CrossWindowProvider';
 import {
   createMockTransaction,
   getWalletWindowMock,

@@ -1,4 +1,4 @@
-import { CrossWindowProvider } from '../../index';
+import { CrossWindowProvider } from '../../CrossWindowProvider';
 import {
   getWalletWindowMock,
   mockWindoManager,
