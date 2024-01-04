@@ -1,4 +1,4 @@
-import { DAPP_WINDOW_NAME, responseTypeMap } from './constants';
+import { responseTypeMap, safeWindow } from './constants';
 import {
   ErrCannotEstablishHandshake,
   ErrProviderNotInitialized,
@@ -24,7 +24,7 @@ export class WindowManager {
       this.walletWindow?.close();
     });
 
-    window.name = window.name = DAPP_WINDOW_NAME;
+    window.name = safeWindow.location?.origin;
     WindowManager._instance = this; // TODO: remove singleton
   }
 
@@ -38,14 +38,13 @@ export class WindowManager {
   }
 
   async init(): Promise<boolean> {
-    window.name = DAPP_WINDOW_NAME;
     this.initialized = true;
     return this.initialized;
   }
 
   async handshake(): Promise<boolean> {
     this.walletWindow?.close();
-    this.walletWindow = window.open(this.walletUrl, this.walletUrl);
+    this.walletWindow = safeWindow.open?.(this.walletUrl, this.walletUrl);
 
     const { payload: isWalletReady } = await this.listenOnce(
       CrossWindowProviderResponseEnums.handshakeResponse
@@ -58,7 +57,9 @@ export class WindowManager {
     this.walletWindow?.postMessage(
       {
         type: CrossWindowProviderRequestEnums.finalizeHandshakeRequest,
-        payload: DAPP_WINDOW_NAME
+        payload: {
+          origin: safeWindow.location?.origin
+        }
       },
       this.walletUrl
     );
@@ -86,14 +87,14 @@ export class WindowManager {
             if (payload === false) {
               this.walletWindow?.close();
               this.walletWindow = null;
-              window.removeEventListener('message', eventHandler);
+              safeWindow.removeEventListener?.('message', eventHandler);
             }
             break;
         }
       } catch {}
     };
 
-    window.addEventListener('message', eventHandler);
+    safeWindow.addEventListener?.('message', eventHandler);
   }
 
   async listenOnce<T extends CrossWindowProviderResponseEnums>(
@@ -109,7 +110,7 @@ export class WindowManager {
     return await new Promise((resolve) => {
       const walletUrl = this.walletUrl;
 
-      window.addEventListener(
+      safeWindow.addEventListener?.(
         'message',
         async function eventHandler(
           event: MessageEvent<{
@@ -128,7 +129,7 @@ export class WindowManager {
             return;
           }
 
-          window.removeEventListener('message', eventHandler);
+          safeWindow.removeEventListener?.('message', eventHandler);
           resolve({ type, payload });
         }
       );
