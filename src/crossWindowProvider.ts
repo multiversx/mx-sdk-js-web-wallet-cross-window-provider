@@ -36,7 +36,7 @@ export class CrossWindowProvider {
     if (CrossWindowProvider._instance) {
       throw new ErrInstantiationFailed();
     }
-    this.windowManager = WindowManager.getInstance();
+    this.windowManager = new WindowManager();
     CrossWindowProvider._instance = this;
   }
 

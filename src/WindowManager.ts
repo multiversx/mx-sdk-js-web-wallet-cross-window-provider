@@ -1,4 +1,4 @@
-import { DAPP_WINDOW_NAME, responseTypeMap } from './constants';
+import { responseTypeMap, safeWindow } from './constants';
 import {
   ErrCannotEstablishHandshake,
   ErrProviderNotInitialized,
@@ -16,36 +16,29 @@ import {
 export class WindowManager {
   private walletUrl = '';
   private initialized = false;
-  private static _instance: WindowManager = new WindowManager();
   walletWindow: Window | null = null;
 
   constructor() {
-    window.addEventListener('beforeunload', () => {
+    safeWindow.addEventListener?.('beforeunload', () => {
       this.walletWindow?.close();
     });
 
-    window.name = window.name = DAPP_WINDOW_NAME;
-    WindowManager._instance = this; // TODO: remove singleton
-  }
-
-  public static getInstance(): WindowManager {
-    return WindowManager._instance;
+    safeWindow.name = safeWindow.location?.origin;
   }
 
   public setWalletUrl(url: string): WindowManager {
     this.walletUrl = url;
-    return WindowManager._instance;
+    return this;
   }
 
   async init(): Promise<boolean> {
-    window.name = DAPP_WINDOW_NAME;
     this.initialized = true;
     return this.initialized;
   }
 
   async handshake(): Promise<boolean> {
     this.walletWindow?.close();
-    this.walletWindow = window.open(this.walletUrl, this.walletUrl);
+    this.walletWindow = safeWindow.open?.(this.walletUrl, this.walletUrl);
 
     const { payload: isWalletReady } = await this.listenOnce(
       CrossWindowProviderResponseEnums.handshakeResponse
@@ -58,7 +51,9 @@ export class WindowManager {
     this.walletWindow?.postMessage(
       {
         type: CrossWindowProviderRequestEnums.finalizeHandshakeRequest,
-        payload: DAPP_WINDOW_NAME
+        payload: {
+          origin: safeWindow.location?.origin
+        }
       },
       this.walletUrl
     );
@@ -86,14 +81,14 @@ export class WindowManager {
             if (payload === false) {
               this.walletWindow?.close();
               this.walletWindow = null;
-              window.removeEventListener('message', eventHandler);
+              safeWindow.removeEventListener?.('message', eventHandler);
             }
             break;
         }
       } catch {}
     };
 
-    window.addEventListener('message', eventHandler);
+    safeWindow.addEventListener?.('message', eventHandler);
   }
 
   async listenOnce<T extends CrossWindowProviderResponseEnums>(
@@ -109,7 +104,7 @@ export class WindowManager {
     return await new Promise((resolve) => {
       const walletUrl = this.walletUrl;
 
-      window.addEventListener(
+      safeWindow.addEventListener?.(
         'message',
         async function eventHandler(
           event: MessageEvent<{
@@ -128,7 +123,7 @@ export class WindowManager {
             return;
           }
 
-          window.removeEventListener('message', eventHandler);
+          safeWindow.removeEventListener?.('message', eventHandler);
           resolve({ type, payload });
         }
       );

@@ -19,4 +19,4 @@ export const responseTypeMap: ResponseTypeMap = {
     CrossWindowProviderResponseEnums.noneResponse
 };
 
-export const DAPP_WINDOW_NAME = window.location.origin;
+export const safeWindow = typeof window !== 'undefined' ? window : ({} as any);

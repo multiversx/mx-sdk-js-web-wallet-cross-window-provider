@@ -81,12 +81,14 @@ export type RequestPayloadType = {
   [CrossWindowProviderRequestEnums.signTransactionsRequest]: IPlainTransactionObject[];
   [CrossWindowProviderRequestEnums.signMessageRequest]: SignableMessage;
   [CrossWindowProviderRequestEnums.cancelAction]: undefined;
-  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: undefined;
+  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: {
+    origin: string;
+  };
 };
 
 export type RequestMessageType = {
   [K in keyof RequestPayloadType]: {
-    type: CrossWindowProviderRequestEnums;
+    type: K;
     payload: RequestPayloadType[K];
   };
 }[keyof RequestPayloadType];
