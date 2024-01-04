@@ -8,17 +8,17 @@ import {
   ErrInstantiationFailed,
   ErrProviderNotInitialized,
   ErrTransactionCancelled
-} from './errors';
-import {
-  buildTransactionsQueryString,
-  buildWalletQueryString
-} from './helpers';
+} from '../errors';
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
-} from './types';
-import { WindowManager } from './WindowManager';
+} from '../types';
+import { WindowManager } from '../WindowManager';
+import {
+  buildTransactionsQueryString,
+  buildWalletQueryString
+} from './helpers';
 
 interface ICrossWindowWalletAccount {
   address: string;

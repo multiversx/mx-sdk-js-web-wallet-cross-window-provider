@@ -1,8 +1,8 @@
-import { getWalletWindowMock } from '../test-utils';
+import { getWalletWindowMock } from '../../test-utils';
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums
-} from '../types';
+} from '../../types';
 import { WindowManager } from '../WindowManager';
 
 describe('WindowManager', () => {

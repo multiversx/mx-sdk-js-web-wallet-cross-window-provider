@@ -1,12 +1,12 @@
-import { CrossWindowProvider } from '../../CrossWindowProvider';
 import {
   getWalletWindowMock,
   mockWindoManager,
   WalletWindowMockType
 } from '../../test-utils';
-import { WindowManager } from '../../WindowManager';
+import { WindowManager } from '../../WindowManager/WindowManager';
+import { CrossWindowProvider } from '../CrossWindowProvider';
 
-describe('CrossWindowProvider', () => {
+describe('CrossWindowProvider Login', () => {
   let crossWindowProvider: CrossWindowProvider;
   let walletWindowMock: WalletWindowMockType;
   let windowOpenSpy: jest.SpyInstance;
@@ -15,11 +15,11 @@ describe('CrossWindowProvider', () => {
     walletWindowMock = getWalletWindowMock();
     WindowManager.getInstance().postMessage = jest
       .fn()
-      .mockImplementation(() => true);
-
-    WindowManager.getInstance().closeConnection = jest
-      .fn()
-      .mockImplementation(() => true);
+      .mockImplementation(() => ({
+        payload: {
+          data: { address: 'testAddress', signature: 'testSignature' }
+        }
+      }));
 
     crossWindowProvider = CrossWindowProvider.getInstance();
     mockWindoManager();
@@ -27,10 +27,12 @@ describe('CrossWindowProvider', () => {
     windowOpenSpy.mockImplementation(() => walletWindowMock);
   });
 
-  it('should handle logout correctly', async () => {
+  it('should handle login correctly', async () => {
     await crossWindowProvider.init();
-    crossWindowProvider.setAddress('testAddress');
-    const result = await crossWindowProvider.logout();
-    expect(result).toBe(true);
+    const result = await crossWindowProvider.login({ token: 'testToken' });
+    expect(result).toEqual({
+      address: 'testAddress',
+      signature: 'testSignature'
+    });
   });
 });

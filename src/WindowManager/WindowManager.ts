@@ -1,9 +1,9 @@
-import { responseTypeMap, safeWindow } from './constants';
+import { responseTypeMap, safeWindow } from '../constants';
 import {
   ErrCannotEstablishHandshake,
   ErrProviderNotInitialized,
   ErrWalletWindowNotInstantiated
-} from './errors';
+} from '../errors';
 
 import {
   CrossWindowProviderRequestEnums,
@@ -11,7 +11,7 @@ import {
   ReplyWithPostMessageEventType,
   ReplyWithPostMessageType,
   ResponseTypeMap
-} from './types';
+} from '../types';
 
 export class WindowManager {
   private walletUrl = '';

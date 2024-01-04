@@ -1,5 +1,5 @@
-import { CrossWindowProvider } from '../../CrossWindowProvider';
 import { mockWindoManager } from '../../test-utils';
+import { CrossWindowProvider } from '../CrossWindowProvider';
 
 describe('CrossWindowProvider', () => {
   let crossWindowProvider: CrossWindowProvider;

@@ -1,4 +1,4 @@
-import { mockWindowLocation } from '../../test-utils';
+import { mockWindowLocation } from '../../../test-utils';
 import { buildWalletQueryString } from '../buildWalletQueryString';
 
 describe('buildWalletQueryString', () => {

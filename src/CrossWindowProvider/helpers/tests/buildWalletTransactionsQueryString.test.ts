@@ -1,4 +1,4 @@
-import { createMockTransaction, mockWindowLocation } from '../../test-utils';
+import { createMockTransaction, mockWindowLocation } from '../../../test-utils';
 import { buildTransactionsQueryString } from '../buildTransactionsQueryString';
 
 beforeAll(() => {
