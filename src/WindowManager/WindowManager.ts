@@ -24,7 +24,7 @@ export class WindowManager {
       this.walletWindow?.close();
     });
 
-    window.name = safeWindow.location?.origin;
+    safeWindow.name = safeWindow.location?.origin;
     WindowManager._instance = this; // TODO: remove singleton
   }
 
@@ -44,7 +44,8 @@ export class WindowManager {
 
   async handshake(): Promise<boolean> {
     this.walletWindow?.close();
-    this.walletWindow = safeWindow.open?.(this.walletUrl, this.walletUrl);
+    this.walletWindow =
+      safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
 
     const { payload: isWalletReady } = await this.listenOnce(
       CrossWindowProviderResponseEnums.handshakeResponse
