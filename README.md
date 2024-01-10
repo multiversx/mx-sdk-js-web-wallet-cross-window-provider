@@ -2,9 +2,9 @@
 
 Signing provider for dApps: Cross Window. 
 
-Documentation is available on [docs.multiversx.com](https://docs.multiversx.com/sdk-and-tools/erdjs/erdjs-signing-providers/), while an integration example can be found [here](https://github.com/multiversx/mx-sdk-js-examples/tree/main/signing-providers).
+Documentation is available on [docs.multiversx.com](https://docs.multiversx.com/sdk-and-tools/sdk-js/sdk-js-signing-providers), while an integration example can be found [here](https://github.com/multiversx/mx-sdk-js-examples/tree/main/signing-providers).
 
-Note that **we recommend using [dapp-core](https://github.com/multiversx/mx-sdk-dapp)** instead of integrating the signing provider on your own.
+Note that **we recommend using [sdk-dapp](https://github.com/multiversx/mx-sdk-dapp)** instead of integrating the signing provider on your own.
 
 ## Distribution
 
