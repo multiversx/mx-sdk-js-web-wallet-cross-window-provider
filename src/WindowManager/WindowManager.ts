@@ -42,7 +42,15 @@ export class WindowManager {
     return this.initialized;
   }
 
-  async handshake(): Promise<boolean> {
+  async handshake(type: CrossWindowProviderRequestEnums): Promise<boolean> {
+    const isOpened =
+      type === CrossWindowProviderRequestEnums.cancelAction &&
+      Boolean(this.walletWindow);
+
+    if (isOpened) {
+      return true;
+    }
+
     this.walletWindow?.close();
     this.walletWindow =
       safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
@@ -164,7 +172,7 @@ export class WindowManager {
     type: ResponseTypeMap[T] | CrossWindowProviderResponseEnums.cancelResponse;
     payload: ReplyWithPostMessageType<ResponseTypeMap[T]>['payload'];
   }> {
-    await this.handshake();
+    await this.handshake(type);
 
     this.walletWindow?.postMessage(
       {

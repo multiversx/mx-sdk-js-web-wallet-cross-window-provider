@@ -53,7 +53,7 @@ describe('WindowManager', () => {
 
   it('should call handshake successfully', async () => {
     const windowManager = WindowManager.getInstance();
-    windowManager.handshake();
+    windowManager.handshake(CrossWindowProviderRequestEnums.loginRequest);
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
     expect(windowOpenSpy).toHaveBeenCalledTimes(1);
     expect(windowCloseSpy).toHaveBeenCalledTimes(0);
