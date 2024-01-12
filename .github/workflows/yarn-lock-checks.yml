@@ -1,0 +1,30 @@
+name: Check yarn.json
+
+on:
+  workflow_dispatch:
+
+jobs:
+  compare-package-lock:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js LTS
+        uses: actions/setup-node@v1
+        with:
+          node-version: '18.19.0'
+
+      - name: Copy yarn-lock.json file
+        run: cp yarn-lock.json yarn-lock-copy.json
+
+      - name: Remove yarn-lock.json file
+        run: rm -f yarn-lock.json
+
+     - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install --ignore-optional # will run `yarn install` command
+
+      - name: Compare old yarn-lock with generated yarn-lock
+        run: cmp yarn-lock.json yarn-lock-copy.json
