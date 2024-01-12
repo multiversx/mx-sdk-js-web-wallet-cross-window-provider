@@ -7,6 +7,9 @@
   "files": [
     "out/**/*"
   ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "compile": "tsc -p tsconfig.json",
     "pretest": "npm run compile",
@@ -17,7 +20,7 @@
   "author": "MultiversX",
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "@types/node": "17.0.23",
+    "@types/node": "18.19.0",
     "@typescript-eslint/eslint-plugin": "5.0.0",
     "@typescript-eslint/parser": "5.14.0",
     "eslint": "8.24.0",
