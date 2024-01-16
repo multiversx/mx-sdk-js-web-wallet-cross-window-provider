@@ -1,7 +1,4 @@
-import type {
-  IPlainTransactionObject,
-  SignableMessage
-} from '@multiversx/sdk-core';
+import type { IPlainTransactionObject } from '@multiversx/sdk-core';
 
 export enum CrossWindowProviderRequestEnums {
   signTransactionsRequest = 'SIGN_TRANSACTIONS_REQUEST',
@@ -76,10 +73,14 @@ export type ResponseTypeMap = {
 };
 
 export type RequestPayloadType = {
-  [CrossWindowProviderRequestEnums.loginRequest]: undefined;
+  [CrossWindowProviderRequestEnums.loginRequest]: {
+    token: string | undefined;
+  };
   [CrossWindowProviderRequestEnums.logoutRequest]: undefined;
   [CrossWindowProviderRequestEnums.signTransactionsRequest]: IPlainTransactionObject[];
-  [CrossWindowProviderRequestEnums.signMessageRequest]: SignableMessage;
+  [CrossWindowProviderRequestEnums.signMessageRequest]: {
+    message: string;
+  };
   [CrossWindowProviderRequestEnums.cancelAction]: undefined;
   [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: {
     origin: string;
@@ -99,3 +100,17 @@ export type ReplyWithPostMessageEventType = {
     payload: ReplyWithPostMessageObjectType[K];
   };
 }[keyof ReplyWithPostMessageObjectType];
+
+export interface PostMessageParamsType<
+  T extends CrossWindowProviderRequestEnums
+> {
+  type: T;
+  payload: RequestPayloadType[keyof RequestPayloadType];
+}
+
+export interface PostMessageReturnType<
+  T extends CrossWindowProviderRequestEnums
+> {
+  type: ResponseTypeMap[T] | CrossWindowProviderResponseEnums.cancelResponse;
+  payload: ReplyWithPostMessageType<ResponseTypeMap[T]>['payload'];
+}
