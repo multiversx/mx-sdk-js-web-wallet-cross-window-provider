@@ -150,13 +150,13 @@ export class CrossWindowProvider {
 
     const {
       type,
-      payload: { data: signedTransactions, error }
+      payload: { data: signedPlainTransactions, error }
     } = await this.windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.signTransactionsRequest,
       payload: transactions.map((tx) => tx.toPlainObject())
     });
 
-    if (error || !signedTransactions) {
+    if (error || !signedPlainTransactions) {
       throw new ErrCouldNotSignTransaction();
     }
 
@@ -164,13 +164,13 @@ export class CrossWindowProvider {
       throw new ErrTransactionCancelled();
     }
 
-    const hasTransactions = signedTransactions?.length > 0;
+    const hasTransactions = signedPlainTransactions?.length > 0;
 
     if (!hasTransactions) {
       throw new ErrCouldNotSignTransaction();
     }
 
-    return signedTransactions.map((tx) => Transaction.fromPlainObject(tx));
+    return signedPlainTransactions.map((tx) => Transaction.fromPlainObject(tx));
   }
 
   async signMessage(message: SignableMessage): Promise<SignableMessage> {
