@@ -78,7 +78,9 @@ describe('WindowManager', () => {
     const windowManager = WindowManager.getInstance();
     windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.loginRequest,
-      payload: 'login'
+      payload: {
+        token: 'token'
+      }
     });
 
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);

@@ -15,10 +15,6 @@ import {
   SignMessageStatusEnum
 } from '../types';
 import { WindowManager } from '../WindowManager';
-import {
-  buildTransactionsQueryString,
-  buildWalletQueryString
-} from './helpers';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -90,17 +86,13 @@ export class CrossWindowProvider {
 
     this.accessToken = options.token;
 
-    const payload = buildWalletQueryString({
-      params: {
-        token: this.accessToken
-      }
-    });
-
     const {
       payload: { data, error }
     } = await this.windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.loginRequest,
-      payload
+      payload: {
+        token: this.accessToken
+      }
     });
 
     if (error || !data) {
@@ -117,6 +109,7 @@ export class CrossWindowProvider {
     if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
+
     this.ensureConnected();
     const connectionClosed = await this.windowManager.closeConnection();
     this.initialized = false;
@@ -155,21 +148,17 @@ export class CrossWindowProvider {
   async signTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     this.ensureConnected();
 
-    const payloadQueryString = buildTransactionsQueryString(transactions);
-
     const {
       type,
-      payload: { data, error }
+      payload: { data: signedPlainTransactions, error }
     } = await this.windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.signTransactionsRequest,
-      payload: payloadQueryString
+      payload: transactions.map((tx) => tx.toPlainObject())
     });
 
-    if (error || !data) {
+    if (error || !signedPlainTransactions) {
       throw new ErrCouldNotSignTransaction();
     }
-
-    const signedPlainTransactions = data;
 
     if (type === CrossWindowProviderResponseEnums.cancelResponse) {
       throw new ErrTransactionCancelled();
@@ -181,28 +170,19 @@ export class CrossWindowProvider {
       throw new ErrCouldNotSignTransaction();
     }
 
-    const signedTransactions = signedPlainTransactions.map((tx) => {
-      const transaction = Transaction.fromPlainObject(tx);
-      return transaction;
-    });
-
-    return signedTransactions;
+    return signedPlainTransactions.map((tx) => Transaction.fromPlainObject(tx));
   }
 
   async signMessage(message: SignableMessage): Promise<SignableMessage> {
     this.ensureConnected();
 
-    const payloadQueryString = buildWalletQueryString({
-      params: {
-        message: message.message.toString()
-      }
-    });
-
     const {
       payload: { data, error }
     } = await this.windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.signMessageRequest,
-      payload: payloadQueryString
+      payload: {
+        message: message.message.toString()
+      }
     });
 
     if (error || !data) {
@@ -223,7 +203,7 @@ export class CrossWindowProvider {
   cancelAction() {
     return this.windowManager?.postMessage({
       type: CrossWindowProviderRequestEnums.cancelAction,
-      payload: ''
+      payload: undefined
     });
   }
 }

@@ -8,9 +8,10 @@ import {
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums,
+  PostMessageParamsType,
+  PostMessageReturnType,
   ReplyWithPostMessageEventType,
-  ReplyWithPostMessageType,
-  ResponseTypeMap
+  ReplyWithPostMessageType
 } from '../types';
 
 export class WindowManager {
@@ -152,7 +153,7 @@ export class WindowManager {
 
     await this.postMessage({
       type: CrossWindowProviderRequestEnums.logoutRequest,
-      payload: ''
+      payload: undefined
     });
 
     return true;
@@ -165,13 +166,7 @@ export class WindowManager {
   async postMessage<T extends CrossWindowProviderRequestEnums>({
     type,
     payload
-  }: {
-    type: T;
-    payload: string;
-  }): Promise<{
-    type: ResponseTypeMap[T] | CrossWindowProviderResponseEnums.cancelResponse;
-    payload: ReplyWithPostMessageType<ResponseTypeMap[T]>['payload'];
-  }> {
+  }: PostMessageParamsType<T>): Promise<PostMessageReturnType<T>> {
     await this.handshake(type);
 
     this.walletWindow?.postMessage(
