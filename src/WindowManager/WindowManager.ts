@@ -11,7 +11,7 @@ import {
   PostMessageParamsType,
   PostMessageReturnType,
   ReplyWithPostMessageEventType,
-  ReplyWithPostMessageType
+  ReplyWithPostMessagePayloadType
 } from '../types';
 
 export class WindowManager {
@@ -111,7 +111,7 @@ export class WindowManager {
     action: T
   ): Promise<{
     type: T;
-    payload: ReplyWithPostMessageType<T>['payload'];
+    payload: ReplyWithPostMessagePayloadType<T>;
   }> {
     if (!this.walletWindow) {
       throw new ErrWalletWindowNotInstantiated();
@@ -125,7 +125,7 @@ export class WindowManager {
         async function eventHandler(
           event: MessageEvent<{
             type: T;
-            payload: ReplyWithPostMessageType<T>['payload'];
+            payload: ReplyWithPostMessagePayloadType<T>;
           }>
         ) {
           const { type, payload } = event.data;
