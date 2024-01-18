@@ -49,19 +49,19 @@ export type ReplyWithPostMessageObjectType = {
   [CrossWindowProviderResponseEnums.noneResponse]: null;
 };
 
-type ReplyWithPostMessagePayloadType<
-  T extends ReplyWithPostMessageObjectType[keyof ReplyWithPostMessageObjectType]
+export type ReplyWithPostMessagePayloadType<
+  K extends keyof ReplyWithPostMessageObjectType
 > = {
-  data?: T;
+  data?: ReplyWithPostMessageObjectType[K];
   error?: string;
 };
 
-export type ReplyWithPostMessageType<
-  T extends CrossWindowProviderResponseEnums
-> = {
-  type: T;
-  payload: ReplyWithPostMessagePayloadType<ReplyWithPostMessageObjectType[T]>;
-};
+export type ReplyWithPostMessageType = {
+  [K in keyof ReplyWithPostMessageObjectType]: {
+    type: K;
+    payload: ReplyWithPostMessagePayloadType<K>;
+  };
+}[keyof ReplyWithPostMessageObjectType];
 
 export type ResponseTypeMap = {
   [CrossWindowProviderRequestEnums.signTransactionsRequest]: CrossWindowProviderResponseEnums.signTransactionsResponse;
@@ -112,5 +112,7 @@ export interface PostMessageReturnType<
   T extends CrossWindowProviderRequestEnums
 > {
   type: ResponseTypeMap[T] | CrossWindowProviderResponseEnums.cancelResponse;
-  payload: ReplyWithPostMessageType<ResponseTypeMap[T]>['payload'];
+  payload: ReplyWithPostMessagePayloadType<
+    ResponseTypeMap[T] | CrossWindowProviderResponseEnums.cancelResponse
+  >;
 }
