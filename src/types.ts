@@ -112,7 +112,5 @@ export interface PostMessageReturnType<
   T extends CrossWindowProviderRequestEnums
 > {
   type: ResponseTypeMap[T] | CrossWindowProviderResponseEnums.cancelResponse;
-  payload: ReplyWithPostMessagePayloadType<
-    ResponseTypeMap[T] | CrossWindowProviderResponseEnums.cancelResponse
-  >;
+  payload: ReplyWithPostMessagePayloadType<ResponseTypeMap[T]>;
 }
