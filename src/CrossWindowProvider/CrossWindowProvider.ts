@@ -78,11 +78,7 @@ export class CrossWindowProvider {
 
     const isRelogin = await this.isConnected();
 
-    console.log({ isRelogin, token: options.token });
-
     if (isRelogin) {
-      console.log('Performing relogin ??');
-
       const { address, signature } = this.account;
       return {
         address,
@@ -100,8 +96,6 @@ export class CrossWindowProvider {
         token: this.accessToken
       }
     });
-
-    console.log('response: ', data);
 
     if (error || !data) {
       throw new ErrCouldNotLogin();
