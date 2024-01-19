@@ -66,10 +66,7 @@ export class WindowManager {
 
     this.walletWindow?.postMessage(
       {
-        type: CrossWindowProviderRequestEnums.finalizeHandshakeRequest,
-        payload: {
-          origin: safeWindow.location?.origin
-        }
+        type: CrossWindowProviderRequestEnums.finalizeHandshakeRequest
       },
       this.walletUrl
     );
