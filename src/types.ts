@@ -82,9 +82,7 @@ export type RequestPayloadType = {
     message: string;
   };
   [CrossWindowProviderRequestEnums.cancelAction]: undefined;
-  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: {
-    origin: string;
-  };
+  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: undefined;
 };
 
 export type RequestMessageType = {
