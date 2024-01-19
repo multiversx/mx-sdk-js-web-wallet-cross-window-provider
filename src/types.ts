@@ -5,8 +5,7 @@ export enum CrossWindowProviderRequestEnums {
   signMessageRequest = 'SIGN_MESSAGE_REQUEST',
   loginRequest = 'LOGIN_REQUEST',
   logoutRequest = 'LOGOUT_REQUEST',
-  cancelAction = 'CANCEL_ACTION_REQUEST',
-  finalizeHandshakeRequest = 'FINALIZE_HANDSHAKE_REQUEST'
+  cancelAction = 'CANCEL_ACTION_REQUEST'
 }
 
 export enum CrossWindowProviderResponseEnums {
@@ -69,7 +68,6 @@ export type ResponseTypeMap = {
   [CrossWindowProviderRequestEnums.loginRequest]: CrossWindowProviderResponseEnums.loginResponse;
   [CrossWindowProviderRequestEnums.logoutRequest]: CrossWindowProviderResponseEnums.disconnectResponse;
   [CrossWindowProviderRequestEnums.cancelAction]: CrossWindowProviderResponseEnums.cancelResponse;
-  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: CrossWindowProviderResponseEnums.noneResponse;
 };
 
 export type RequestPayloadType = {
@@ -82,9 +80,6 @@ export type RequestPayloadType = {
     message: string;
   };
   [CrossWindowProviderRequestEnums.cancelAction]: undefined;
-  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: {
-    origin: string;
-  };
 };
 
 export type RequestMessageType = {

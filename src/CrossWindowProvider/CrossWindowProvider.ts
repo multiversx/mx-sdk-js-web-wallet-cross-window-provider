@@ -21,6 +21,8 @@ interface ICrossWindowWalletAccount {
   signature?: string;
 }
 
+console.log('\x1b[42m%s\x1b[0m', 3);
+
 export class CrossWindowProvider {
   public account: ICrossWindowWalletAccount = { address: '' };
   private initialized = false;
@@ -76,7 +78,11 @@ export class CrossWindowProvider {
 
     const isRelogin = await this.isConnected();
 
+    console.log({ isRelogin, token: options.token });
+
     if (isRelogin) {
+      console.log('Performing relogin ??');
+
       const { address, signature } = this.account;
       return {
         address,
@@ -94,6 +100,8 @@ export class CrossWindowProvider {
         token: this.accessToken
       }
     });
+
+    console.log('response: ', data);
 
     if (error || !data) {
       throw new ErrCouldNotLogin();

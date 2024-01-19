@@ -64,16 +64,6 @@ export class WindowManager {
       throw new ErrCannotEstablishHandshake();
     }
 
-    this.walletWindow?.postMessage(
-      {
-        type: CrossWindowProviderRequestEnums.finalizeHandshakeRequest,
-        payload: {
-          origin: safeWindow.location?.origin
-        }
-      },
-      this.walletUrl
-    );
-
     this.addHandshakeChangeListener();
     return true;
   }

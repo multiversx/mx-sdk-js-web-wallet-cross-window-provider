@@ -14,9 +14,7 @@ export const responseTypeMap: ResponseTypeMap = {
   [CrossWindowProviderRequestEnums.logoutRequest]:
     CrossWindowProviderResponseEnums.disconnectResponse,
   [CrossWindowProviderRequestEnums.cancelAction]:
-    CrossWindowProviderResponseEnums.cancelResponse,
-  [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]:
-    CrossWindowProviderResponseEnums.noneResponse
+    CrossWindowProviderResponseEnums.cancelResponse
 };
 
 type SafeWindowType<T extends Window = Window> = {
