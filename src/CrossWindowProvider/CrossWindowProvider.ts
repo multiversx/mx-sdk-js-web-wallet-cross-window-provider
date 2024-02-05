@@ -19,6 +19,7 @@ import { WindowManager } from '../WindowManager';
 interface ICrossWindowWalletAccount {
   address: string;
   signature?: string;
+  multisig?: string;
 }
 
 export class CrossWindowProvider {
@@ -69,7 +70,7 @@ export class CrossWindowProvider {
     options: {
       token?: string;
     } = {}
-  ): Promise<{ address: string; signature: string | undefined }> {
+  ): Promise<ICrossWindowWalletAccount> {
     if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
@@ -77,10 +78,11 @@ export class CrossWindowProvider {
     const isRelogin = await this.isConnected();
 
     if (isRelogin) {
-      const { address, signature } = this.account;
+      const { address, signature, multisig } = this.account;
       return {
         address,
-        signature
+        signature,
+        multisig
       };
     }
 
@@ -101,8 +103,13 @@ export class CrossWindowProvider {
 
     this.account.address = data.address;
     this.account.signature = data.signature;
+    this.account.multisig = data.multisig;
 
-    return { address: this.account.address, signature: this.account.signature };
+    return {
+      address: this.account.address,
+      signature: this.account.signature,
+      multisig: this.account.multisig
+    };
   }
 
   async logout(): Promise<boolean> {
