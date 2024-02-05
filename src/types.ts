@@ -36,6 +36,10 @@ export type ReplyWithPostMessageObjectType = {
      * */
     name?: string;
     signature?: string;
+    /**
+     * contract address for alternate multisig login
+     * */
+    multisig?: string;
   };
   [CrossWindowProviderResponseEnums.disconnectResponse]: boolean;
   [CrossWindowProviderResponseEnums.cancelResponse]: {
