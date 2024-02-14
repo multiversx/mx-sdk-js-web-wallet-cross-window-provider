@@ -20,6 +20,7 @@ interface ICrossWindowWalletAccount {
   address: string;
   signature?: string;
   multisig?: string;
+  impersonate?: string;
 }
 
 export class CrossWindowProvider {
@@ -78,11 +79,12 @@ export class CrossWindowProvider {
     const isRelogin = await this.isConnected();
 
     if (isRelogin) {
-      const { address, signature, multisig } = this.account;
+      const { address, signature, multisig, impersonate } = this.account;
       return {
         address,
         signature,
-        multisig
+        multisig,
+        impersonate
       };
     }
 
@@ -104,11 +106,13 @@ export class CrossWindowProvider {
     this.account.address = data.address;
     this.account.signature = data.signature;
     this.account.multisig = data.multisig;
+    this.account.impersonate = data.impersonate;
 
     return {
       address: this.account.address,
       signature: this.account.signature,
-      multisig: this.account.multisig
+      multisig: this.account.multisig,
+      impersonate: this.account.impersonate
     };
   }
 

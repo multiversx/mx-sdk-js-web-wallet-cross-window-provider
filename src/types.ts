@@ -40,6 +40,10 @@ export type ReplyWithPostMessageObjectType = {
      * contract address for alternate multisig login
      * */
     multisig?: string;
+    /**
+     * custom address for alternate login
+     * */
+    impersonate?: string;
   };
   [CrossWindowProviderResponseEnums.disconnectResponse]: boolean;
   [CrossWindowProviderResponseEnums.cancelResponse]: {
