@@ -21,7 +21,7 @@ export class WindowManager {
   walletWindow: Window | null = null;
 
   constructor() {
-    window.addEventListener('beforeunload', () => {
+    safeWindow.addEventListener?.('beforeunload', () => {
       this.walletWindow?.close();
     });
 
