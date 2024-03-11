@@ -7,7 +7,8 @@ export enum CrossWindowProviderRequestEnums {
   loginRequest = 'LOGIN_REQUEST',
   logoutRequest = 'LOGOUT_REQUEST',
   cancelAction = 'CANCEL_ACTION_REQUEST',
-  finalizeHandshakeRequest = 'FINALIZE_HANDSHAKE_REQUEST'
+  finalizeHandshakeRequest = 'FINALIZE_HANDSHAKE_REQUEST',
+  finalizeResetStateRequest = 'FINALIZE_RESET_STATE_REQUEST'
 }
 
 export enum CrossWindowProviderResponseEnums {
@@ -18,7 +19,8 @@ export enum CrossWindowProviderResponseEnums {
   cancelResponse = 'CANCEL_RESPONSE',
   signTransactionsResponse = 'SIGN_TRANSACTIONS_RESPONSE',
   signMessageResponse = 'SIGN_MESSAGE_RESPONSE',
-  noneResponse = 'NONE_RESPONSE'
+  noneResponse = 'NONE_RESPONSE',
+  resetStateResponse = 'RESET_STATE_RESPONSE'
 }
 
 export enum SignMessageStatusEnum { // TODO: consume in sdk-dapp
@@ -58,6 +60,7 @@ export type ReplyWithPostMessageObjectType = {
     status: SignMessageStatusEnum;
   };
   [CrossWindowProviderResponseEnums.noneResponse]: null;
+  [CrossWindowProviderResponseEnums.resetStateResponse]: boolean;
 };
 
 export type ReplyWithPostMessagePayloadType<
@@ -82,6 +85,7 @@ export type ResponseTypeMap = {
   [CrossWindowProviderRequestEnums.guardTransactionsRequest]: CrossWindowProviderResponseEnums.guardTransactionsResponse;
   [CrossWindowProviderRequestEnums.cancelAction]: CrossWindowProviderResponseEnums.cancelResponse;
   [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: CrossWindowProviderResponseEnums.noneResponse;
+  [CrossWindowProviderRequestEnums.finalizeResetStateRequest]: CrossWindowProviderResponseEnums.resetStateResponse;
 };
 
 export type RequestPayloadType = {
@@ -95,6 +99,7 @@ export type RequestPayloadType = {
   };
   [CrossWindowProviderRequestEnums.cancelAction]: undefined;
   [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: undefined;
+  [CrossWindowProviderRequestEnums.finalizeResetStateRequest]: undefined;
 };
 
 export type RequestMessageType = {
