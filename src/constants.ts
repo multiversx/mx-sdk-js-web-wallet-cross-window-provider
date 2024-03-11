@@ -7,6 +7,8 @@ import {
 export const responseTypeMap: ResponseTypeMap = {
   [CrossWindowProviderRequestEnums.signTransactionsRequest]:
     CrossWindowProviderResponseEnums.signTransactionsResponse,
+  [CrossWindowProviderRequestEnums.guardTransactionsRequest]:
+    CrossWindowProviderResponseEnums.guardTransactionsResponse,
   [CrossWindowProviderRequestEnums.signMessageRequest]:
     CrossWindowProviderResponseEnums.signMessageResponse,
   [CrossWindowProviderRequestEnums.loginRequest]:

@@ -60,12 +60,16 @@ export class ErrTransactionCancelled extends Err {
   }
 }
 
-export class ErrCouldNotSignTransaction extends Err {
+export class ErrCouldNotSignTransactions extends Err {
   public constructor() {
     super('Could not sign transactions');
   }
 }
-
+export class ErrCouldNotGuardTransactions extends Err {
+  public constructor() {
+    super('Could not guard transactions');
+  }
+}
 export class ErrCouldNotSignMessage extends Err {
   public constructor() {
     super('Could not sign message');

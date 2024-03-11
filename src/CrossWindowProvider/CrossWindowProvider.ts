@@ -4,7 +4,8 @@ import {
   ErrCannotSignSingleTransaction,
   ErrCouldNotLogin,
   ErrCouldNotSignMessage,
-  ErrCouldNotSignTransaction,
+  ErrCouldNotSignTransactions,
+  ErrCouldNotGuardTransactions,
   ErrInstantiationFailed,
   ErrProviderNotInitialized,
   ErrTransactionCancelled
@@ -168,7 +169,7 @@ export class CrossWindowProvider {
     });
 
     if (error || !signedPlainTransactions) {
-      throw new ErrCouldNotSignTransaction();
+      throw new ErrCouldNotSignTransactions();
     }
 
     if (type === CrossWindowProviderResponseEnums.cancelResponse) {
@@ -178,7 +179,35 @@ export class CrossWindowProvider {
     const hasTransactions = signedPlainTransactions?.length > 0;
 
     if (!hasTransactions) {
-      throw new ErrCouldNotSignTransaction();
+      throw new ErrCouldNotSignTransactions();
+    }
+
+    return signedPlainTransactions.map((tx) => Transaction.fromPlainObject(tx));
+  }
+
+  async guardTransactions(transactions: Transaction[]): Promise<Transaction[]> {
+    this.ensureConnected();
+
+    const {
+      type,
+      payload: { data: signedPlainTransactions, error }
+    } = await this.windowManager.postMessage({
+      type: CrossWindowProviderRequestEnums.guardTransactionsRequest,
+      payload: transactions.map((tx) => tx.toPlainObject())
+    });
+
+    if (error || !signedPlainTransactions) {
+      throw new ErrCouldNotSignTransactions();
+    }
+
+    if (type === CrossWindowProviderResponseEnums.cancelResponse) {
+      throw new ErrTransactionCancelled();
+    }
+
+    const hasTransactions = signedPlainTransactions?.length > 0;
+
+    if (!hasTransactions) {
+      throw new ErrCouldNotGuardTransactions();
     }
 
     return signedPlainTransactions.map((tx) => Transaction.fromPlainObject(tx));

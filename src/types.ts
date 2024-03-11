@@ -2,6 +2,7 @@ import type { IPlainTransactionObject } from '@multiversx/sdk-core';
 
 export enum CrossWindowProviderRequestEnums {
   signTransactionsRequest = 'SIGN_TRANSACTIONS_REQUEST',
+  guardTransactionsRequest = 'GUARD_TRANSACTIONS_REQUEST',
   signMessageRequest = 'SIGN_MESSAGE_REQUEST',
   loginRequest = 'LOGIN_REQUEST',
   logoutRequest = 'LOGOUT_REQUEST',
@@ -12,6 +13,7 @@ export enum CrossWindowProviderRequestEnums {
 
 export enum CrossWindowProviderResponseEnums {
   handshakeResponse = 'HANDSHAKE_RESPONSE',
+  guardTransactionsResponse = 'GUARD_TRANSACTIONS_RESPONSE',
   loginResponse = 'LOGIN_RESPONSE',
   disconnectResponse = 'DISCONNECT_RESPONSE',
   cancelResponse = 'CANCEL_RESPONSE',
@@ -52,6 +54,7 @@ export type ReplyWithPostMessageObjectType = {
     address: string;
   };
   [CrossWindowProviderResponseEnums.signTransactionsResponse]: IPlainTransactionObject[];
+  [CrossWindowProviderResponseEnums.guardTransactionsResponse]: IPlainTransactionObject[];
   [CrossWindowProviderResponseEnums.signMessageResponse]: {
     signature?: string;
     status: SignMessageStatusEnum;
@@ -79,6 +82,7 @@ export type ResponseTypeMap = {
   [CrossWindowProviderRequestEnums.signMessageRequest]: CrossWindowProviderResponseEnums.signMessageResponse;
   [CrossWindowProviderRequestEnums.loginRequest]: CrossWindowProviderResponseEnums.loginResponse;
   [CrossWindowProviderRequestEnums.logoutRequest]: CrossWindowProviderResponseEnums.disconnectResponse;
+  [CrossWindowProviderRequestEnums.guardTransactionsRequest]: CrossWindowProviderResponseEnums.guardTransactionsResponse;
   [CrossWindowProviderRequestEnums.cancelAction]: CrossWindowProviderResponseEnums.cancelResponse;
   [CrossWindowProviderRequestEnums.finalizeHandshakeRequest]: CrossWindowProviderResponseEnums.noneResponse;
   [CrossWindowProviderRequestEnums.finalizeResetStateRequest]: CrossWindowProviderResponseEnums.resetStateResponse;
