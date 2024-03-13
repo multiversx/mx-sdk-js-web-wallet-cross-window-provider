@@ -94,6 +94,7 @@ export type RequestPayloadType = {
   };
   [CrossWindowProviderRequestEnums.logoutRequest]: undefined;
   [CrossWindowProviderRequestEnums.signTransactionsRequest]: IPlainTransactionObject[];
+  [CrossWindowProviderRequestEnums.guardTransactionsRequest]: IPlainTransactionObject[];
   [CrossWindowProviderRequestEnums.signMessageRequest]: {
     message: string;
   };
