@@ -4,7 +4,7 @@ import {
   mockWindoManager,
   WalletWindowMockType
 } from '../../test-utils';
-import { WindowManager } from '../../WindowManager/WindowManager';
+import { WindowManager } from '../WindowManager';
 import { CrossWindowProvider } from '../CrossWindowProvider';
 
 describe('CrossWindowProvider Login', () => {

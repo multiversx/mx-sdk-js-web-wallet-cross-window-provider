@@ -1,4 +1,4 @@
-import { WindowManager } from '../WindowManager/WindowManager';
+import { WindowManager } from '../CrossWindowProvider/WindowManager';
 
 export const mockWindoManager = () =>
   (WindowManager.getInstance = jest.fn().mockReturnValue({

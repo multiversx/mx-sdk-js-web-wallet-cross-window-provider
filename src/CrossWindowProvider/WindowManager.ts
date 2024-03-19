@@ -15,9 +15,9 @@ import {
 } from '../types';
 
 export class WindowManager {
-  private walletUrl = '';
+  protected walletUrl = '';
   private initialized = false;
-  private static _instance: WindowManager = new WindowManager();
+  protected static _instance: WindowManager | null = null;
   walletWindow: Window | null = null;
 
   constructor() {
@@ -30,17 +30,25 @@ export class WindowManager {
   }
 
   public static getInstance(): WindowManager {
+    if (!WindowManager._instance) {
+      return new WindowManager();
+    }
     return WindowManager._instance;
   }
 
   public setWalletUrl(url: string): WindowManager {
     this.walletUrl = url;
-    return WindowManager._instance;
+    return this;
   }
 
   async init(): Promise<boolean> {
     this.initialized = true;
     return this.initialized;
+  }
+
+  public async setWalletWindow(): Promise<void> {
+    this.walletWindow =
+      safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
   }
 
   async handshake(type: CrossWindowProviderRequestEnums): Promise<boolean> {
@@ -53,8 +61,7 @@ export class WindowManager {
     }
 
     this.walletWindow?.close();
-    this.walletWindow =
-      safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
+    await this.setWalletWindow();
 
     const { payload: isWalletReady } = await this.listenOnce(
       CrossWindowProviderResponseEnums.handshakeResponse

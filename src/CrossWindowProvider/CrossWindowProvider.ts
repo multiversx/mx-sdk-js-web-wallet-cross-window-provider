@@ -15,9 +15,9 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '../types';
-import { WindowManager } from '../WindowManager';
+import { WindowManager } from './WindowManager';
 
-interface ICrossWindowWalletAccount {
+export interface ICrossWindowWalletAccount {
   address: string;
   signature?: string;
   multisig?: string;
@@ -26,16 +26,15 @@ interface ICrossWindowWalletAccount {
 
 export class CrossWindowProvider {
   public account: ICrossWindowWalletAccount = { address: '' };
-  private initialized = false;
-  private windowManager: WindowManager;
-  private static _instance: CrossWindowProvider = new CrossWindowProvider();
+  protected initialized = false;
+  protected windowManager: WindowManager | null = null;
+  protected static _instance: CrossWindowProvider | null = null;
   private accessToken: string | undefined = undefined;
 
-  private constructor() {
+  public constructor() {
     if (CrossWindowProvider._instance) {
       throw new ErrInstantiationFailed();
     }
-    this.windowManager = WindowManager.getInstance();
     CrossWindowProvider._instance = this;
   }
 
@@ -50,20 +49,31 @@ export class CrossWindowProvider {
   }
 
   public static getInstance(): CrossWindowProvider {
+    if (!CrossWindowProvider._instance) {
+      return new CrossWindowProvider();
+    }
+
     return CrossWindowProvider._instance;
   }
 
   public setAddress(address: string): CrossWindowProvider {
+    if (!CrossWindowProvider._instance) {
+      throw new ErrInstantiationFailed();
+    }
     this.account.address = address;
     return CrossWindowProvider._instance;
   }
 
   public setWalletUrl(url: string): CrossWindowProvider {
+    if (!CrossWindowProvider._instance || !this.windowManager) {
+      throw new ErrInstantiationFailed();
+    }
     this.windowManager.setWalletUrl(url);
     return CrossWindowProvider._instance;
   }
 
   async init(): Promise<boolean> {
+    this.windowManager = WindowManager.getInstance();
     this.initialized = await this.windowManager.init();
     return this.initialized;
   }
@@ -90,7 +100,9 @@ export class CrossWindowProvider {
     }
 
     this.accessToken = options.token;
-
+    if (!this.windowManager) {
+      throw new ErrInstantiationFailed();
+    }
     const {
       payload: { data, error }
     } = await this.windowManager.postMessage({
@@ -118,7 +130,7 @@ export class CrossWindowProvider {
   }
 
   async logout(): Promise<boolean> {
-    if (!this.initialized) {
+    if (!this.initialized || !this.windowManager) {
       throw new ErrProviderNotInitialized();
     }
 
@@ -160,6 +172,10 @@ export class CrossWindowProvider {
   async signTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     this.ensureConnected();
 
+    if (!this.windowManager) {
+      throw new ErrInstantiationFailed();
+    }
+
     const {
       type,
       payload: { data: signedPlainTransactions, error }
@@ -187,6 +203,9 @@ export class CrossWindowProvider {
 
   async guardTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     this.ensureConnected();
+    if (!this.windowManager) {
+      throw new ErrInstantiationFailed();
+    }
 
     const {
       type,
@@ -215,7 +234,9 @@ export class CrossWindowProvider {
 
   async signMessage(message: SignableMessage): Promise<SignableMessage> {
     this.ensureConnected();
-
+    if (!this.windowManager) {
+      throw new ErrInstantiationFailed();
+    }
     const {
       payload: { data, error }
     } = await this.windowManager.postMessage({

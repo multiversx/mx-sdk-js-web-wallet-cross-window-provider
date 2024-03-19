@@ -3,7 +3,7 @@ import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums
 } from '../../types';
-import { WindowManager } from '../WindowManager';
+import { WindowManager } from '../../CrossWindowProvider/WindowManager';
 
 describe('WindowManager', () => {
   let windowOpenSpy: jest.SpyInstance;
