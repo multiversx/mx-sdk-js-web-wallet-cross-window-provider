@@ -22,7 +22,7 @@ export class WindowManager {
 
   constructor() {
     safeWindow.addEventListener?.('beforeunload', () => {
-      this.walletWindow?.close();
+      this.closeWalletWindow();
     });
 
     safeWindow.name = safeWindow.location?.origin;
@@ -51,16 +51,23 @@ export class WindowManager {
       safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
   }
 
-  async handshake(type: CrossWindowProviderRequestEnums): Promise<boolean> {
-    const isOpened =
-      type === CrossWindowProviderRequestEnums.cancelAction &&
-      Boolean(this.walletWindow);
+  public closeWalletWindow() {
+    this.walletWindow?.close();
+  }
 
-    if (isOpened) {
+  public isWalletOpened(type?: CrossWindowProviderRequestEnums) {
+    return (
+      type === CrossWindowProviderRequestEnums.cancelAction &&
+      Boolean(this.walletWindow)
+    );
+  }
+
+  async handshake(type: CrossWindowProviderRequestEnums): Promise<boolean> {
+    if (this.isWalletOpened(type)) {
       return true;
     }
 
-    this.walletWindow?.close();
+    this.closeWalletWindow();
     await this.setWalletWindow();
 
     const { payload: isWalletReady } = await this.listenOnce(
@@ -90,6 +97,7 @@ export class WindowManager {
     ) => {
       try {
         const { type, payload } = event.data;
+
         const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
         if (!isWalletEvent) {
@@ -99,7 +107,7 @@ export class WindowManager {
         switch (type) {
           case CrossWindowProviderResponseEnums.handshakeResponse:
             if (payload === false) {
-              this.walletWindow?.close();
+              this.closeWalletWindow();
               this.walletWindow = null;
               safeWindow.removeEventListener?.('message', eventHandler);
             }
@@ -172,7 +180,6 @@ export class WindowManager {
     payload
   }: PostMessageParamsType<T>): Promise<PostMessageReturnType<T>> {
     await this.handshake(type);
-
     this.walletWindow?.postMessage(
       {
         type,
@@ -183,7 +190,7 @@ export class WindowManager {
 
     const data = await this.listenOnce(responseTypeMap[type]);
 
-    this.walletWindow?.close();
+    this.closeWalletWindow();
 
     return data;
   }
