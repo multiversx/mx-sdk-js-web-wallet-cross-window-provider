@@ -1,29 +1,21 @@
 {
+    "extends": "../../tsconfig.json",
     "compilerOptions": {
-        "module": "CommonJS",
+        "outDir": "./dist",
+        "lib": ["dom", "es2015"],
+        "module": "es2015",
+        "moduleResolution": "Node",
         "target": "es2015",
-        "outDir": "out",
-        "lib": [
-            "es2015",
-            "dom"
-        ],
-        "sourceMap": true,
-        "allowJs": true,
-        "strict": true,
-        "strictPropertyInitialization": true,
-        "strictNullChecks": true,
         "skipLibCheck": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
-        "noUnusedParameters": true,
-        "esModuleInterop": true,
-        "declaration": true
+        "jsx": "react",
+        "allowSyntheticDefaultImports": true,
+        "declarationDir": "./dist/types"
     },
     "include": [
         "src/**/*"
     ],
     "exclude": [
         "node_modules",
-        "out"
+        "dist"
     ]
 }
