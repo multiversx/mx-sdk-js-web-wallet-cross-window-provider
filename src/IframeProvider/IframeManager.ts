@@ -1,4 +1,4 @@
-import { defineCustomElements } from '@multiversx/sdk-dapp-core/loader';
+import { defineCustomElements } from '@multiversx/sdk-dapp-ui/loader';
 import { WindowManager } from '../CrossWindowProvider/WindowManager';
 
 export class IframeManager extends WindowManager {
@@ -17,6 +17,7 @@ export class IframeManager extends WindowManager {
     if (!IframeManager._instance) {
       return new IframeManager();
     }
+    // @ts-ignore
     return IframeManager._instance;
   }
 

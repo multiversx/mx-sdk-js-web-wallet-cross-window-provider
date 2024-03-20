@@ -37,7 +37,7 @@
     "prettier": "^3.1.0",
     "ts-jest": "29.1.1",
     "typescript": "5.0.4",
-    "@multiversx/sdk-dapp-core": "*"
+    "@multiversx/sdk-dapp-ui": "*"
   },
   "peerDependencies": {
     "@multiversx/sdk-core": ">= 12.1.0"
