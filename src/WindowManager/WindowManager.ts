@@ -15,7 +15,7 @@ import {
 } from '../types';
 
 export class WindowManager {
-  private walletUrl = '';
+  private _walletUrl = '';
   private initialized = false;
   private static _instance: WindowManager = new WindowManager();
   walletWindow: Window | null = null;
@@ -29,12 +29,16 @@ export class WindowManager {
     WindowManager._instance = this; // TODO: remove singleton
   }
 
+  public get walletUrl(): string {
+    return this._walletUrl;
+  }
+
   public static getInstance(): WindowManager {
     return WindowManager._instance;
   }
 
   public setWalletUrl(url: string): WindowManager {
-    this.walletUrl = url;
+    this._walletUrl = url;
     return WindowManager._instance;
   }
 
