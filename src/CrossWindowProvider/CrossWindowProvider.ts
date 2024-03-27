@@ -305,19 +305,19 @@ export class CrossWindowProvider {
 
       if (!confirmButton || !cancelButton) {
         resolve(true);
-        document.body.removeChild(dialog);
         dialog.close();
+        document.body.removeChild(dialog);
         return;
       }
       confirmButton.addEventListener('click', function () {
         resolve(true);
-        document.body.removeChild(dialog);
         dialog.close();
+        document.body.removeChild(dialog);
       });
       cancelButton.addEventListener('click', function () {
         resolve(false);
-        document.body.removeChild(dialog);
         dialog.close();
+        document.body.removeChild(dialog);
       });
     });
 
