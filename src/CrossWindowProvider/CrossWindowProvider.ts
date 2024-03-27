@@ -291,10 +291,26 @@ export class CrossWindowProvider {
 
     dialog.setAttribute('id', dialogId);
     dialog.innerHTML = `
-    <h3>Confirm on MultiversX Wallet</h3>
-    <p>Continue to ${this.windowManager.walletUrl}</p>
-    <button id="${confirmId}">Confirm</button>
-    <button id="${cancelId}">Cancel</button>
+    <div class="container">
+        {' '}
+        <div class="content">
+          <div class="body">
+            <div class="title">Confirm on MultiversX Wallet</div>
+            <div class="subtitle">
+            Continue to ${this.windowManager.walletUrl}
+            </div>
+
+            <div class="actions-container">
+              <button id="${cancelId}" class="button" onClick={() => this.consentClicked(false)}>
+                Cancel
+              </button>
+              <button id="${confirmId}" class="button btn-proceed" onClick={() => this.consentClicked(true)}>
+                Continue →
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 `;
 
     document.body.appendChild(dialog);
