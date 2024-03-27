@@ -17,7 +17,7 @@ import {
   SignMessageStatusEnum
 } from '../types';
 import { WindowManager } from '../WindowManager';
-import { getMarkup } from './popupConsent';
+import { cancelId, confirmId, dialogId, getMarkup } from './popupConsent';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -286,12 +286,9 @@ export class CrossWindowProvider {
     if (!this._shouldShowConsentPopup || !document || !dialog) {
       return true;
     }
-    const dialogId = 'mxcwp_confirmation-dialog';
-    const confirmId = 'mxcwp_confirm-button';
-    const cancelId = 'mxcwp_cancel-button';
 
     dialog.setAttribute('id', dialogId);
-    dialog.innerHTML = getMarkup(this.setWalletUrl || '');
+    dialog.innerHTML = getMarkup(this.windowManager.walletUrl);
 
     document.body.appendChild(dialog);
     dialog.showModal();
