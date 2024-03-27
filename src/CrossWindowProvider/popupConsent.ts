@@ -89,8 +89,6 @@ const getStyle = () => `
 export const getMarkup = (walletUrl: string) => {
   return `
   ${getStyle()}
-  <div id="${dialogId}">
-      {' '}
       <div class="content">
         <div class="body">
           <div class="title">Confirm on MultiversX Wallet</div>
@@ -108,6 +106,5 @@ export const getMarkup = (walletUrl: string) => {
           </div>
         </div>
       </div>
-    </div>
 `;
 };
