@@ -19,6 +19,14 @@ const getStyle = () => `
     align-items: center;
   }
   
+#${dialogId}:modal {
+    max-width: 100vw;
+    width: 100vw;
+    max-height: 100vh;
+    height: 100vh;
+
+  }
+
   #${dialogId} .content {
     background: #fff;
     border-radius: 20px;
