@@ -274,6 +274,13 @@ export class CrossWindowProvider {
   }
 
   cancelAction() {
+    const isWalletOpened = this.windowManager?.isWalletOpened(
+      CrossWindowProviderRequestEnums.cancelAction
+    );
+    if (!isWalletOpened) {
+      return;
+    }
+
     return this.windowManager?.postMessage({
       type: CrossWindowProviderRequestEnums.cancelAction,
       payload: undefined
