@@ -274,6 +274,13 @@ export class CrossWindowProvider {
   }
 
   cancelAction() {
+    const isWalletOpened = this.windowManager?.isWalletOpened(
+      CrossWindowProviderRequestEnums.cancelAction
+    );
+    if (!isWalletOpened) {
+      return;
+    }
+
     return this.windowManager?.postMessage({
       type: CrossWindowProviderRequestEnums.cancelAction,
       payload: undefined
@@ -281,7 +288,7 @@ export class CrossWindowProvider {
   }
 
   protected async openPopupConsent(): Promise<boolean> {
-    const dialog = safeWindow.document?.createElement('dialog');
+    const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
     if (!this._shouldShowConsentPopup || !document || !dialog) {
       return true;
@@ -291,25 +298,21 @@ export class CrossWindowProvider {
     dialog.innerHTML = getMarkup(this.windowManager.walletUrl);
 
     document.body.appendChild(dialog);
-    dialog.showModal();
     const popupConsentResponse: boolean = await new Promise((resolve) => {
       const confirmButton = document.getElementById(confirmId);
       const cancelButton = document.getElementById(cancelId);
 
       if (!confirmButton || !cancelButton) {
         resolve(true);
-        dialog.close();
         document.body.removeChild(dialog);
         return;
       }
       confirmButton.addEventListener('click', function () {
         resolve(true);
-        dialog.close();
         document.body.removeChild(dialog);
       });
       cancelButton.addEventListener('click', function () {
         resolve(false);
-        dialog.close();
         document.body.removeChild(dialog);
       });
     });

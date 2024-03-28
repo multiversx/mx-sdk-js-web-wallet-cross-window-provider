@@ -47,11 +47,15 @@ export class WindowManager {
     return this.initialized;
   }
 
-  async handshake(type: CrossWindowProviderRequestEnums): Promise<boolean> {
-    const isOpened =
+  public isWalletOpened(type?: CrossWindowProviderRequestEnums) {
+    return (
       type === CrossWindowProviderRequestEnums.cancelAction &&
-      Boolean(this.walletWindow);
+      Boolean(this.walletWindow)
+    );
+  }
 
+  async handshake(type: CrossWindowProviderRequestEnums): Promise<boolean> {
+    const isOpened = this.isWalletOpened(type);
     if (isOpened) {
       return true;
     }
