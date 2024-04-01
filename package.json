@@ -39,7 +39,7 @@
     "typescript": "5.0.4"
   },
   "peerDependencies": {
-    "@multiversx/sdk-core": ">= 12.18.0 < 14"
+    "@multiversx/sdk-core": ">= 12.18.0"
   },
   "dependencies": {
     "@types/jest": "^29.5.11",
