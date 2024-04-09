@@ -6,7 +6,7 @@ const getStyle = () => `
 <style>
 #${dialogId} {
     position: fixed;
-    z-index: 999;
+    z-index: 9999;
     padding-top: 100px;
     left: 50%;
     top: 50%;
@@ -30,7 +30,7 @@ const getStyle = () => `
   #${dialogId} .content {
     background: #fff;
     border-radius: 20px;
-    z-index: 999;
+    z-index: 9999;
     max-width: 500px;
     margin: auto;
     padding: 0;
