@@ -23,11 +23,6 @@ export class PopupConsent extends LitElement {
 
   static styles = styles;
 
-  // no shadow-root
-  // createRenderRoot() {
-  //   return this;
-  // }
-
   render() {
     return html`
       <div id="${dialogId}">
