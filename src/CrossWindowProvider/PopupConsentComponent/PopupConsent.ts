@@ -1,37 +1,43 @@
-import { LitElement, html, css } from 'lit';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { customElement } from 'lit/decorators.js';
+import { LitElement, html } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
+import { styles } from './styles';
 
 @customElement('popup-consent')
 export class PopupConsent extends LitElement {
+  @property({ type: Boolean })
   shouldShow = true;
 
-  static styles = css`
-    /* Add your component styles here */
-  `;
+  @property({ type: String })
+  walletUrl = '';
+
+  @property({ type: Function })
+  onConfirm = () => {};
+
+  @property({ type: Function })
+  onCancel = () => {};
+
+  static styles = styles;
+
+  // no shadow-root
+  createRenderRoot() {
+    return this;
+  }
 
   render() {
-    if (!this.shouldShow) {
-      return html``; // Don't render anything if shouldShow is false
-    }
-
     return html`
-      <div id="dialog">
-        <!-- Your dialog content goes here -->
-        <div>Hello from PopupConsent!</div>
-        <button @click="${this.confirm}">Confirm</button>
-        <button @click="${this.cancel}">Cancel</button>
+      <div class="content">
+        <div class="body">
+          <div class="title">Confirm on MultiversX Wallet</div>
+          <div class="subtitle">Continue to ${this.walletUrl}</div>
+
+          <div class="actions-container">
+            <button @click="${this.onCancel}" class="button">Cancel</button>
+            <button @click="${this.onCancel}" class="button btn-proceed">
+              Continue →
+            </button>
+          </div>
+        </div>
       </div>
     `;
-  }
-
-  confirm() {
-    // Handle confirm action
-    this.dispatchEvent(new CustomEvent('confirm'));
-  }
-
-  cancel() {
-    // Handle cancel action
-    this.dispatchEvent(new CustomEvent('cancel'));
   }
 }

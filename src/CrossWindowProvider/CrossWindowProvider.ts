@@ -1,14 +1,13 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
-import './PopupConsentComponent'; // Import the PopupConsent component
-import { LitElement } from 'lit';
+import { WindowManager } from '../WindowManager';
 import { safeWindow } from '../constants';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
+  ErrCouldNotGuardTransactions,
   ErrCouldNotLogin,
   ErrCouldNotSignMessage,
   ErrCouldNotSignTransactions,
-  ErrCouldNotGuardTransactions,
   ErrInstantiationFailed,
   ErrProviderNotInitialized,
   ErrTransactionCancelled
@@ -18,7 +17,7 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '../types';
-import { WindowManager } from '../WindowManager';
+import './PopupConsentComponent'; // Import the PopupConsent component
 import { cancelId, confirmId, dialogId, getMarkup } from './popupConsent';
 
 interface ICrossWindowWalletAccount {
@@ -27,6 +26,7 @@ interface ICrossWindowWalletAccount {
   multisig?: string;
   impersonate?: string;
 }
+console.log('\x1b[42m%s\x1b[0m', '--1--');
 
 export class CrossWindowProvider {
   public account: ICrossWindowWalletAccount = { address: '' };
@@ -292,20 +292,23 @@ export class CrossWindowProvider {
   protected async openPopupConsent(): Promise<boolean> {
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
+
+    console.log('\x1b[42m%s\x1b[0m', 'start opening here');
+
     if (!this._shouldShowConsentPopup || !document || !dialog) {
       return true;
     }
 
     const popup = safeWindow.document?.createElement(
       'popup-consent'
-    ) as LitElement;
+    ) as HTMLElement;
+
+    document.body.appendChild(popup);
 
     const popupConsentResp = await new Promise<boolean>((resolve) => {
       popup.addEventListener('confirm', () => resolve(true));
       popup.addEventListener('cancel', () => resolve(false));
     });
-
-    console.log(popupConsentResp);
 
     dialog.setAttribute('id', dialogId);
     dialog.innerHTML = getMarkup(this.windowManager.walletUrl);
