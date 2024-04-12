@@ -1,4 +1,6 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
+import './PopupConsentComponent'; // Import the PopupConsent component
+import { LitElement } from 'lit';
 import { safeWindow } from '../constants';
 import {
   ErrAccountNotConnected,
@@ -293,6 +295,17 @@ export class CrossWindowProvider {
     if (!this._shouldShowConsentPopup || !document || !dialog) {
       return true;
     }
+
+    const popup = safeWindow.document?.createElement(
+      'popup-consent'
+    ) as LitElement;
+
+    const popupConsentResp = await new Promise<boolean>((resolve) => {
+      popup.addEventListener('confirm', () => resolve(true));
+      popup.addEventListener('cancel', () => resolve(false));
+    });
+
+    console.log(popupConsentResp);
 
     dialog.setAttribute('id', dialogId);
     dialog.innerHTML = getMarkup(this.windowManager.walletUrl);
