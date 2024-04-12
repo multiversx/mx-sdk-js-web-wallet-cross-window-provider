@@ -1,10 +1,13 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { dialogId } from './constants';
-import { styles } from './styles';
+import { getStyles } from './getStyles';
 
 @customElement('popup-consent')
 export class PopupConsent extends LitElement {
+  @property({ type: String })
+  id = dialogId;
+
   @property({ type: Boolean })
   shouldShow = true;
 
@@ -21,10 +24,16 @@ export class PopupConsent extends LitElement {
     super();
   }
 
-  static styles = styles;
+  // no shadow-root
+  createRenderRoot() {
+    return this;
+  }
 
-  render() {
-    return html`
+  @property({ type: Function })
+  getTemplate = () =>
+    html` <style>
+        ${getStyles(this.id)}
+      </style>
       <div id="${dialogId}">
         <div class="content">
           <div class="body">
@@ -38,7 +47,9 @@ export class PopupConsent extends LitElement {
             </div>
           </div>
         </div>
-      </div>
-    `;
+      </div>`;
+
+  render() {
+    return this.getTemplate();
   }
 }
