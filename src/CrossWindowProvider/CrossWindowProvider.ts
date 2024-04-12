@@ -310,7 +310,9 @@ export class CrossWindowProvider {
         popup.onConfirm = () => {
           resolve(true);
         };
-        popup.onCancel = () => resolve(false);
+        popup.onCancel = () => {
+          resolve(false);
+        };
       }
     );
 
