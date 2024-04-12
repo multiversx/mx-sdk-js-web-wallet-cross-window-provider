@@ -24,6 +24,23 @@ export class PopupConsent extends LitElement {
     super();
   }
 
+  dispatchAction = (action: boolean) => () => {
+    const event = new CustomEvent(`${this.id}-event`, {
+      bubbles: true, // Allow the event to bubble up through the DOM
+      composed: true, // Allow the event to cross the shadow DOM boundary
+      detail: { message: action }
+    });
+    this.dispatchEvent(event);
+  };
+
+  handleConfirmEvent({
+    detail: { message: isConfirmed }
+  }: CustomEvent<{
+    message: boolean;
+  }>) {
+    return isConfirmed ? this.onConfirm() : this.onCancel();
+  }
+
   // no shadow-root
   createRenderRoot() {
     return this;
@@ -40,8 +57,13 @@ export class PopupConsent extends LitElement {
             <div class="title">Confirm on MultiversX Wallet</div>
             <div class="subtitle">Continue to ${this.walletUrl}</div>
             <div class="actions-container">
-              <button @click="${this.onCancel}" class="button">Cancel</button>
-              <button @click="${this.onConfirm}" class="button btn-proceed">
+              <button @click="${this.dispatchAction(false)}" class="button">
+                Cancel
+              </button>
+              <button
+                @click="${this.dispatchAction(true)}"
+                class="button btn-proceed"
+              >
                 Continue →
               </button>
             </div>
@@ -51,5 +73,21 @@ export class PopupConsent extends LitElement {
 
   render() {
     return this.getTemplate();
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener(
+      `${this.id}-event`,
+      this.handleConfirmEvent as EventListener
+    );
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.removeEventListener(
+      `${this.id}-event`,
+      this.handleConfirmEvent as EventListener
+    );
   }
 }
