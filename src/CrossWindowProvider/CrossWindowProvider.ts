@@ -303,15 +303,17 @@ export class CrossWindowProvider {
 
     popup.walletUrl = this.windowManager.walletUrl;
 
-    document.body.appendChild(popup);
+    safeWindow.document?.body.appendChild(popup);
 
     const popupConsentResponse: boolean = await new Promise<boolean>(
       (resolve) => {
         popup.onConfirm = () => {
           resolve(true);
+          safeWindow.document?.body.removeChild(popup);
         };
         popup.onCancel = () => {
           resolve(false);
+          safeWindow.document?.body.removeChild(popup);
         };
       }
     );
