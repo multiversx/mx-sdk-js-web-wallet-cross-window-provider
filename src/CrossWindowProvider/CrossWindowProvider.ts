@@ -17,7 +17,7 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '../types';
-import './PopupConsentComponent'; // Import the PopupConsent component
+import './PopupConsentComponent';
 import { PopupConsent } from './PopupConsentComponent';
 
 interface ICrossWindowWalletAccount {
@@ -26,7 +26,6 @@ interface ICrossWindowWalletAccount {
   multisig?: string;
   impersonate?: string;
 }
-console.log('\x1b[42m%s\x1b[0m', '--1--');
 
 export class CrossWindowProvider {
   public account: ICrossWindowWalletAccount = { address: '' };

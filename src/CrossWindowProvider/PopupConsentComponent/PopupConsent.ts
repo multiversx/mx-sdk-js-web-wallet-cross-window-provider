@@ -1,15 +1,11 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { dialogId } from './constants';
 import { getStyles } from './getStyles';
 
 @customElement('popup-consent')
 export class PopupConsent extends LitElement {
   @property({ type: String })
-  id = dialogId;
-
-  @property({ type: Boolean })
-  shouldShow = true;
+  id = 'mxcwp_confirmation-dialog';
 
   @property({ type: String })
   walletUrl = '';
@@ -51,7 +47,7 @@ export class PopupConsent extends LitElement {
     html`<style>
         ${getStyles(this.id)}
       </style>
-      <div id="${dialogId}">
+      <div id="${this.id}">
         <div class="content">
           <div class="body">
             <div class="title">Confirm on MultiversX Wallet</div>
