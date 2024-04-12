@@ -18,7 +18,7 @@ import {
   SignMessageStatusEnum
 } from '../types';
 import './PopupConsentComponent'; // Import the PopupConsent component
-import { cancelId, confirmId, dialogId, getMarkup } from './popupConsent';
+import { PopupConsent } from './PopupConsentComponent';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -293,45 +293,26 @@ export class CrossWindowProvider {
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 
-    console.log('\x1b[42m%s\x1b[0m', 'start opening here');
-
     if (!this._shouldShowConsentPopup || !document || !dialog) {
       return true;
     }
 
     const popup = safeWindow.document?.createElement(
       'popup-consent'
-    ) as HTMLElement;
+    ) as PopupConsent;
+
+    popup.walletUrl = this.windowManager.walletUrl;
 
     document.body.appendChild(popup);
 
-    const popupConsentResp = await new Promise<boolean>((resolve) => {
-      popup.addEventListener('confirm', () => resolve(true));
-      popup.addEventListener('cancel', () => resolve(false));
-    });
-
-    dialog.setAttribute('id', dialogId);
-    dialog.innerHTML = getMarkup(this.windowManager.walletUrl);
-
-    document.body.appendChild(dialog);
-    const popupConsentResponse: boolean = await new Promise((resolve) => {
-      const confirmButton = document.getElementById(confirmId);
-      const cancelButton = document.getElementById(cancelId);
-
-      if (!confirmButton || !cancelButton) {
-        resolve(true);
-        document.body.removeChild(dialog);
-        return;
+    const popupConsentResponse: boolean = await new Promise<boolean>(
+      (resolve) => {
+        popup.onConfirm = () => {
+          resolve(true);
+        };
+        popup.onCancel = () => resolve(false);
       }
-      confirmButton.addEventListener('click', function () {
-        resolve(true);
-        document.body.removeChild(dialog);
-      });
-      cancelButton.addEventListener('click', function () {
-        resolve(false);
-        document.body.removeChild(dialog);
-      });
-    });
+    );
 
     this._shouldShowConsentPopup = false;
     return popupConsentResponse;
