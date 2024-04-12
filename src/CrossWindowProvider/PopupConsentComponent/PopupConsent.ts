@@ -48,7 +48,7 @@ export class PopupConsent extends LitElement {
 
   @property({ type: Function })
   getTemplate = () =>
-    html` <style>
+    html`<style>
         ${getStyles(this.id)}
       </style>
       <div id="${dialogId}">
