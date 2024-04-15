@@ -1,12 +1,13 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
+import { WindowManager } from '../WindowManager';
 import { safeWindow } from '../constants';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
+  ErrCouldNotGuardTransactions,
   ErrCouldNotLogin,
   ErrCouldNotSignMessage,
   ErrCouldNotSignTransactions,
-  ErrCouldNotGuardTransactions,
   ErrInstantiationFailed,
   ErrProviderNotInitialized,
   ErrTransactionCancelled
@@ -16,8 +17,8 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '../types';
-import { WindowManager } from '../WindowManager';
-import { cancelId, confirmId, dialogId, getMarkup } from './popupConsent';
+import './PopupConsent';
+import { PopupConsent, confirmationDialogTag } from './PopupConsent';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -290,32 +291,31 @@ export class CrossWindowProvider {
   protected async openPopupConsent(): Promise<boolean> {
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
+
     if (!this._shouldShowConsentPopup || !document || !dialog) {
       return true;
     }
 
-    dialog.setAttribute('id', dialogId);
-    dialog.innerHTML = getMarkup(this.windowManager.walletUrl);
+    const popup = safeWindow.document?.createElement(
+      confirmationDialogTag
+    ) as PopupConsent;
 
-    document.body.appendChild(dialog);
-    const popupConsentResponse: boolean = await new Promise((resolve) => {
-      const confirmButton = document.getElementById(confirmId);
-      const cancelButton = document.getElementById(cancelId);
+    popup.walletUrl = this.windowManager.walletUrl;
 
-      if (!confirmButton || !cancelButton) {
-        resolve(true);
-        document.body.removeChild(dialog);
-        return;
+    safeWindow.document?.body.appendChild(popup);
+
+    const popupConsentResponse: boolean = await new Promise<boolean>(
+      (resolve) => {
+        popup.onConfirm = () => {
+          resolve(true);
+          safeWindow.document?.body.removeChild(popup);
+        };
+        popup.onCancel = () => {
+          resolve(false);
+          safeWindow.document?.body.removeChild(popup);
+        };
       }
-      confirmButton.addEventListener('click', function () {
-        resolve(true);
-        document.body.removeChild(dialog);
-      });
-      cancelButton.addEventListener('click', function () {
-        resolve(false);
-        document.body.removeChild(dialog);
-      });
-    });
+    );
 
     this._shouldShowConsentPopup = false;
     return popupConsentResponse;
