@@ -17,8 +17,8 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '../types';
-import './PopupConsentComponent';
-import { PopupConsent } from './PopupConsentComponent';
+import './PopupConsent';
+import { PopupConsent } from './PopupConsent';
 
 interface ICrossWindowWalletAccount {
   address: string;

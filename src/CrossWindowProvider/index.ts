@@ -1,2 +1,2 @@
 export * from './CrossWindowProvider';
-export * from './PopupConsentComponent';
+export * from './PopupConsent';
