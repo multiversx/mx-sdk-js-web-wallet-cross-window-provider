@@ -64,12 +64,16 @@ export class PopupConsent extends LitElement {
               <button
                 @click="${() => this.dispatchAction(this.events.cancel)}"
                 class="button"
+                data-testid="${this.events.cancel}-btn"
+                id="${this.events.cancel}-btn"
               >
                 Cancel
               </button>
               <button
                 @click="${() => this.dispatchAction(this.events.confirm)}"
                 class="button btn-proceed"
+                data-testid="${this.events.confirm}-btn"
+                id="${this.events.confirm}-btn"
               >
                 Continue →
               </button>
