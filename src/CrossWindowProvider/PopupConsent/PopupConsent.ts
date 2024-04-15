@@ -1,4 +1,5 @@
-import { LitElement, html } from 'lit';
+import { LitElement } from 'lit-element/lit-element.js';
+import { html } from 'lit-html/lit-html.js';
 import { customElement, property } from 'lit/decorators.js';
 import { getStyles } from './getStyles';
 
@@ -13,10 +14,14 @@ export class PopupConsent extends LitElement {
   walletUrl = '';
 
   @property({ type: Function })
-  onConfirm = () => {};
+  onConfirm = () => {
+    console.log('onConfirm');
+  };
 
   @property({ type: Function })
-  onCancel = () => {};
+  onCancel = () => {
+    console.log('onCancel');
+  };
 
   events = {
     confirm: `${this.id}-confirm`,
