@@ -2,10 +2,12 @@ import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { getStyles } from './getStyles';
 
-@customElement('popup-consent')
+export const confirmationDialogTag = 'mxcwp-confirmation-dialog';
+
+@customElement(confirmationDialogTag)
 export class PopupConsent extends LitElement {
   @property({ type: String })
-  id = 'mxcwp_confirmation-dialog';
+  id = confirmationDialogTag;
 
   @property({ type: String })
   walletUrl = '';

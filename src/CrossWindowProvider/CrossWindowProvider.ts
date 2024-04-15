@@ -18,7 +18,7 @@ import {
   SignMessageStatusEnum
 } from '../types';
 import './PopupConsent';
-import { PopupConsent } from './PopupConsent';
+import { PopupConsent, confirmationDialogTag } from './PopupConsent';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -297,7 +297,7 @@ export class CrossWindowProvider {
     }
 
     const popup = safeWindow.document?.createElement(
-      'popup-consent'
+      confirmationDialogTag
     ) as PopupConsent;
 
     popup.walletUrl = this.windowManager.walletUrl;
