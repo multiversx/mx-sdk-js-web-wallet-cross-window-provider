@@ -16,25 +16,33 @@ export class PopupConsent extends LitElement {
   @property({ type: Function })
   onCancel = () => {};
 
-  constructor() {
-    super();
+  events = {
+    confirm: `${this.id}-confirm`,
+    cancel: `${this.id}-cancel`,
+    mounted: `${this.id}-mounted`
+  };
+
+  firstUpdated() {
+    this.dispatchAction(this.events.mounted);
   }
 
-  dispatchAction = (action: boolean) => () => {
-    const event = new CustomEvent(`${this.id}-event`, {
+  dispatchAction = (type: string) => {
+    const event = new CustomEvent(type, {
       bubbles: true, // Allow the event to bubble up through the DOM
-      composed: true, // Allow the event to cross the shadow DOM boundary
-      detail: { message: action }
+      composed: true // Allow the event to cross the shadow DOM boundary
     });
     this.dispatchEvent(event);
   };
 
-  handleConfirmEvent({
-    detail: { message: isConfirmed }
-  }: CustomEvent<{
-    message: boolean;
-  }>) {
-    return isConfirmed ? this.onConfirm() : this.onCancel();
+  handleConfirmEvent({ type }: CustomEvent) {
+    switch (type) {
+      case this.events.cancel:
+        return this.onCancel();
+      case this.events.confirm:
+        return this.onConfirm();
+      default:
+        break;
+    }
   }
 
   // no shadow-root
@@ -53,11 +61,14 @@ export class PopupConsent extends LitElement {
             <div class="title">Confirm on MultiversX Wallet</div>
             <div class="subtitle">Continue to ${this.walletUrl}</div>
             <div class="actions-container">
-              <button @click="${this.dispatchAction(false)}" class="button">
+              <button
+                @click="${() => this.dispatchAction(this.events.cancel)}"
+                class="button"
+              >
                 Cancel
               </button>
               <button
-                @click="${this.dispatchAction(true)}"
+                @click="${() => this.dispatchAction(this.events.confirm)}"
                 class="button btn-proceed"
               >
                 Continue →
@@ -71,19 +82,19 @@ export class PopupConsent extends LitElement {
     return this.getTemplate();
   }
 
+  toggleEvents(action: 'removeEventListener' | 'addEventListener') {
+    [this.events.cancel, this.events.confirm].forEach((event) => {
+      this[action](event, this.handleConfirmEvent as EventListener);
+    });
+  }
+
   connectedCallback() {
     super.connectedCallback();
-    this.addEventListener(
-      `${this.id}-event`,
-      this.handleConfirmEvent as EventListener
-    );
+    this.toggleEvents('addEventListener');
   }
 
   disconnectedCallback() {
     super.disconnectedCallback();
-    this.removeEventListener(
-      `${this.id}-event`,
-      this.handleConfirmEvent as EventListener
-    );
+    this.toggleEvents('removeEventListener');
   }
 }
