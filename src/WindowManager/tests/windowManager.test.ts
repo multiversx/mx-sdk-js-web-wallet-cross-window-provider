@@ -1,8 +1,9 @@
-import { getWalletWindowMock } from '../../test-utils';
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums
-} from '../../types';
+} from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
+import { getWalletWindowMock } from '../../test-utils';
+
 import { WindowManager } from '../WindowManager';
 
 describe('WindowManager', () => {
