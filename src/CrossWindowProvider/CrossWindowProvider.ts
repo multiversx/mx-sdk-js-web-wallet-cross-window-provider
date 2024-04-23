@@ -1,5 +1,4 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
-import { WindowManager } from '../WindowManager';
 import { safeWindow } from '../constants';
 import {
   ErrAccountNotConnected,
@@ -17,7 +16,7 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '../types';
-import './PopupConsent';
+import { WindowManager } from '../WindowManager';
 import { PopupConsent, confirmationDialogTag } from './PopupConsent';
 
 interface ICrossWindowWalletAccount {
@@ -289,6 +288,7 @@ export class CrossWindowProvider {
   }
 
   protected async openPopupConsent(): Promise<boolean> {
+    require('./PopupConsent');
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 
