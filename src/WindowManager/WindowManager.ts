@@ -1,18 +1,22 @@
-import { responseTypeMap, safeWindow } from '../constants';
+import {
+  responseTypeMap,
+  safeWindow
+} from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
+import {
+  CrossWindowProviderRequestEnums,
+  CrossWindowProviderResponseEnums
+} from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
+import {
+  PostMessageParamsType,
+  PostMessageReturnType,
+  ReplyWithPostMessageEventType,
+  ReplyWithPostMessagePayloadType
+} from '@multiversx/sdk-dapp-utils/out/types/crossWindowProviderTypes';
 import {
   ErrCannotEstablishHandshake,
   ErrProviderNotInitialized,
   ErrWalletWindowNotInstantiated
 } from '../errors';
-
-import {
-  CrossWindowProviderRequestEnums,
-  CrossWindowProviderResponseEnums,
-  PostMessageParamsType,
-  PostMessageReturnType,
-  ReplyWithPostMessageEventType,
-  ReplyWithPostMessagePayloadType
-} from '../types';
 
 export class WindowManager {
   private _walletUrl = '';
