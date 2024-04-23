@@ -1,6 +1,10 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
-import { WindowManager } from '../WindowManager';
-import { safeWindow } from '../constants';
+import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
+import {
+  CrossWindowProviderRequestEnums,
+  CrossWindowProviderResponseEnums,
+  SignMessageStatusEnum
+} from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
@@ -12,11 +16,7 @@ import {
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
-import {
-  CrossWindowProviderRequestEnums,
-  CrossWindowProviderResponseEnums,
-  SignMessageStatusEnum
-} from '../types';
+import { WindowManager } from '../WindowManager';
 import './PopupConsent';
 import { PopupConsent, confirmationDialogTag } from './PopupConsent';
 
