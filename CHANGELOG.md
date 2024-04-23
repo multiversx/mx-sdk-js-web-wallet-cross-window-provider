@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[0.1.1](https://github.com/multiversx/mx-wallet-dapp/pull/38)] - 2024-04-23
+- [Removed old `out` folder and recreated it with compile](https://github.com/multiversx/mx-wallet-dapp/pull/38)
+
+
 ## [[0.1.0](https://github.com/multiversx/mx-wallet-dapp/pull/37)] - 2024-04-23
 - [Added type and constant imports from `@multiversx/sdk-dapp-utils`](https://github.com/multiversx/mx-wallet-dapp/pull/34)
-
 
 ## [[0.0.39](https://github.com/multiversx/mx-wallet-dapp/pull/33)] - 2024-04-23
