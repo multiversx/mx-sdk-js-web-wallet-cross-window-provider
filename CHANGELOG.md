@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+
+## [[0.1.2](https://github.com/multiversx/mx-wallet-dapp/pull/40)] - 2024-04-25
+- [Fixed double mounting of web component](https://github.com/multiversx/mx-wallet-dapp/pull/39)
+
 ## [[0.1.1](https://github.com/multiversx/mx-wallet-dapp/pull/38)] - 2024-04-23
 - [Removed old `out` folder and recreated it with compile](https://github.com/multiversx/mx-wallet-dapp/pull/38)
 
