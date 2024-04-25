@@ -5,6 +5,7 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
+import { WindowManager } from '../WindowManager';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
@@ -16,7 +17,6 @@ import {
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
-import { WindowManager } from '../WindowManager';
 import { PopupConsent, confirmationDialogTag } from './PopupConsent';
 
 interface ICrossWindowWalletAccount {
@@ -25,6 +25,7 @@ interface ICrossWindowWalletAccount {
   multisig?: string;
   impersonate?: string;
 }
+console.log('\x1b[42m%s\x1b[0m', 'csw2');
 
 export class CrossWindowProvider {
   public account: ICrossWindowWalletAccount = { address: '' };
