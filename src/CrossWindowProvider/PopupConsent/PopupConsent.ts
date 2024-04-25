@@ -1,10 +1,10 @@
+import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
 import { LitElement, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import { getStyles } from './getStyles';
 
 export const confirmationDialogTag = 'mxcwp-confirmation-dialog';
 
-@customElement(confirmationDialogTag)
 export class PopupConsent extends LitElement {
   @property({ type: String })
   id = confirmationDialogTag;
@@ -107,4 +107,9 @@ export class PopupConsent extends LitElement {
     super.disconnectedCallback();
     this.toggleEvents('removeEventListener');
   }
+}
+
+const customElements = safeWindow?.customElements;
+if (customElements && !customElements.get(confirmationDialogTag)) {
+  customElements.define(confirmationDialogTag, PopupConsent);
 }
