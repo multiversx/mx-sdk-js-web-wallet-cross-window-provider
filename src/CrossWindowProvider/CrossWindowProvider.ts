@@ -17,11 +17,8 @@ import {
   ErrTransactionCancelled
 } from '../errors';
 import { WindowManager } from '../WindowManager';
+import { PopupConsent } from './PopupConsent';
 import { confirmationDialogTag } from './PopupConsent/constants';
-
-const PopupConsent: typeof import('./PopupConsent').PopupConsent = safeWindow
-  ? require('./PopupConsent').PopupConsent
-  : {};
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -292,10 +289,7 @@ export class CrossWindowProvider {
   }
 
   protected async openPopupConsent(): Promise<boolean> {
-    if (Boolean(safeWindow?.customElements)) {
-      require('./PopupConsent');
-    }
-
+    require('./PopupConsent');
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 
@@ -305,7 +299,7 @@ export class CrossWindowProvider {
 
     const popup = safeWindow.document?.createElement(
       confirmationDialogTag
-    ) as InstanceType<typeof PopupConsent>;
+    ) as PopupConsent;
 
     popup.walletUrl = this.windowManager.walletUrl;
 
