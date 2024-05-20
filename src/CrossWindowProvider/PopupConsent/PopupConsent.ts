@@ -1,9 +1,7 @@
 import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
 import { LitElement, html } from 'lit';
 import { property } from 'lit/decorators.js';
-import { getStyles } from './getStyles';
-
-export const confirmationDialogTag = 'mxcwp-confirmation-dialog';
+import { confirmationDialogTag, getStyles } from './helpers';
 
 export class PopupConsent extends LitElement {
   @property({ type: String })
