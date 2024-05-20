@@ -17,7 +17,7 @@ import {
   ErrTransactionCancelled
 } from '../errors';
 import { WindowManager } from '../WindowManager';
-import { confirmationDialogTag } from './PopupConsent/helpers';
+import { confirmationDialogTag } from './PopupConsent/constants';
 
 const PopupConsent: typeof import('./PopupConsent').PopupConsent = safeWindow
   ? require('./PopupConsent').PopupConsent

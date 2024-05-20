@@ -1,7 +1,5 @@
 import { unsafeCSS } from 'lit';
 
-export const confirmationDialogTag = 'mxcwp-confirmation-dialog';
-
 export const getStyles = (dialogId: string) => `#${unsafeCSS(dialogId)} {
   position: fixed;
   z-index: 9999;
