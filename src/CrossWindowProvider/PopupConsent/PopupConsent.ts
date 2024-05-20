@@ -1,23 +1,28 @@
+import { Element, element, stringAttribute, attribute } from '@lume/element';
 import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
-import { LitElement, html } from 'lit';
-import { property } from 'lit/decorators.js';
+import html from 'solid-js/html';
 import { confirmationDialogTag } from './constants';
 import { getStyles } from './getStyles';
 
-export class PopupConsent extends LitElement {
-  @property({ type: String })
-  id = confirmationDialogTag;
+@element(confirmationDialogTag)
+export class PopupConsent extends Element {
+  // eslint-disable-next-line
+  // @ts-ignore
+  @stringAttribute id = '';
 
-  @property({ type: String })
-  walletUrl = '';
+  // eslint-disable-next-line
+  // @ts-ignore
+  @stringAttribute walletUrl = '';
 
-  @property({ type: Function })
-  onConfirm = () => {
+  // eslint-disable-next-line
+  // @ts-ignore
+  @attribute onConfirm = () => {
     console.log('onConfirm');
   };
 
-  @property({ type: Function })
-  onCancel = () => {
+  // eslint-disable-next-line
+  // @ts-ignore
+  @attribute onCancel = () => {
     console.log('onCancel');
   };
 
@@ -55,41 +60,35 @@ export class PopupConsent extends LitElement {
     return this;
   }
 
-  @property({ type: Function })
-  getTemplate = () =>
-    html`<style>
-        ${getStyles(this.id)}
-      </style>
-      <div id="${this.id}">
-        <div class="content">
-          <div class="body">
-            <div class="title">Confirm on MultiversX Wallet</div>
-            <div class="subtitle">Continue to ${this.walletUrl}</div>
-            <div class="actions-container">
-              <button
-                @click="${() => this.dispatchAction(this.events.cancel)}"
-                class="button"
-                data-testid="${this.events.cancel}-btn"
-                id="${this.events.cancel}-btn"
-              >
-                Cancel
-              </button>
-              <button
-                @click="${() => this.dispatchAction(this.events.confirm)}"
-                class="button btn-proceed"
-                data-testid="${this.events.confirm}-btn"
-                id="${this.events.confirm}-btn"
-              >
-                Continue →
-              </button>
-            </div>
+  css = getStyles(this.id);
+
+  template = () =>
+    html`<div id="${this.id}">
+      <div class="content">
+        <div class="body">
+          <div class="title">Confirm on MultiversX Wallet</div>
+          <div class="subtitle">Continue to ${this.walletUrl}</div>
+          <div class="actions-container">
+            <button
+              @click="${() => this.dispatchAction(this.events.cancel)}"
+              class="button"
+              data-testid="${this.events.cancel}-btn"
+              id="${this.events.cancel}-btn"
+            >
+              Cancel
+            </button>
+            <button
+              @click="${() => this.dispatchAction(this.events.confirm)}"
+              class="button btn-proceed"
+              data-testid="${this.events.confirm}-btn"
+              id="${this.events.confirm}-btn"
+            >
+              Continue →
+            </button>
           </div>
         </div>
-      </div>`;
-
-  render() {
-    return this.getTemplate();
-  }
+      </div>
+    </div>`;
 
   toggleEvents(action: 'removeEventListener' | 'addEventListener') {
     [this.events.cancel, this.events.confirm].forEach((event) => {
