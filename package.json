@@ -3,6 +3,7 @@
   "version": "0.1.3",
   "description": "Signing provider for dApps: Cross Window",
   "main": "out/index.js",
+  "module": "out/index.mjs",
   "types": "out/index.d.js",
   "files": [
     "out/**/*"
@@ -11,7 +12,9 @@
     "node": ">=18"
   },
   "scripts": {
-    "compile": "tsc -p tsconfig.json",
+    "compile": "tsc && tsc-alias",
+    "build-esbuild": "rimraf out && node esbuild.js",
+    "build": "yarn build-esbuild && yarn compile",
     "pretest": "npm run compile",
     "prepare": "npm run compile",
     "lint": "eslint --fix --ext js,ts src",
@@ -25,6 +28,7 @@
     "@types/node": "18.19.0",
     "@typescript-eslint/eslint-plugin": "5.0.0",
     "@typescript-eslint/parser": "5.14.0",
+    "esbuild": "^0.21.4",
     "eslint": "8.24.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-config-standard": "17.0.0",
@@ -38,6 +42,7 @@
     "jest-environment-jsdom": "28.1.3",
     "prettier": "3.1.0",
     "ts-jest": "29.1.1",
+    "tsc-alias": "^1.8.10",
     "typescript": "5.0.4"
   },
   "peerDependencies": {
