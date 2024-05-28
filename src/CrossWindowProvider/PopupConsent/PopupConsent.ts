@@ -1,4 +1,4 @@
-import { Element, element, stringAttribute, attribute } from '@lume/element';
+import { Element, element, attribute } from '@lume/element';
 import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
 import html from 'solid-js/html';
 import { confirmationDialogTag } from './constants';
@@ -8,11 +8,11 @@ import { getStyles } from './getStyles';
 export class PopupConsent extends Element {
   // eslint-disable-next-line
   // @ts-ignore
-  @stringAttribute id = '';
+  @attribute id = '';
 
   // eslint-disable-next-line
   // @ts-ignore
-  @stringAttribute walletUrl = '';
+  @attribute walletUrl = '';
 
   // eslint-disable-next-line
   // @ts-ignore
