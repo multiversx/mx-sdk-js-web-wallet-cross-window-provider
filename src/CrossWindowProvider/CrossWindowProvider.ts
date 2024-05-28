@@ -6,6 +6,10 @@ import {
   SignMessageStatusEnum
 } from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
 import {
+  PopupConsent,
+  confirmationDialogTag
+} from 'lib/components/PopupConsent/PopupConsent';
+import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
   ErrCouldNotGuardTransactions,
@@ -17,7 +21,6 @@ import {
   ErrTransactionCancelled
 } from '../errors';
 import { WindowManager } from '../WindowManager';
-import { PopupConsent, confirmationDialogTag } from './PopupConsent';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -277,6 +280,9 @@ export class CrossWindowProvider {
     const isWalletOpened = this.windowManager?.isWalletOpened(
       CrossWindowProviderRequestEnums.cancelAction
     );
+
+    console.log('isWalletOpened', isWalletOpened);
+
     if (!isWalletOpened) {
       return;
     }
@@ -288,7 +294,7 @@ export class CrossWindowProvider {
   }
 
   protected async openPopupConsent(): Promise<boolean> {
-    require('./PopupConsent');
+    require('../lib/components/PopupConsent/PopupConsent');
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 

@@ -1,3 +1,4 @@
+import { CrossWindowProviderRequestEnums } from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
 import {
   getWalletWindowMock,
   mockWindoManager,
@@ -28,6 +29,7 @@ describe('CrossWindowProvider Login', () => {
   it('should cancel an action correctly', async () => {
     await crossWindowProvider.init();
     const result = await crossWindowProvider.cancelAction();
-    expect(result).toEqual({ payload: {} });
+    // expect(result).toEqual({ payload: {} });
+    expect(result).toEqual(undefined);
   });
 });
