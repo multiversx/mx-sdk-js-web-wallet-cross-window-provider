@@ -25,9 +25,12 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+      
+      - name: Run tests
+        run: npm run test
 
       - name: Build project
-        run: npm run compile
+        run: npm run build
 
       - name: Get package info
         id: package
