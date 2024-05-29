@@ -1,4 +1,3 @@
-import { mockWindoManager } from '../../test-utils';
 import { CrossWindowProvider } from '../CrossWindowProvider';
 
 describe('CrossWindowProvider', () => {
@@ -6,7 +5,6 @@ describe('CrossWindowProvider', () => {
 
   beforeEach(() => {
     crossWindowProvider = CrossWindowProvider.getInstance();
-    mockWindoManager();
   });
 
   it('should be a singleton instance', () => {

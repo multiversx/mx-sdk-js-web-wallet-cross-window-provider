@@ -1,8 +1,4 @@
-import {
-  getWalletWindowMock,
-  mockWindoManager,
-  WalletWindowMockType
-} from '../../test-utils';
+import { getWalletWindowMock, WalletWindowMockType } from '../../test-utils';
 import { WindowManager } from '../../WindowManager/WindowManager';
 import { CrossWindowProvider } from '../CrossWindowProvider';
 
@@ -15,12 +11,13 @@ describe('CrossWindowProvider Login', () => {
     walletWindowMock = getWalletWindowMock();
     WindowManager.getInstance().postMessage = jest
       .fn()
-      .mockImplementation(() => ({
-        payload: {}
-      }));
+      .mockImplementation(() => undefined);
+
+    WindowManager.getInstance().isWalletOpened = jest
+      .fn()
+      .mockImplementation(() => true);
 
     crossWindowProvider = CrossWindowProvider.getInstance();
-    mockWindoManager();
     windowOpenSpy = jest.spyOn(window, 'open');
     windowOpenSpy.mockImplementation(() => walletWindowMock);
   });
@@ -28,6 +25,6 @@ describe('CrossWindowProvider Login', () => {
   it('should cancel an action correctly', async () => {
     await crossWindowProvider.init();
     const result = await crossWindowProvider.cancelAction();
-    expect(result).toEqual({ payload: {} });
+    expect(result).toBe(undefined);
   });
 });

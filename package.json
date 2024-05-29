@@ -42,8 +42,7 @@
   },
   "peerDependencies": {
     "@multiversx/sdk-core": ">= 12.18.0",
-    "@multiversx/sdk-dapp-utils": ">= 0.0.1",
-    "lit": ">=3.1.2"
+    "@multiversx/sdk-dapp-utils": ">= 0.0.1"
   },
   "dependencies": {
     "@types/jest": "^29.5.11",
