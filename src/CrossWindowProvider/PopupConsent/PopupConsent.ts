@@ -3,10 +3,14 @@ import { confirmationDialogTag } from './constants';
 import { getStyles } from './getStyles';
 
 export class PopupConsent extends HTMLElement {
-  public walletUrl: string = '';
+  public walletUrl = '';
   public identifier: string = confirmationDialogTag;
-  public onCancel = () => {};
-  public onConfirm = () => {};
+  public onCancel = () => {
+    console.log('onCancel');
+  };
+  public onConfirm = () => {
+    console.log('onConfirm');
+  };
 
   constructor() {
     super();
