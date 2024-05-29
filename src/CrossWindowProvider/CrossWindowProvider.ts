@@ -5,6 +5,7 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
+import { WindowManager } from '../WindowManager';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
@@ -16,9 +17,6 @@ import {
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
-import { WindowManager } from '../WindowManager';
-import { PopupConsent } from './PopupConsent';
-import { confirmationDialogTag } from './PopupConsent/constants';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -289,7 +287,8 @@ export class CrossWindowProvider {
   }
 
   protected async openPopupConsent(): Promise<boolean> {
-    require('./PopupConsent');
+    // await import('./PopupConsent');
+    await import('./Element');
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 
@@ -298,8 +297,13 @@ export class CrossWindowProvider {
     }
 
     const popup = safeWindow.document?.createElement(
-      confirmationDialogTag
-    ) as PopupConsent;
+      'mxcwp-confirmation-dialog'
+    ) as any;
+    safeWindow.document?.body.appendChild(popup);
+
+    // const popup = safeWindow.document?.createElement(
+    //   confirmationDialogTag
+    // ) as PopupConsent;
 
     popup.walletUrl = this.windowManager.walletUrl;
 
@@ -307,11 +311,11 @@ export class CrossWindowProvider {
 
     const popupConsentResponse: boolean = await new Promise<boolean>(
       (resolve) => {
-        popup.onConfirm = () => {
+        popup['onConfirm'] = () => {
           resolve(true);
           safeWindow.document?.body.removeChild(popup);
         };
-        popup.onCancel = () => {
+        popup['onCancel'] = () => {
           resolve(false);
           safeWindow.document?.body.removeChild(popup);
         };
