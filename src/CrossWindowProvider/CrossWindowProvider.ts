@@ -17,6 +17,8 @@ import {
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
+import { PopupConsent } from './PopupConsent';
+import { confirmationDialogTag } from './PopupConsent/constants';
 
 interface ICrossWindowWalletAccount {
   address: string;
@@ -287,8 +289,7 @@ export class CrossWindowProvider {
   }
 
   protected async openPopupConsent(): Promise<boolean> {
-    // await import('./PopupConsent');
-    await import('./Element');
+    await import('./PopupConsent/PopupConsent');
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 
@@ -297,13 +298,8 @@ export class CrossWindowProvider {
     }
 
     const popup = safeWindow.document?.createElement(
-      'mxcwp-confirmation-dialog'
-    ) as any;
-    safeWindow.document?.body.appendChild(popup);
-
-    // const popup = safeWindow.document?.createElement(
-    //   confirmationDialogTag
-    // ) as PopupConsent;
+      confirmationDialogTag
+    ) as PopupConsent;
 
     popup.walletUrl = this.windowManager.walletUrl;
 
@@ -311,11 +307,11 @@ export class CrossWindowProvider {
 
     const popupConsentResponse: boolean = await new Promise<boolean>(
       (resolve) => {
-        popup['onConfirm'] = () => {
+        popup.onConfirm = () => {
           resolve(true);
           safeWindow.document?.body.removeChild(popup);
         };
-        popup['onCancel'] = () => {
+        popup.onCancel = () => {
           resolve(false);
           safeWindow.document?.body.removeChild(popup);
         };

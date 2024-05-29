@@ -1,50 +1,31 @@
-import { Element, element, attribute } from '@lume/element';
 import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
-import html from 'solid-js/html';
 import { confirmationDialogTag } from './constants';
 import { getStyles } from './getStyles';
 
-@element(confirmationDialogTag)
-export class PopupConsent extends Element {
-  // eslint-disable-next-line
-  // @ts-ignore
-  @attribute id = '';
+export class PopupConsent extends HTMLElement {
+  public walletUrl: string = '';
+  public identifier: string = confirmationDialogTag;
+  public onCancel = () => {};
+  public onConfirm = () => {};
 
-  // eslint-disable-next-line
-  // @ts-ignore
-  @attribute walletUrl = '';
-
-  // eslint-disable-next-line
-  // @ts-ignore
-  @attribute onConfirm = () => {
-    console.log('onConfirm');
-  };
-
-  // eslint-disable-next-line
-  // @ts-ignore
-  @attribute onCancel = () => {
-    console.log('onCancel');
-  };
-
-  events = {
-    confirm: `${this.id}-confirm`,
-    cancel: `${this.id}-cancel`,
-    mounted: `${this.id}-mounted`
-  };
-
-  firstUpdated() {
-    this.dispatchAction(this.events.mounted);
+  constructor() {
+    super();
   }
 
-  dispatchAction = (type: string) => {
-    const event = new CustomEvent(type, {
-      bubbles: true, // Allow the event to bubble up through the DOM
-      composed: true // Allow the event to cross the shadow DOM boundary
-    });
-    this.dispatchEvent(event);
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    if (oldValue !== newValue) {
+      (this as any)[name.replace(/-./g, (x) => x[1].toUpperCase())] = newValue;
+      this.render();
+    }
+  }
+
+  public events = {
+    confirm: `${this.identifier}-confirm`,
+    cancel: `${this.identifier}-cancel`,
+    mounted: `${this.identifier}-mounted`
   };
 
-  handleConfirmEvent({ type }: CustomEvent) {
+  private handleConfirmEvent({ type }: CustomEvent) {
     switch (type) {
       case this.events.cancel:
         return this.onCancel();
@@ -55,54 +36,61 @@ export class PopupConsent extends Element {
     }
   }
 
-  // no shadow-root
-  createRenderRoot() {
-    return this;
-  }
+  private dispatchAction = (type: string) => {
+    const event = new CustomEvent(type, {
+      bubbles: true, // Allow the event to bubble up through the DOM
+      composed: true // Allow the event to cross the shadow DOM boundary
+    });
+    this.dispatchEvent(event);
+  };
 
-  css = getStyles(this.id);
-
-  template = () =>
-    html`<div id="${this.id}">
-      <div class="content">
-        <div class="body">
-          <div class="title">Confirm on MultiversX Wallet</div>
-          <div class="subtitle">Continue to ${this.walletUrl}</div>
-          <div class="actions-container">
-            <button
-              @click="${() => this.dispatchAction(this.events.cancel)}"
-              class="button"
-              data-testid="${this.events.cancel}-btn"
-              id="${this.events.cancel}-btn"
-            >
-              Cancel
-            </button>
-            <button
-              @click="${() => this.dispatchAction(this.events.confirm)}"
-              class="button btn-proceed"
-              data-testid="${this.events.confirm}-btn"
-              id="${this.events.confirm}-btn"
-            >
-              Continue →
-            </button>
-          </div>
+  render() {
+    this.innerHTML = `
+        <style>
+          ${getStyles(confirmationDialogTag)}
+        </style>
+        <div id="${confirmationDialogTag}">
+            <div class="content">
+                <div class="body">
+                    <div class="title">Confirm on MultiversX Wallet</div>
+                    <div class="subtitle">Continue to ${this.walletUrl}</div>
+                    <div class="actions-container">
+                        <button
+                            class="button"
+                            data-testid="${this.events.cancel}-btn"
+                            id="${this.events.cancel}-btn"
+                        >
+                            Cancel
+                        </button>
+                        <button
+                            class="button btn-proceed"
+                            data-testid="${this.events.confirm}-btn"
+                            id="${this.events.confirm}-btn"
+                        >
+                            Continue →
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>`;
+      `;
+  }
 
   toggleEvents(action: 'removeEventListener' | 'addEventListener') {
     [this.events.cancel, this.events.confirm].forEach((event) => {
+      this.querySelector(`#${event}-btn`)?.[action]('click', () =>
+        this.dispatchAction(event)
+      );
       this[action](event, this.handleConfirmEvent as EventListener);
     });
   }
 
   connectedCallback() {
-    super.connectedCallback();
+    this.render();
     this.toggleEvents('addEventListener');
   }
 
   disconnectedCallback() {
-    super.disconnectedCallback();
     this.toggleEvents('removeEventListener');
   }
 }
