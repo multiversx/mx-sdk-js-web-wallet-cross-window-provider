@@ -2,7 +2,6 @@ import { Transaction } from '@multiversx/sdk-core/out';
 import {
   createMockTransaction,
   getWalletWindowMock,
-  mockWindoManager,
   WalletWindowMockType
 } from '../../test-utils';
 import { WindowManager } from '../../WindowManager/WindowManager';
@@ -30,7 +29,6 @@ describe('CrossWindowProvider Login', () => {
       }));
 
     crossWindowProvider = CrossWindowProvider.getInstance();
-    mockWindoManager();
     windowOpenSpy = jest.spyOn(window, 'open');
     windowOpenSpy.mockImplementation(() => walletWindowMock);
   });

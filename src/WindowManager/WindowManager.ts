@@ -22,7 +22,7 @@ export class WindowManager {
   private _walletUrl = '';
   private initialized = false;
   private static _instance: WindowManager = new WindowManager();
-  walletWindow: Window | null = null;
+  public walletWindow: Window | null = null;
 
   constructor() {
     safeWindow.addEventListener?.('beforeunload', () => {
