@@ -1,9 +1,5 @@
 import { SignableMessage } from '@multiversx/sdk-core/out';
-import {
-  getWalletWindowMock,
-  mockWindoManager,
-  WalletWindowMockType
-} from '../../test-utils';
+import { getWalletWindowMock, WalletWindowMockType } from '../../test-utils';
 import { WindowManager } from '../../WindowManager/WindowManager';
 import { CrossWindowProvider } from '../CrossWindowProvider';
 
@@ -26,7 +22,6 @@ describe('CrossWindowProvider Login', () => {
       }));
 
     crossWindowProvider = CrossWindowProvider.getInstance();
-    mockWindoManager();
     windowOpenSpy = jest.spyOn(window, 'open');
     windowOpenSpy.mockImplementation(() => walletWindowMock);
   });

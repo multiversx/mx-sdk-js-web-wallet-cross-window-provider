@@ -278,6 +278,9 @@ export class CrossWindowProvider {
     const isWalletOpened = this.windowManager?.isWalletOpened(
       CrossWindowProviderRequestEnums.cancelAction
     );
+
+    console.log(isWalletOpened);
+
     if (!isWalletOpened) {
       return;
     }
