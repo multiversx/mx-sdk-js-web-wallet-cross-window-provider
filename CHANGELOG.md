@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [[0.1.3](https://github.com/multiversx/mx-wallet-dapp/pull/44)] - 2024-05-29
+## [[0.1.3](https://github.com/multiversx/mx-wallet-dapp/pull/45)] - 2024-05-29
 - [Changed lit library to vanilla](https://github.com/multiversx/mx-wallet-dapp/pull/44)
 
 ## [[0.1.3](https://github.com/multiversx/mx-wallet-dapp/pull/42)] - 2024-04-25
