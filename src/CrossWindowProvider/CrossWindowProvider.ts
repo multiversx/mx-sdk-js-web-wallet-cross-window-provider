@@ -5,7 +5,6 @@ import {
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
-import { WindowManager } from '../WindowManager';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
@@ -17,6 +16,7 @@ import {
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
+import { WindowManager } from '../WindowManager';
 import { PopupConsent } from './PopupConsent';
 import { confirmationDialogTag } from './PopupConsent/constants';
 
@@ -29,18 +29,14 @@ interface ICrossWindowWalletAccount {
 
 export class CrossWindowProvider {
   public account: ICrossWindowWalletAccount = { address: '' };
-  private initialized = false;
-  private windowManager: WindowManager;
-  private static _instance: CrossWindowProvider = new CrossWindowProvider();
+  protected initialized = false;
+  protected windowManager: WindowManager;
+  protected static _instance: CrossWindowProvider | null = null;
   private accessToken: string | undefined = undefined;
   protected _shouldShowConsentPopup = false;
 
-  private constructor() {
-    if (CrossWindowProvider._instance) {
-      throw new ErrInstantiationFailed();
-    }
-    this.windowManager = WindowManager.getInstance();
-    CrossWindowProvider._instance = this;
+  public constructor() {
+    this.windowManager = new WindowManager();
   }
 
   public setShouldShowConsentPopup(shouldShow: boolean) {
@@ -58,17 +54,30 @@ export class CrossWindowProvider {
   }
 
   public static getInstance(): CrossWindowProvider {
+    if (!CrossWindowProvider._instance) {
+      CrossWindowProvider._instance = new CrossWindowProvider();
+      return CrossWindowProvider._instance;
+    }
+
     return CrossWindowProvider._instance;
   }
 
+  public getWindowManager(): WindowManager {
+    return this.windowManager;
+  }
+
   public setAddress(address: string): CrossWindowProvider {
+    if (!CrossWindowProvider._instance) {
+      throw new ErrInstantiationFailed();
+    }
+
     this.account.address = address;
     return CrossWindowProvider._instance;
   }
 
   public setWalletUrl(url: string): CrossWindowProvider {
     this.windowManager.setWalletUrl(url);
-    return CrossWindowProvider._instance;
+    return this;
   }
 
   async init(): Promise<boolean> {
@@ -98,12 +107,6 @@ export class CrossWindowProvider {
     }
 
     this.accessToken = options.token;
-
-    const popupConsentResponse = await this.openPopupConsent();
-
-    if (!popupConsentResponse) {
-      throw new ErrCouldNotLogin();
-    }
 
     const {
       payload: { data, error }
@@ -292,7 +295,6 @@ export class CrossWindowProvider {
   }
 
   protected async openPopupConsent(): Promise<boolean> {
-    await import('./PopupConsent/PopupConsent');
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 

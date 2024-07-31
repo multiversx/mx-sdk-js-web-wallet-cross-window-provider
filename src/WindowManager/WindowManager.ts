@@ -20,30 +20,24 @@ import {
 
 export class WindowManager {
   private _walletUrl = '';
-  private initialized = false;
-  private static _instance: WindowManager = new WindowManager();
+  protected initialized = false;
   public walletWindow: Window | null = null;
 
   constructor() {
     safeWindow.addEventListener?.('beforeunload', () => {
-      this.walletWindow?.close();
+      this.closeWalletWindow();
     });
 
     safeWindow.name = safeWindow.location?.origin;
-    WindowManager._instance = this; // TODO: remove singleton
   }
 
   public get walletUrl(): string {
     return this._walletUrl;
   }
 
-  public static getInstance(): WindowManager {
-    return WindowManager._instance;
-  }
-
   public setWalletUrl(url: string): WindowManager {
     this._walletUrl = url;
-    return WindowManager._instance;
+    return this;
   }
 
   async init(): Promise<boolean> {
@@ -64,9 +58,8 @@ export class WindowManager {
       return true;
     }
 
-    this.walletWindow?.close();
-    this.walletWindow =
-      safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
+    this.closeWalletWindow();
+    await this.setWalletWindow();
 
     const { payload: isWalletReady } = await this.listenOnce(
       CrossWindowProviderResponseEnums.handshakeResponse
@@ -110,7 +103,9 @@ export class WindowManager {
             }
             break;
         }
-      } catch {}
+      } catch (e) {
+        console.error(e);
+      }
     };
 
     safeWindow.addEventListener?.('message', eventHandler);
@@ -188,8 +183,17 @@ export class WindowManager {
 
     const data = await this.listenOnce(responseTypeMap[type]);
 
-    this.walletWindow?.close();
+    this.closeWalletWindow();
 
     return data;
+  }
+
+  public closeWalletWindow() {
+    this.walletWindow?.close();
+  }
+
+  public async setWalletWindow(): Promise<void> {
+    this.walletWindow =
+      safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
   }
 }

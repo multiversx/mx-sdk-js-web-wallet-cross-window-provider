@@ -4,7 +4,6 @@ import {
   getWalletWindowMock,
   WalletWindowMockType
 } from '../../test-utils';
-import { WindowManager } from '../../WindowManager/WindowManager';
 import { CrossWindowProvider } from '../CrossWindowProvider';
 
 describe('CrossWindowProvider Login', () => {
@@ -22,7 +21,7 @@ describe('CrossWindowProvider Login', () => {
       senderUsername: 'sender'
     });
 
-    WindowManager.getInstance().postMessage = jest
+    CrossWindowProvider.getInstance().getWindowManager().postMessage = jest
       .fn()
       .mockImplementation(() => ({
         payload: { data: [mockTransaction.toPlainObject()] }
