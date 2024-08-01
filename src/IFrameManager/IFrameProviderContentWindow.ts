@@ -79,9 +79,18 @@ export class IFrameProviderContentWindow {
     this.iframe.style.borderRadius = '0 0 5px 5px';
 
     this.body.appendChild(this.iframe);
-
     this.contentWindow = this.iframe.contentWindow;
 
+    this.setupWindow();
+
+    if (anchor) {
+      anchor.appendChild(this.container);
+    } else {
+      document.body.appendChild(this.container);
+    }
+  }
+
+  private setupWindow() {
     this.iframe.onload = () => {
       this.contentWindow = this.iframe.contentWindow;
 
@@ -91,12 +100,6 @@ export class IFrameProviderContentWindow {
 
       this.iframe.dispatchEvent(event);
     };
-
-    if (anchor) {
-      anchor.appendChild(this.container);
-    } else {
-      document.body.appendChild(this.container);
-    }
 
     this.setupResizable();
     this.setupDraggable();
