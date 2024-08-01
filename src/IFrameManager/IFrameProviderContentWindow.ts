@@ -1,3 +1,5 @@
+import { getSafeWindow } from '../helpers/getSafeWindow';
+
 export class IFrameProviderContentWindow {
   public iframe: HTMLIFrameElement;
   public contentWindow: Window | null;
@@ -229,7 +231,7 @@ export class IFrameProviderContentWindow {
 
       const onMouseMove = (ev: MouseEvent) => {
         moveAt(ev.pageX, ev.pageY);
-        window.getSelection()?.removeAllRanges();
+        getSafeWindow().getSelection()?.removeAllRanges();
       };
 
       // move the container on mousemove
