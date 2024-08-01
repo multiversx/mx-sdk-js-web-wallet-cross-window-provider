@@ -4,7 +4,7 @@ import {
   PostMessageParamsType,
   PostMessageReturnType
 } from '@multiversx/sdk-dapp-utils/out/types/crossWindowProviderTypes';
-import { getSafeDocument } from '../helpers/getSafeDocument';
+import { safeDocument } from '../constants';
 import { WindowManager } from '../WindowManager';
 import { IFrameProviderContentWindow } from './IFrameProviderContentWindow';
 
@@ -64,7 +64,7 @@ export class IframeManager extends WindowManager {
       return;
     }
 
-    const anchor = getSafeDocument().getElementById('root');
+    const anchor = safeDocument.getElementById?.('root');
     this.floatingWalletComponent = new IFrameProviderContentWindow({
       id: 'floating-wallet',
       anchor,

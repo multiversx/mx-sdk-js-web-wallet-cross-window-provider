@@ -1,4 +1,4 @@
-import { getSafeWindow } from '../helpers/getSafeWindow';
+import { safeDocument, safeWindow } from '../constants';
 import {
   bodyStyle,
   closeWalletButtonStyle,
@@ -29,10 +29,10 @@ export class IFrameProviderContentWindow {
 
     this.onClose = onClose;
 
-    this.container = document.createElement('div');
-    this.header = document.createElement('div');
-    this.body = document.createElement('div');
-    this.iframe = document.createElement('iframe');
+    this.container = safeDocument.createElement?.('div');
+    this.header = safeDocument.createElement?.('div');
+    this.body = safeDocument.createElement?.('div');
+    this.iframe = safeDocument.createElement?.('iframe');
 
     this.buildWindow(id, url);
     this.contentWindow = this.iframe.contentWindow;
@@ -42,7 +42,7 @@ export class IFrameProviderContentWindow {
     if (anchor) {
       anchor.appendChild(this.container);
     } else {
-      document.body.appendChild(this.container);
+      safeDocument.body?.appendChild?.(this.container);
     }
   }
 
@@ -69,11 +69,11 @@ export class IFrameProviderContentWindow {
   }
 
   private getHeaderButtons() {
-    const title = document.createElement('span');
+    const title = safeDocument.createElement?.('span');
     title.innerText = 'Wallet';
     this.header.appendChild(title);
 
-    const collapsibleButton = document.createElement('span');
+    const collapsibleButton = safeDocument.createElement?.('span');
     collapsibleButton.id = 'iframe-toggle-button';
     collapsibleButton.innerText = '+';
     collapsibleButton.style.cssText = collapsibleButtonStyle;
@@ -90,7 +90,7 @@ export class IFrameProviderContentWindow {
       );
     };
 
-    const closeWalletButton = document.createElement('span');
+    const closeWalletButton = safeDocument.createElement?.('span');
     closeWalletButton.id = 'iframe-close-button';
     closeWalletButton.innerText = '✖';
     closeWalletButton.style.cssText = closeWalletButtonStyle;
@@ -176,21 +176,21 @@ export class IFrameProviderContentWindow {
 
       const onMouseMove = (ev: MouseEvent) => {
         moveAt(ev.pageX, ev.pageY);
-        getSafeWindow().getSelection()?.removeAllRanges();
+        safeWindow.getSelection()?.removeAllRanges();
       };
 
       // move the container on mousemove
-      document.addEventListener('mousemove', onMouseMove);
+      safeDocument.addEventListener?.('mousemove', onMouseMove);
 
       // drop the container, remove unneeded handlers
       this.container.onmouseup = () => {
-        document.removeEventListener('mousemove', onMouseMove);
+        safeDocument.removeEventListener?.('mousemove', onMouseMove);
         this.container.onmouseup = null;
       };
 
       // drop the header, remove unneeded handlers
       this.header.onmouseup = () => {
-        document.removeEventListener('mousemove', onMouseMove);
+        safeDocument.removeEventListener?.('mousemove', onMouseMove);
         this.header.removeEventListener('mouseup', onMouseMove);
         this.header.onmouseup = null;
       };

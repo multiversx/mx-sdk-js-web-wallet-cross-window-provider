@@ -1,4 +1,4 @@
-import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
+import { safeWindow } from '../../constants';
 import { confirmationDialogTag } from './constants';
 import { getStyles } from './getStyles';
 
@@ -99,7 +99,7 @@ export class PopupConsent extends HTMLElement {
   }
 }
 
-const customElements = safeWindow?.customElements;
+const customElements = safeWindow.customElements;
 if (customElements && !customElements.get(confirmationDialogTag)) {
   customElements.define(confirmationDialogTag, PopupConsent);
 }

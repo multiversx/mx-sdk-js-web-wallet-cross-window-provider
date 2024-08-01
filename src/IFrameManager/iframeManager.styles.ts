@@ -1,5 +1,3 @@
-import exp from 'node:constants';
-
 export const containerStyle = `
     width: 400px;
     height: 600px;
