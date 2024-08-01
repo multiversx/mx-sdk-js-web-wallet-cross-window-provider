@@ -1,7 +1,4 @@
-import {
-  responseTypeMap,
-  safeWindow
-} from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
+import { responseTypeMap } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums
@@ -17,6 +14,7 @@ import {
   ErrProviderNotInitialized,
   ErrWalletWindowNotInstantiated
 } from '../errors';
+import { getSafeWindow } from '../helpers/getSafeWindow';
 
 export class WindowManager {
   private _walletUrl = '';
@@ -24,6 +22,7 @@ export class WindowManager {
   public walletWindow: Window | null = null;
 
   constructor() {
+    const safeWindow = getSafeWindow();
     safeWindow.addEventListener?.('beforeunload', () => {
       this.closeWalletWindow();
     });
@@ -99,7 +98,7 @@ export class WindowManager {
             if (payload === false) {
               this.walletWindow?.close();
               this.walletWindow = null;
-              safeWindow.removeEventListener?.('message', eventHandler);
+              getSafeWindow().removeEventListener?.('message', eventHandler);
             }
             break;
         }
@@ -108,7 +107,7 @@ export class WindowManager {
       }
     };
 
-    safeWindow.addEventListener?.('message', eventHandler);
+    getSafeWindow().addEventListener?.('message', eventHandler);
   }
 
   async listenOnce<T extends CrossWindowProviderResponseEnums>(
@@ -124,7 +123,7 @@ export class WindowManager {
     return await new Promise((resolve) => {
       const walletUrl = this.walletUrl;
 
-      safeWindow.addEventListener?.(
+      getSafeWindow().addEventListener?.(
         'message',
         async function eventHandler(
           event: MessageEvent<{
@@ -143,7 +142,7 @@ export class WindowManager {
             return;
           }
 
-          safeWindow.removeEventListener?.('message', eventHandler);
+          getSafeWindow().removeEventListener?.('message', eventHandler);
           resolve({ type, payload });
         }
       );
@@ -194,6 +193,6 @@ export class WindowManager {
 
   public async setWalletWindow(): Promise<void> {
     this.walletWindow =
-      safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
+      getSafeWindow().open?.(this.walletUrl, this.walletUrl) ?? null;
   }
 }

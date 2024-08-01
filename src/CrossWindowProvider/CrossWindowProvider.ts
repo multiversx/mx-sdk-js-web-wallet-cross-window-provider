@@ -1,5 +1,4 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
-import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums,
@@ -16,6 +15,7 @@ import {
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
+import { getSafeWindow } from '../helpers/getSafeWindow';
 import { WindowManager } from '../WindowManager';
 import { PopupConsent } from './PopupConsent';
 import { confirmationDialogTag } from './PopupConsent/constants';
@@ -306,6 +306,7 @@ export class CrossWindowProvider {
 
   public async openPopupConsent(): Promise<boolean> {
     await import('./PopupConsent/PopupConsent');
+    const safeWindow = getSafeWindow();
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 
