@@ -1,4 +1,11 @@
 import { getSafeWindow } from '../helpers/getSafeWindow';
+import {
+  bodyStyle,
+  closeWalletButtonStyle,
+  collapsibleButtonStyle,
+  containerStyle,
+  headerStyle
+} from './iframeManager.styles';
 
 export class IFrameProviderContentWindow {
   public iframe: HTMLIFrameElement;
@@ -8,79 +15,6 @@ export class IFrameProviderContentWindow {
   private readonly container: HTMLDivElement;
   private readonly header: HTMLDivElement;
   private readonly body: HTMLDivElement;
-
-  private readonly containerStyle = `
-    width: 400px;
-    height: 600px;
-    border: 1px solid #0d0e10;
-    border-radius: 5px;
-    z-index: 9999;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    visibility: hidden;
-  `;
-
-  private readonly headerStyle = `
-    color: #fff;
-    background-color: #0d0e10;
-    padding: 10px 15px;
-    cursor: pointer;
-    height: 50px;
-  `;
-
-  private readonly bodyStyle = `
-    width: 100%;
-    height: calc(100% - 40px);
-    overflow: hidden;
-  `;
-
-  private readonly collapsibleButtonStyle = `
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    margin: 0px;
-    padding: 0px;
-    box-sizing: content-box;
-    font-family: sans-serif;
-    text-align: center;
-    font-size: 40px;
-    line-height: 14px;
-    border-width: 0px;
-    border-radius: 2px;
-    border-color: rgb(170, 170, 170);
-    border-style: solid;
-    background-color: transparent;
-    color: gray;
-    z-index: 50;
-    user-select: none;
-    float: right;
-  `;
-
-  private readonly closeWalletButtonStyle = `
-    width: 30px;
-    height: 30px;
-    cursor: pointer;
-    margin-top: 0px; 
-    display: inline-block; 
-    cursor: pointer;
-    margin-top: 5px;
-    padding: 0px;
-    box-sizing: content-box;
-    font-family: sans-serif;
-    text-align: center;
-    font-size: 30px;
-    line-height: 14px;
-    border-width: 0px;
-    border-radius: 2px;
-    border-color: rgb(170, 170, 170);
-    border-style: solid;
-    background-color: transparent;
-    color: gray;
-    z-index: 50;
-    user-select: none;
-    float: right;
-  `;
 
   public constructor({
     id,
@@ -100,9 +34,9 @@ export class IFrameProviderContentWindow {
     this.container.setAttribute('data-draggable', 'true');
     this.container.setAttribute('data-resizable', 'true');
     this.header.setAttribute('data-drag-handle', 'true');
-    this.container.style.cssText = this.containerStyle;
-    this.header.style.cssText = this.headerStyle;
-    this.body.style.cssText = this.bodyStyle;
+    this.container.style.cssText = containerStyle;
+    this.header.style.cssText = headerStyle;
+    this.body.style.cssText = bodyStyle;
 
     const title = document.createElement('span');
     title.innerText = 'Wallet';
@@ -111,7 +45,7 @@ export class IFrameProviderContentWindow {
     const collapsibleButton = document.createElement('span');
     collapsibleButton.id = 'iframe-toggle-button';
     collapsibleButton.innerText = '+';
-    collapsibleButton.style.cssText = this.collapsibleButtonStyle;
+    collapsibleButton.style.cssText = collapsibleButtonStyle;
     collapsibleButton.onclick = () => {
       this.body.style.visibility =
         this.body.style.visibility === 'hidden' ? 'visible' : 'hidden';
@@ -128,7 +62,7 @@ export class IFrameProviderContentWindow {
     const closeWalletButton = document.createElement('span');
     closeWalletButton.id = 'iframe-close-button';
     closeWalletButton.innerText = '✖';
-    closeWalletButton.style.cssText = this.closeWalletButtonStyle;
+    closeWalletButton.style.cssText = closeWalletButtonStyle;
     closeWalletButton.onclick = () => {
       this.container.remove();
       onClose?.();
