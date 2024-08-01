@@ -16,17 +16,14 @@ export class IFrameProviderContentWindow {
   private readonly header: HTMLDivElement;
   private readonly body: HTMLDivElement;
 
-  public constructor({
-    id,
-    url,
-    anchor,
-    onClose
-  }: {
+  public constructor(props: {
     id: string;
     url: string;
     anchor?: HTMLElement;
     onClose?: () => void;
   }) {
+    const { id, url, anchor, onClose } = props;
+
     this.container = document.createElement('div');
     this.header = document.createElement('div');
     this.body = document.createElement('div');
