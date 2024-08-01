@@ -20,7 +20,7 @@ import { WindowManager } from '../WindowManager';
 import { PopupConsent } from './PopupConsent';
 import { confirmationDialogTag } from './PopupConsent/constants';
 
-interface ICrossWindowWalletAccount {
+export interface ICrossWindowWalletAccount {
   address: string;
   signature?: string;
   multisig?: string;
