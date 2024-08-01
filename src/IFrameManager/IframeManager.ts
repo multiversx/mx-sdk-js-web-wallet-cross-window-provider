@@ -12,9 +12,9 @@ export class IframeManager extends WindowManager {
   private floatingWalletComponent: IFrameProviderContentWindow | null = null;
   private readonly onClose: (() => void) | undefined = undefined;
 
-  constructor({ onClose }: { onClose?: () => void } = {}) {
+  constructor(props?: { onClose?: () => void }) {
     super();
-    this.onClose = onClose;
+    this.onClose = props?.onClose;
   }
 
   public get floatingWallet() {
