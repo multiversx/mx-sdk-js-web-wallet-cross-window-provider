@@ -1,3 +1,5 @@
+import exp from 'node:constants';
+
 export const containerStyle = `
     width: 400px;
     height: 600px;
@@ -22,6 +24,13 @@ export const bodyStyle = `
     width: 100%;
     height: calc(100% - 40px);
     overflow: hidden;
+  `;
+
+export const iframeStyle = `
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 0 0 5px 5px;
   `;
 
 export const collapsibleButtonStyle = `

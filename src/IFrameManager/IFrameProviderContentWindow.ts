@@ -4,7 +4,8 @@ import {
   closeWalletButtonStyle,
   collapsibleButtonStyle,
   containerStyle,
-  headerStyle
+  headerStyle,
+  iframeStyle
 } from './iframeManager.styles';
 
 export class IFrameProviderContentWindow {
@@ -16,6 +17,8 @@ export class IFrameProviderContentWindow {
   private readonly header: HTMLDivElement;
   private readonly body: HTMLDivElement;
 
+  private readonly onClose: (() => void) | undefined = undefined;
+
   public constructor(props: {
     id: string;
     url: string;
@@ -24,10 +27,26 @@ export class IFrameProviderContentWindow {
   }) {
     const { id, url, anchor, onClose } = props;
 
+    this.onClose = onClose;
+
     this.container = document.createElement('div');
     this.header = document.createElement('div');
     this.body = document.createElement('div');
+    this.iframe = document.createElement('iframe');
 
+    this.buildWindow(id, url);
+    this.contentWindow = this.iframe.contentWindow;
+
+    this.setupWindow();
+
+    if (anchor) {
+      anchor.appendChild(this.container);
+    } else {
+      document.body.appendChild(this.container);
+    }
+  }
+
+  private buildWindow(id: string, url: string) {
     this.container.setAttribute('data-draggable', 'true');
     this.container.setAttribute('data-resizable', 'true');
     this.header.setAttribute('data-drag-handle', 'true');
@@ -35,6 +54,21 @@ export class IFrameProviderContentWindow {
     this.header.style.cssText = headerStyle;
     this.body.style.cssText = bodyStyle;
 
+    const { collapsibleButton, closeWalletButton } = this.getHeaderButtons();
+
+    this.header.appendChild(closeWalletButton);
+    this.header.appendChild(collapsibleButton);
+    this.container.appendChild(this.header);
+    this.container.appendChild(this.body);
+
+    this.iframe.id = id;
+    this.iframe.src = url;
+    this.iframe.style.cssText = iframeStyle;
+
+    this.body.appendChild(this.iframe);
+  }
+
+  private getHeaderButtons() {
     const title = document.createElement('span');
     title.innerText = 'Wallet';
     this.header.appendChild(title);
@@ -62,32 +96,9 @@ export class IFrameProviderContentWindow {
     closeWalletButton.style.cssText = closeWalletButtonStyle;
     closeWalletButton.onclick = () => {
       this.container.remove();
-      onClose?.();
+      this.onClose?.();
     };
-
-    this.header.appendChild(closeWalletButton);
-    this.header.appendChild(collapsibleButton);
-    this.container.appendChild(this.header);
-    this.container.appendChild(this.body);
-
-    this.iframe = document.createElement('iframe');
-    this.iframe.id = id;
-    this.iframe.src = url;
-    this.iframe.style.width = '100%';
-    this.iframe.style.height = '100%';
-    this.iframe.style.border = 'none';
-    this.iframe.style.borderRadius = '0 0 5px 5px';
-
-    this.body.appendChild(this.iframe);
-    this.contentWindow = this.iframe.contentWindow;
-
-    this.setupWindow();
-
-    if (anchor) {
-      anchor.appendChild(this.container);
-    } else {
-      document.body.appendChild(this.container);
-    }
+    return { collapsibleButton, closeWalletButton };
   }
 
   private setupWindow() {
