@@ -94,7 +94,6 @@ export class IFrameProviderContentWindow {
     this.container = document.createElement('div');
     this.header = document.createElement('div');
     this.body = document.createElement('div');
-    // this.collapsibleButton = document.createElement("div");
 
     this.container.setAttribute('data-draggable', 'true');
     this.container.setAttribute('data-resizable', 'true');
@@ -216,7 +215,7 @@ export class IFrameProviderContentWindow {
         event.clientX - this.container.getBoundingClientRect().left;
       const shiftY = event.clientY - this.container.getBoundingClientRect().top;
 
-      // moves the ball at (pageX, pageY) coordinates
+      // moves the window at (pageX, pageY) coordinates
       // taking initial shifts into account
       const moveAt = (pageX: number, pageY: number) => {
         this.container.style.left = pageX - shiftX + 'px';
@@ -242,6 +241,7 @@ export class IFrameProviderContentWindow {
         this.container.onmouseup = null;
       };
 
+      // drop the header, remove unneeded handlers
       this.header.onmouseup = () => {
         document.removeEventListener('mousemove', onMouseMove);
         this.header.removeEventListener('mouseup', onMouseMove);
