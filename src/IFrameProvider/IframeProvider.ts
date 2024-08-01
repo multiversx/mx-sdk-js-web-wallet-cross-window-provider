@@ -53,4 +53,8 @@ export class IframeProvider extends CrossWindowProvider {
 
     return connectionClosed;
   }
+
+  public override async openPopupConsent(): Promise<boolean> {
+    return true;
+  }
 }

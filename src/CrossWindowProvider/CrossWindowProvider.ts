@@ -112,6 +112,12 @@ export class CrossWindowProvider {
 
     this.accessToken = options.token;
 
+    const popupConsentResponse = await this.openPopupConsent();
+
+    if (!popupConsentResponse) {
+      throw new ErrCouldNotLogin();
+    }
+
     const {
       payload: { data, error }
     } = await this.windowManager.postMessage({
@@ -298,7 +304,8 @@ export class CrossWindowProvider {
     });
   }
 
-  protected async openPopupConsent(): Promise<boolean> {
+  public async openPopupConsent(): Promise<boolean> {
+    await import('./PopupConsent/PopupConsent');
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
 
