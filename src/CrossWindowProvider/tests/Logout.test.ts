@@ -1,5 +1,4 @@
 import { getWalletWindowMock, WalletWindowMockType } from '../../test-utils';
-import { WindowManager } from '../../WindowManager/WindowManager';
 import { CrossWindowProvider } from '../CrossWindowProvider';
 
 describe('CrossWindowProvider', () => {
@@ -9,11 +8,11 @@ describe('CrossWindowProvider', () => {
 
   beforeEach(() => {
     walletWindowMock = getWalletWindowMock();
-    WindowManager.getInstance().postMessage = jest
+    CrossWindowProvider.getInstance().getWindowManager().postMessage = jest
       .fn()
       .mockImplementation(() => true);
 
-    WindowManager.getInstance().closeConnection = jest
+    CrossWindowProvider.getInstance().getWindowManager().closeConnection = jest
       .fn()
       .mockImplementation(() => true);
 

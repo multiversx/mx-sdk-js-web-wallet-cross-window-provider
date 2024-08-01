@@ -1,11 +1,10 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
-import { safeWindow } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
 import {
   CrossWindowProviderRequestEnums,
   CrossWindowProviderResponseEnums,
   SignMessageStatusEnum
 } from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
-import { WindowManager } from '../WindowManager';
+import { safeWindow } from '../constants';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
@@ -17,10 +16,11 @@ import {
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
+import { WindowManager } from '../WindowManager';
 import { PopupConsent } from './PopupConsent';
 import { confirmationDialogTag } from './PopupConsent/constants';
 
-interface ICrossWindowWalletAccount {
+export interface ICrossWindowWalletAccount {
   address: string;
   signature?: string;
   multisig?: string;
@@ -29,46 +29,59 @@ interface ICrossWindowWalletAccount {
 
 export class CrossWindowProvider {
   public account: ICrossWindowWalletAccount = { address: '' };
-  private initialized = false;
-  private windowManager: WindowManager;
-  private static _instance: CrossWindowProvider = new CrossWindowProvider();
+  protected initialized = false;
+  protected windowManager: WindowManager;
+  protected static _instance: CrossWindowProvider | null = null;
   private accessToken: string | undefined = undefined;
   protected _shouldShowConsentPopup = false;
 
-  private constructor() {
-    if (CrossWindowProvider._instance) {
-      throw new ErrInstantiationFailed();
-    }
-    this.windowManager = WindowManager.getInstance();
-    CrossWindowProvider._instance = this;
+  public constructor() {
+    this.windowManager = new WindowManager();
   }
 
   public setShouldShowConsentPopup(shouldShow: boolean) {
     this._shouldShowConsentPopup = shouldShow;
   }
 
-  private ensureConnected() {
+  protected ensureConnected() {
     if (!this.account.address) {
       throw new ErrAccountNotConnected();
     }
   }
 
-  private disconnect() {
+  protected disconnect() {
     this.account = { address: '' };
   }
 
   public static getInstance(): CrossWindowProvider {
+    if (!CrossWindowProvider._instance) {
+      CrossWindowProvider._instance = new CrossWindowProvider();
+      return CrossWindowProvider._instance;
+    }
+
     return CrossWindowProvider._instance;
   }
 
+  public getWindowManager(): WindowManager {
+    return this.windowManager;
+  }
+
   public setAddress(address: string): CrossWindowProvider {
+    if (!CrossWindowProvider._instance) {
+      throw new ErrInstantiationFailed();
+    }
+
     this.account.address = address;
     return CrossWindowProvider._instance;
   }
 
   public setWalletUrl(url: string): CrossWindowProvider {
     this.windowManager.setWalletUrl(url);
-    return CrossWindowProvider._instance;
+    return this;
+  }
+
+  public setWalletWindow(): Promise<void> {
+    return this.windowManager.setWalletWindow();
   }
 
   async init(): Promise<boolean> {
@@ -279,8 +292,6 @@ export class CrossWindowProvider {
       CrossWindowProviderRequestEnums.cancelAction
     );
 
-    console.log(isWalletOpened);
-
     if (!isWalletOpened) {
       return;
     }
@@ -291,7 +302,7 @@ export class CrossWindowProvider {
     });
   }
 
-  protected async openPopupConsent(): Promise<boolean> {
+  public async openPopupConsent(): Promise<boolean> {
     await import('./PopupConsent/PopupConsent');
     const dialog = safeWindow.document?.createElement('div');
     const document = safeWindow.document;
