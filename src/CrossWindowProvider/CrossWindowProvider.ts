@@ -43,13 +43,13 @@ export class CrossWindowProvider {
     this._shouldShowConsentPopup = shouldShow;
   }
 
-  private ensureConnected() {
+  protected ensureConnected() {
     if (!this.account.address) {
       throw new ErrAccountNotConnected();
     }
   }
 
-  private disconnect() {
+  protected disconnect() {
     this.account = { address: '' };
   }
 
@@ -78,6 +78,10 @@ export class CrossWindowProvider {
   public setWalletUrl(url: string): CrossWindowProvider {
     this.windowManager.setWalletUrl(url);
     return this;
+  }
+
+  public setWalletWindow(): Promise<void> {
+    return this.windowManager.setWalletWindow();
   }
 
   async init(): Promise<boolean> {
