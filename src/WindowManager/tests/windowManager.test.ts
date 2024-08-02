@@ -33,27 +33,21 @@ describe('WindowManager', () => {
     jest.resetAllMocks();
   });
 
-  it('should be a singleton instance', () => {
-    const instance1 = WindowManager.getInstance();
-    const instance2 = WindowManager.getInstance();
-    expect(instance1).toBe(instance2);
-  });
-
   it('should set wallet URL and initialize', async () => {
-    const windowManager = WindowManager.getInstance();
+    const windowManager = new WindowManager();
     windowManager.setWalletUrl('https://wallet.example.com');
     await windowManager.init();
     expect(windowManager.isInitialized()).toBeTruthy();
   });
 
   it('should call init successfully correctly', async () => {
-    const windowManager = WindowManager.getInstance();
+    const windowManager = new WindowManager();
     await windowManager.init();
     expect(windowManager.isInitialized()).toBeTruthy();
   });
 
   it('should call handshake successfully', async () => {
-    const windowManager = WindowManager.getInstance();
+    const windowManager = new WindowManager();
     windowManager.handshake(CrossWindowProviderRequestEnums.loginRequest);
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
     expect(windowOpenSpy).toHaveBeenCalledTimes(1);
@@ -61,22 +55,27 @@ describe('WindowManager', () => {
   });
 
   it('should close connections correctly', async () => {
-    const windowManager = WindowManager.getInstance();
+    const windowManager = new WindowManager();
+    windowManager.init();
+    windowManager.setWalletUrl('https://wallet.example.com');
     windowManager.closeConnection();
+
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
     expect(windowOpenSpy).toHaveBeenCalledTimes(1);
     expect(windowCloseSpy).toHaveBeenCalledTimes(0);
   });
 
   it('should call add event listener successfully', async () => {
-    const windowManager = WindowManager.getInstance();
+    const windowManager = new WindowManager();
+    await windowManager.init();
+    windowManager.handshake(CrossWindowProviderRequestEnums.loginRequest);
     windowManager.listenOnce(CrossWindowProviderResponseEnums.loginResponse);
 
-    expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
+    expect(windowAddListenerSpy).toHaveBeenCalledTimes(2);
   });
 
   it('should call postMessage successfully', async () => {
-    const windowManager = WindowManager.getInstance();
+    const windowManager = new WindowManager();
     windowManager.postMessage({
       type: CrossWindowProviderRequestEnums.loginRequest,
       payload: {
