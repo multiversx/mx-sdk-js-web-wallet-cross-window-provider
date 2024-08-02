@@ -46,7 +46,6 @@ export class IframeProvider extends CrossWindowProvider {
       throw new ErrProviderNotInitialized();
     }
 
-    this.ensureConnected();
     const connectionClosed = await this.windowManager.closeConnection();
     this.initialized = false;
     this.disconnect();

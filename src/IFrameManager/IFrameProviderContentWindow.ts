@@ -47,6 +47,7 @@ export class IFrameProviderContentWindow {
   }
 
   private buildWindow(id: string, url: string) {
+    this.container.id = `window-container-${id}`;
     this.container.setAttribute('data-draggable', 'true');
     this.container.setAttribute('data-resizable', 'true');
     this.header.setAttribute('data-drag-handle', 'true');
@@ -176,7 +177,7 @@ export class IFrameProviderContentWindow {
 
       const onMouseMove = (ev: MouseEvent) => {
         moveAt(ev.pageX, ev.pageY);
-        safeWindow.getSelection()?.removeAllRanges();
+        safeWindow.getSelection?.()?.removeAllRanges();
       };
 
       // move the container on mousemove
