@@ -53,11 +53,6 @@ export class IframeProvider extends CrossWindowProvider {
     return connectionClosed;
   }
 
-  public setAddress(address: string): CrossWindowProvider {
-    this.account.address = address;
-    return this;
-  }
-
   public override async openPopupConsent(): Promise<boolean> {
     return true;
   }

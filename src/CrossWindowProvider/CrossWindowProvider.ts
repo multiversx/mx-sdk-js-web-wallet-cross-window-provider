@@ -12,7 +12,6 @@ import {
   ErrCouldNotLogin,
   ErrCouldNotSignMessage,
   ErrCouldNotSignTransactions,
-  ErrInstantiationFailed,
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
