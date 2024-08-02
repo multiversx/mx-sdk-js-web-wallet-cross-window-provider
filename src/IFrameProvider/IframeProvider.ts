@@ -8,10 +8,7 @@ import { IframeManager } from '../IFrameManager/IframeManager';
 export class IframeProvider extends CrossWindowProvider {
   public constructor() {
     super();
-    this.windowManager = new IframeManager({
-      // TODO check why the logout is not sending logout request through postMessage
-      onClose: this.logout.bind(this)
-    });
+    this.windowManager = new IframeManager();
   }
 
   public static getInstance(): IframeProvider {
@@ -46,12 +43,17 @@ export class IframeProvider extends CrossWindowProvider {
       throw new ErrProviderNotInitialized();
     }
 
-    this.ensureConnected();
-    const connectionClosed = await this.windowManager.closeConnection();
+    try {
+      this.ensureConnected();
+      await this.windowManager.closeConnection();
+    } catch (e) {
+      console.error(e);
+    }
+
     this.initialized = false;
     this.disconnect();
 
-    return connectionClosed;
+    return true;
   }
 
   public override async openPopupConsent(): Promise<boolean> {

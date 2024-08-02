@@ -12,7 +12,6 @@ import {
   ErrCouldNotLogin,
   ErrCouldNotSignMessage,
   ErrCouldNotSignTransactions,
-  ErrInstantiationFailed,
   ErrProviderNotInitialized,
   ErrTransactionCancelled
 } from '../errors';
@@ -67,12 +66,8 @@ export class CrossWindowProvider {
   }
 
   public setAddress(address: string): CrossWindowProvider {
-    if (!CrossWindowProvider._instance) {
-      throw new ErrInstantiationFailed();
-    }
-
     this.account.address = address;
-    return CrossWindowProvider._instance;
+    return this;
   }
 
   public setWalletUrl(url: string): CrossWindowProvider {

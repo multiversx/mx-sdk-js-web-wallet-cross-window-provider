@@ -10,12 +10,7 @@ import { IFrameProviderContentWindow } from './IFrameProviderContentWindow';
 
 export class IframeManager extends WindowManager {
   private floatingWalletComponent: IFrameProviderContentWindow | null = null;
-  private readonly onClose: (() => void) | undefined = undefined;
-
-  constructor(props?: { onClose?: () => void }) {
-    super();
-    this.onClose = props?.onClose;
-  }
+  private readonly iframeId = 'floating-wallet';
 
   public get floatingWallet() {
     return this.floatingWalletComponent;
@@ -66,13 +61,9 @@ export class IframeManager extends WindowManager {
 
     const anchor = safeDocument.getElementById?.('root');
     this.floatingWalletComponent = new IFrameProviderContentWindow({
-      id: 'floating-wallet',
+      id: this.iframeId,
       anchor,
-      url: this.walletUrl,
-      onClose: () => {
-        this.closeConnection();
-        this.onClose?.();
-      }
+      url: this.walletUrl
     });
     this.floatingWalletComponent.walletAddress = this.walletUrl;
 
@@ -92,6 +83,7 @@ export class IframeManager extends WindowManager {
     }
 
     this.walletWindow = iframe.contentWindow;
+    this.setWalletVisible(true);
   }
 
   public setWalletVisible(visible: boolean): void {
