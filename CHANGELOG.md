@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [Fix IFrame Provider issues](https://github.com/multiversx/mx-wallet-dapp/pull/47)
 - [Implement IFrameProvider](https://github.com/multiversx/mx-wallet-dapp/pull/46)
 
 ## [[0.1.3](https://github.com/multiversx/mx-wallet-dapp/pull/45)] - 2024-05-29
