@@ -13,7 +13,7 @@ import { safeWindow } from '../constants';
 import {
   ErrCannotEstablishHandshake,
   ErrProviderNotInitialized,
-  ErrWalletWindowNotInstantiated
+  ErrProviderNotInstantiated
 } from '../errors';
 
 export class WindowManager {
@@ -116,7 +116,7 @@ export class WindowManager {
     payload: ReplyWithPostMessagePayloadType<T>;
   }> {
     if (!this.walletWindow) {
-      throw new ErrWalletWindowNotInstantiated();
+      throw new ErrProviderNotInstantiated();
     }
 
     return await new Promise((resolve) => {

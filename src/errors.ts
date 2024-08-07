@@ -31,20 +31,20 @@ export class ErrCannotEstablishHandshake extends Err {
 export class ErrInstantiationFailed extends Err {
   public constructor() {
     super(
-      'Error: Instantiation failed: Use CrossWindowProvider.getInstance() instead of new.'
+      'Error: Instantiation failed: Use Provider.getInstance() instead of new.'
     );
   }
 }
 
-export class ErrWalletWindowNotInstantiated extends Err {
+export class ErrProviderNotInstantiated extends Err {
   public constructor() {
-    super('Wallet window is not instantiated');
+    super('Provider not instantiated');
   }
 }
 
 export class ErrProviderNotInitialized extends Err {
   public constructor() {
-    super('Wallet cross window provider is not initialised, call init() first');
+    super('Provider not initialised, call init() first');
   }
 }
 
