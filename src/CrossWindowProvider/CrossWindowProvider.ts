@@ -16,7 +16,6 @@ import {
   ErrTransactionCancelled
 } from '../errors';
 import { WindowManager } from '../WindowManager';
-import { PopupConsent } from './PopupConsent';
 import { confirmationDialogTag } from './PopupConsent/constants';
 
 export interface ICrossWindowWalletAccount {
@@ -308,7 +307,7 @@ export class CrossWindowProvider {
 
     const popup = safeWindow.document?.createElement(
       confirmationDialogTag
-    ) as PopupConsent;
+    ) as any;
 
     popup.walletUrl = this.windowManager.walletUrl;
 
