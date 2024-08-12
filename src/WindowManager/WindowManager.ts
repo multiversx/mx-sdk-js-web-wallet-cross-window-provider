@@ -39,7 +39,7 @@ export class WindowManager {
   }
 
   async init(): Promise<boolean> {
-    this.initialized = true;
+    this.initialized = typeof window !== 'undefined';
     return this.initialized;
   }
 

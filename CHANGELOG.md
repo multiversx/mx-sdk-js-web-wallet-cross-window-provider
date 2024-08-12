@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Update README](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/55)
 
 
+## [[0.4.1](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/57)] - 2024-08-12
+- [Fix SSR support](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/56)
+
 ## [[0.4.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/54)] - 2024-08-07
 - [Remove IFrame Provider](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/53)
 
