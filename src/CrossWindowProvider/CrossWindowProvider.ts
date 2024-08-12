@@ -81,15 +81,6 @@ export class CrossWindowProvider {
 
   async init(): Promise<boolean> {
     this.initialized = await this.windowManager.init();
-
-    const module = await import('./PopupConsent/PopupConsent');
-    const PopupConsent = module.PopupConsent;
-
-    const customElements = safeWindow.customElements;
-    if (customElements && !customElements.get(confirmationDialogTag)) {
-      customElements.define(confirmationDialogTag, PopupConsent);
-    }
-
     return this.initialized;
   }
 
@@ -313,6 +304,14 @@ export class CrossWindowProvider {
       typeof window === 'undefined'
     ) {
       return true;
+    }
+
+    const module = await import('./PopupConsent/PopupConsent');
+    const PopupConsent = module.PopupConsent;
+
+    const customElements = safeWindow.customElements;
+    if (customElements && !customElements.get(confirmationDialogTag)) {
+      customElements.define(confirmationDialogTag, PopupConsent);
     }
 
     const popup = document.createElement(
