@@ -1,8 +1,8 @@
-import { safeWindow } from '../../constants';
 import { confirmationDialogTag } from './constants';
 import { getStyles } from './getStyles';
+import { PopupConsentModel } from './PopupConsent.model';
 
-export class PopupConsent extends HTMLElement {
+export class PopupConsent extends HTMLElement implements PopupConsentModel {
   public walletUrl = '';
   public identifier: string = confirmationDialogTag;
   public onCancel = () => {
@@ -97,9 +97,4 @@ export class PopupConsent extends HTMLElement {
   disconnectedCallback() {
     this.toggleEvents('removeEventListener');
   }
-}
-
-const customElements = safeWindow.customElements;
-if (customElements && !customElements.get(confirmationDialogTag)) {
-  customElements.define(confirmationDialogTag, PopupConsent);
 }
