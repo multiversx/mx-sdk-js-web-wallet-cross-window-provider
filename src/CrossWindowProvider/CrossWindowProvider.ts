@@ -16,8 +16,8 @@ import {
   ErrTransactionCancelled
 } from '../errors';
 import { WindowManager } from '../WindowManager';
-import { PopupConsent } from './PopupConsent';
 import { confirmationDialogTag } from './PopupConsent/constants';
+import { PopupConsentModel } from './PopupConsent/PopupConsent.model';
 
 export interface ICrossWindowWalletAccount {
   address: string;
@@ -298,31 +298,39 @@ export class CrossWindowProvider {
   }
 
   public async openPopupConsent(): Promise<boolean> {
-    await import('./PopupConsent/PopupConsent');
-    const dialog = safeWindow.document?.createElement('div');
-    const document = safeWindow.document;
-
-    if (!this._shouldShowConsentPopup || !document || !dialog) {
+    if (
+      !this._shouldShowConsentPopup ||
+      typeof document === 'undefined' ||
+      typeof window === 'undefined'
+    ) {
       return true;
     }
 
-    const popup = safeWindow.document?.createElement(
+    const module = await import('./PopupConsent/PopupConsent');
+    const PopupConsent = module.PopupConsent;
+
+    const customElements = safeWindow.customElements;
+    if (customElements && !customElements.get(confirmationDialogTag)) {
+      customElements.define(confirmationDialogTag, PopupConsent);
+    }
+
+    const popup = document.createElement(
       confirmationDialogTag
-    ) as PopupConsent;
+    ) as PopupConsentModel & HTMLElement;
 
     popup.walletUrl = this.windowManager.walletUrl;
 
-    safeWindow.document?.body.appendChild(popup);
+    document.body.appendChild(popup);
 
     const popupConsentResponse: boolean = await new Promise<boolean>(
       (resolve) => {
         popup.onConfirm = () => {
           resolve(true);
-          safeWindow.document?.body.removeChild(popup);
+          document.body.removeChild(popup);
         };
         popup.onCancel = () => {
           resolve(false);
-          safeWindow.document?.body.removeChild(popup);
+          document.body.removeChild(popup);
         };
       }
     );
