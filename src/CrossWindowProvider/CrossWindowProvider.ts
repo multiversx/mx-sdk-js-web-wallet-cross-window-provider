@@ -139,6 +139,11 @@ export class CrossWindowProvider {
     };
   }
 
+  async dispose(): Promise<boolean> {
+    const connectionClosed = await this.windowManager.closeConnection();
+    return connectionClosed;
+  }
+
   async logout(): Promise<boolean> {
     const popupConsentResponse = await this.openPopupConsent();
 
@@ -147,7 +152,7 @@ export class CrossWindowProvider {
     }
 
     this.ensureConnected();
-    const connectionClosed = await this.windowManager.closeConnection();
+    const connectionClosed = await this.dispose();
     this.initialized = false;
     this.disconnect();
 
