@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Update README](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/55)
 
 
+- [Upgrade sdk-dapp-utils - breaking changes](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/60)
+
 ## [[0.4.2](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/59)] - 2024-08-12
 - [Added ability to close window before login](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/58)
 

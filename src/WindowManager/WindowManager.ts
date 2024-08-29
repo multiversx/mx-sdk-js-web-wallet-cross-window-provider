@@ -1,14 +1,14 @@
-import { responseTypeMap } from '@multiversx/sdk-dapp-utils/out/constants/crossWindowProviderConstants';
+import { responseTypeMap } from '@multiversx/sdk-dapp-utils/out/constants/windowProviderConstants';
 import {
-  CrossWindowProviderRequestEnums,
-  CrossWindowProviderResponseEnums
-} from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
+  WindowProviderRequestEnums,
+  WindowProviderResponseEnums
+} from '@multiversx/sdk-dapp-utils/out/enums';
 import {
   PostMessageParamsType,
   PostMessageReturnType,
   ReplyWithPostMessageEventType,
   ReplyWithPostMessagePayloadType
-} from '@multiversx/sdk-dapp-utils/out/types/crossWindowProviderTypes';
+} from '@multiversx/sdk-dapp-utils/out/types/windowProviderTypes';
 import { safeWindow } from '../constants';
 import {
   ErrCannotEstablishHandshake,
@@ -43,14 +43,14 @@ export class WindowManager {
     return this.initialized;
   }
 
-  public isWalletOpened(type?: CrossWindowProviderRequestEnums) {
+  public isWalletOpened(type?: WindowProviderRequestEnums) {
     return (
-      type === CrossWindowProviderRequestEnums.cancelAction &&
+      type === WindowProviderRequestEnums.cancelAction &&
       Boolean(this.walletWindow)
     );
   }
 
-  async handshake(type: CrossWindowProviderRequestEnums): Promise<boolean> {
+  async handshake(type: WindowProviderRequestEnums): Promise<boolean> {
     const isOpened = this.isWalletOpened(type);
     if (isOpened) {
       return true;
@@ -60,7 +60,7 @@ export class WindowManager {
     await this.setWalletWindow();
 
     const { payload: isWalletReady } = await this.listenOnce(
-      CrossWindowProviderResponseEnums.handshakeResponse
+      WindowProviderResponseEnums.handshakeResponse
     );
 
     if (!isWalletReady) {
@@ -69,7 +69,7 @@ export class WindowManager {
 
     this.walletWindow?.postMessage(
       {
-        type: CrossWindowProviderRequestEnums.finalizeHandshakeRequest
+        type: WindowProviderRequestEnums.finalizeHandshakeRequest
       },
       this.walletUrl
     );
@@ -93,7 +93,7 @@ export class WindowManager {
         }
 
         switch (type) {
-          case CrossWindowProviderResponseEnums.handshakeResponse:
+          case WindowProviderResponseEnums.handshakeResponse:
             if (payload === false) {
               this.walletWindow?.close();
               this.walletWindow = null;
@@ -109,7 +109,7 @@ export class WindowManager {
     safeWindow.addEventListener?.('message', eventHandler);
   }
 
-  async listenOnce<T extends CrossWindowProviderResponseEnums>(
+  async listenOnce<T extends WindowProviderResponseEnums>(
     action: T
   ): Promise<{
     type: T;
@@ -135,7 +135,7 @@ export class WindowManager {
 
           const isCurrentAction =
             action === type ||
-            type === CrossWindowProviderResponseEnums.cancelResponse;
+            type === WindowProviderResponseEnums.cancelResponse;
 
           if (!isCurrentAction || !isWalletEvent) {
             return;
@@ -154,7 +154,7 @@ export class WindowManager {
     }
 
     await this.postMessage({
-      type: CrossWindowProviderRequestEnums.logoutRequest,
+      type: WindowProviderRequestEnums.logoutRequest,
       payload: undefined
     });
 
@@ -165,7 +165,7 @@ export class WindowManager {
     return this.initialized;
   }
 
-  async postMessage<T extends CrossWindowProviderRequestEnums>({
+  async postMessage<T extends WindowProviderRequestEnums>({
     type,
     payload
   }: PostMessageParamsType<T>): Promise<PostMessageReturnType<T>> {
