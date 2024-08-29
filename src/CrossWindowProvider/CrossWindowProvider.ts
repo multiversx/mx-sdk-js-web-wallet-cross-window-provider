@@ -1,9 +1,9 @@
 import { SignableMessage, Transaction } from '@multiversx/sdk-core';
 import {
-  CrossWindowProviderRequestEnums,
-  CrossWindowProviderResponseEnums,
+  WindowProviderRequestEnums,
+  WindowProviderResponseEnums,
   SignMessageStatusEnum
-} from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
+} from '@multiversx/sdk-dapp-utils/out/enums';
 import { safeWindow } from '../constants';
 import {
   ErrAccountNotConnected,
@@ -116,7 +116,7 @@ export class CrossWindowProvider {
     const {
       payload: { data, error }
     } = await this.windowManager.postMessage({
-      type: CrossWindowProviderRequestEnums.loginRequest,
+      type: WindowProviderRequestEnums.loginRequest,
       payload: {
         token: this.accessToken
       }
@@ -199,7 +199,7 @@ export class CrossWindowProvider {
       type,
       payload: { data: signedPlainTransactions, error }
     } = await this.windowManager.postMessage({
-      type: CrossWindowProviderRequestEnums.signTransactionsRequest,
+      type: WindowProviderRequestEnums.signTransactionsRequest,
       payload: transactions.map((tx) => tx.toPlainObject())
     });
 
@@ -207,7 +207,7 @@ export class CrossWindowProvider {
       throw new ErrCouldNotSignTransactions();
     }
 
-    if (type === CrossWindowProviderResponseEnums.cancelResponse) {
+    if (type === WindowProviderResponseEnums.cancelResponse) {
       throw new ErrTransactionCancelled();
     }
 
@@ -233,7 +233,7 @@ export class CrossWindowProvider {
       type,
       payload: { data: signedPlainTransactions, error }
     } = await this.windowManager.postMessage({
-      type: CrossWindowProviderRequestEnums.guardTransactionsRequest,
+      type: WindowProviderRequestEnums.guardTransactionsRequest,
       payload: transactions.map((tx) => tx.toPlainObject())
     });
 
@@ -241,7 +241,7 @@ export class CrossWindowProvider {
       throw new ErrCouldNotSignTransactions();
     }
 
-    if (type === CrossWindowProviderResponseEnums.cancelResponse) {
+    if (type === WindowProviderResponseEnums.cancelResponse) {
       throw new ErrTransactionCancelled();
     }
 
@@ -266,7 +266,7 @@ export class CrossWindowProvider {
     const {
       payload: { data, error }
     } = await this.windowManager.postMessage({
-      type: CrossWindowProviderRequestEnums.signMessageRequest,
+      type: WindowProviderRequestEnums.signMessageRequest,
       payload: {
         message: message.message.toString()
       }
@@ -289,7 +289,7 @@ export class CrossWindowProvider {
 
   cancelAction() {
     const isWalletOpened = this.windowManager?.isWalletOpened(
-      CrossWindowProviderRequestEnums.cancelAction
+      WindowProviderRequestEnums.cancelAction
     );
 
     if (!isWalletOpened) {
@@ -297,7 +297,7 @@ export class CrossWindowProvider {
     }
 
     return this.windowManager?.postMessage({
-      type: CrossWindowProviderRequestEnums.cancelAction,
+      type: WindowProviderRequestEnums.cancelAction,
       payload: undefined
     });
   }
