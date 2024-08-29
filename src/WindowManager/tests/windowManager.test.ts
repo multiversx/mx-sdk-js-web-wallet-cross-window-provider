@@ -1,7 +1,7 @@
 import {
-  CrossWindowProviderRequestEnums,
-  CrossWindowProviderResponseEnums
-} from '@multiversx/sdk-dapp-utils/out/enums/crossWindowProviderEnums';
+  WindowProviderRequestEnums,
+  WindowProviderResponseEnums
+} from '@multiversx/sdk-dapp-utils/out/enums';
 import { getWalletWindowMock } from '../../test-utils';
 
 import { WindowManager } from '../WindowManager';
@@ -48,7 +48,7 @@ describe('WindowManager', () => {
 
   it('should call handshake successfully', async () => {
     const windowManager = new WindowManager();
-    windowManager.handshake(CrossWindowProviderRequestEnums.loginRequest);
+    windowManager.handshake(WindowProviderRequestEnums.loginRequest);
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(1);
     expect(windowOpenSpy).toHaveBeenCalledTimes(1);
     expect(windowCloseSpy).toHaveBeenCalledTimes(0);
@@ -68,8 +68,8 @@ describe('WindowManager', () => {
   it('should call add event listener successfully', async () => {
     const windowManager = new WindowManager();
     await windowManager.init();
-    windowManager.handshake(CrossWindowProviderRequestEnums.loginRequest);
-    windowManager.listenOnce(CrossWindowProviderResponseEnums.loginResponse);
+    windowManager.handshake(WindowProviderRequestEnums.loginRequest);
+    windowManager.listenOnce(WindowProviderResponseEnums.loginResponse);
 
     expect(windowAddListenerSpy).toHaveBeenCalledTimes(2);
   });
@@ -77,7 +77,7 @@ describe('WindowManager', () => {
   it('should call postMessage successfully', async () => {
     const windowManager = new WindowManager();
     windowManager.postMessage({
-      type: CrossWindowProviderRequestEnums.loginRequest,
+      type: WindowProviderRequestEnums.loginRequest,
       payload: {
         token: 'token'
       }
