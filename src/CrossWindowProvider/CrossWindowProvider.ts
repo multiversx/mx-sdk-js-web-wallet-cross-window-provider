@@ -91,7 +91,7 @@ export class CrossWindowProvider implements IDAppProviderBase {
       throw new ErrProviderNotInitialized();
     }
 
-    const isRelogin = await this.isConnected();
+    const isRelogin = this.isConnected();
 
     if (isRelogin) {
       const { address, signature, multisig, impersonate } = this.account;
@@ -164,11 +164,11 @@ export class CrossWindowProvider implements IDAppProviderBase {
     return this.account?.address ?? '';
   }
 
-  isInitialized(): boolean {
+  isInitialized = (): boolean => {
     return this.initialized;
-  }
+  };
 
-  async isConnected(): Promise<boolean> {
+  isConnected(): boolean {
     return Boolean(this.account.address);
   }
 
