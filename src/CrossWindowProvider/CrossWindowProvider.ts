@@ -24,7 +24,6 @@ export interface IProviderAccount {
   signature?: string;
   multisig?: string;
   impersonate?: string;
-  [key: string]: unknown;
 }
 
 export class CrossWindowProvider {
