@@ -19,7 +19,7 @@ import { WindowManager } from '../WindowManager';
 import { confirmationDialogTag } from './PopupConsent/constants';
 import { PopupConsentModel } from './PopupConsent/PopupConsent.model';
 
-export interface IDAppProviderAccount {
+export interface IProviderAccount {
   address: string;
   signature?: string;
   multisig?: string;
@@ -28,7 +28,7 @@ export interface IDAppProviderAccount {
 }
 
 export class CrossWindowProvider {
-  private account: IDAppProviderAccount = { address: '' };
+  private account: IProviderAccount = { address: '' };
   private accessToken: string | undefined = undefined;
 
   protected initialized = false;
@@ -90,7 +90,7 @@ export class CrossWindowProvider {
     options: {
       token?: string;
     } = {}
-  ): Promise<IDAppProviderAccount> {
+  ): Promise<IProviderAccount> {
     if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
@@ -176,11 +176,11 @@ export class CrossWindowProvider {
     return Boolean(this.account.address);
   }
 
-  getAccount(): IDAppProviderAccount | null {
+  getAccount(): IProviderAccount | null {
     return this.account;
   }
 
-  setAccount(account: IDAppProviderAccount): void {
+  setAccount(account: IProviderAccount): void {
     this.account = account;
   }
 
