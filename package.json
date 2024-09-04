@@ -21,7 +21,6 @@
   "license": "GPL-3.0-or-later",
   "devDependencies": {
     "@multiversx/sdk-core": ">= 13.5.0",
-    "@multiversx/sdk-dapp-utils": ">= 0.2.0-alpha.7",
     "@types/node": "18.19.0",
     "@typescript-eslint/eslint-plugin": "5.0.0",
     "@typescript-eslint/parser": "5.14.0",
@@ -40,8 +39,7 @@
     "typescript": "5.0.4"
   },
   "peerDependencies": {
-    "@multiversx/sdk-core": ">= 13.5.0",
-    "@multiversx/sdk-dapp-utils": ">= 0.2.0-alpha.7"
+    "@multiversx/sdk-core": ">= 13.5.0"
   },
   "dependencies": {
     "@types/jest": "^29.5.11",

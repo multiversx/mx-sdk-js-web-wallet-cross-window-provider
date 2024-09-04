@@ -1,14 +1,10 @@
 import { Message, Transaction } from '@multiversx/sdk-core';
+import { safeWindow } from '../constants';
 import {
   WindowProviderRequestEnums,
   WindowProviderResponseEnums,
   SignMessageStatusEnum
-} from '@multiversx/sdk-dapp-utils/out/enums';
-import {
-  IDAppProviderAccount,
-  IDAppProviderBase
-} from '@multiversx/sdk-dapp-utils/out/models/dappProviderBase';
-import { safeWindow } from '../constants';
+} from '../enums';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
@@ -23,7 +19,15 @@ import { WindowManager } from '../WindowManager';
 import { confirmationDialogTag } from './PopupConsent/constants';
 import { PopupConsentModel } from './PopupConsent/PopupConsent.model';
 
-export class CrossWindowProvider implements IDAppProviderBase {
+export interface IDAppProviderAccount {
+  address: string;
+  signature?: string;
+  multisig?: string;
+  impersonate?: string;
+  [key: string]: unknown;
+}
+
+export class CrossWindowProvider {
   private account: IDAppProviderAccount = { address: '' };
   private accessToken: string | undefined = undefined;
 
