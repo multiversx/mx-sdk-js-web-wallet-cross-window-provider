@@ -25,9 +25,10 @@ describe('CrossWindowProvider Login', () => {
   });
 
   it('should sign a message correctly', async () => {
+    const mockMessage = 'test';
     crossWindowProvider.setAddress('testAddress');
     await crossWindowProvider.init();
-    const result = await crossWindowProvider.signMessage('test');
+    const result = await crossWindowProvider.signMessage(mockMessage);
 
     expect(result.signature?.toString()).toBe('testSignature');
   });
