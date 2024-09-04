@@ -176,6 +176,10 @@ export class CrossWindowProvider implements IDAppProviderBase {
     return this.account;
   }
 
+  setAccount(account: IDAppProviderAccount): void {
+    this.account = account;
+  }
+
   async signTransaction(transaction: Transaction): Promise<Transaction> {
     this.ensureConnected();
 
