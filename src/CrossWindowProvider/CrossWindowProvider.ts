@@ -168,9 +168,9 @@ export class CrossWindowProvider {
     return this.account?.address ?? '';
   }
 
-  isInitialized = (): boolean => {
+  isInitialized(): boolean {
     return this.initialized;
-  };
+  }
 
   isConnected(): boolean {
     return Boolean(this.account.address);
