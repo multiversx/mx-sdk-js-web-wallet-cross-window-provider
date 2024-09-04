@@ -12,10 +12,6 @@ export type ReplyWithPostMessageObjectType = {
     signature: string;
     accessToken?: string;
     /**
-     * used in De-Fi wallet extension as wallet name
-     * */
-    name?: string;
-    /**
      * contract address for alternate multisig login
      * */
     multisig?: string;
