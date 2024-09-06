@@ -1,5 +1,6 @@
 import { getWalletWindowMock, WalletWindowMockType } from '../../test-utils';
 import { CrossWindowProvider } from '../CrossWindowProvider';
+import { Message } from '@multiversx/sdk-core/out';
 
 describe('CrossWindowProvider Login', () => {
   let crossWindowProvider: CrossWindowProvider;
@@ -25,8 +26,10 @@ describe('CrossWindowProvider Login', () => {
   });
 
   it('should sign a message correctly', async () => {
-    const mockMessage = 'test';
-    crossWindowProvider.setAddress('testAddress');
+    const mockMessage = new Message({ data: Buffer.from('test') });
+    crossWindowProvider.setAddress(
+      'erd1qyu5wthldzr8wx5c9ucg8kjagg0jfs53s8nr3zpz3hypefsdd8ssycr6th'
+    );
     await crossWindowProvider.init();
     const result = await crossWindowProvider.signMessage(mockMessage);
 
