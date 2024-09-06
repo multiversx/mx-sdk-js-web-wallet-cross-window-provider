@@ -1,4 +1,4 @@
-import { Message, Transaction } from '@multiversx/sdk-core';
+import { Address, Message, Transaction } from '@multiversx/sdk-core';
 import { safeWindow } from '../constants';
 import {
   WindowProviderRequestEnums,
@@ -263,7 +263,7 @@ export class CrossWindowProvider {
     return signedPlainTransactions.map((tx) => Transaction.fromPlainObject(tx));
   }
 
-  async signMessage(messageToSign: string): Promise<Message> {
+  async signMessage(messageToSign: Message): Promise<Message> {
     this.ensureConnected();
 
     const popupConsentResponse = await this.openPopupConsent();
@@ -277,7 +277,7 @@ export class CrossWindowProvider {
     } = await this.windowManager.postMessage({
       type: WindowProviderRequestEnums.signMessageRequest,
       payload: {
-        message: messageToSign
+        message: Buffer.from(messageToSign.data).toString(),
       }
     });
 
@@ -291,12 +291,14 @@ export class CrossWindowProvider {
       throw new ErrCouldNotSignMessage();
     }
 
-    const message = new Message({
-      data: Buffer.from(messageToSign)
+    return new Message({
+      data: Buffer.from(messageToSign.data),
+      address:
+        messageToSign.address ?? Address.fromBech32(this.account.address),
+      signer: 'wallet-cross-window',
+      version: messageToSign.version,
+      signature: Buffer.from(String(signature), 'hex')
     });
-    message.signature = Buffer.from(String(signature), 'hex');
-
-    return message;
   }
 
   cancelAction() {
