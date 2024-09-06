@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [Standardize provider](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/63)
+
 ## [[1.0.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/61)] - 2024-08-29
 - [Upgrade sdk-dapp-utils - breaking changes](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/60)
 
