@@ -1,10 +1,10 @@
-import { SignableMessage, Transaction } from '@multiversx/sdk-core';
+import { Address, Message, Transaction } from '@multiversx/sdk-core';
+import { safeWindow } from '../constants';
 import {
   WindowProviderRequestEnums,
   WindowProviderResponseEnums,
   SignMessageStatusEnum
-} from '@multiversx/sdk-dapp-utils/out/enums';
-import { safeWindow } from '../constants';
+} from '../enums';
 import {
   ErrAccountNotConnected,
   ErrCannotSignSingleTransaction,
@@ -19,7 +19,7 @@ import { WindowManager } from '../WindowManager';
 import { confirmationDialogTag } from './PopupConsent/constants';
 import { PopupConsentModel } from './PopupConsent/PopupConsent.model';
 
-export interface ICrossWindowWalletAccount {
+export interface IProviderAccount {
   address: string;
   signature?: string;
   multisig?: string;
@@ -27,12 +27,13 @@ export interface ICrossWindowWalletAccount {
 }
 
 export class CrossWindowProvider {
-  public account: ICrossWindowWalletAccount = { address: '' };
+  private account: IProviderAccount = { address: '' };
+  private accessToken: string | undefined = undefined;
+
   protected initialized = false;
   protected windowManager: WindowManager;
-  protected static _instance: CrossWindowProvider | null = null;
-  private accessToken: string | undefined = undefined;
   protected _shouldShowConsentPopup = false;
+  protected static _instance: CrossWindowProvider | null = null;
 
   public constructor() {
     this.windowManager = new WindowManager();
@@ -88,12 +89,12 @@ export class CrossWindowProvider {
     options: {
       token?: string;
     } = {}
-  ): Promise<ICrossWindowWalletAccount> {
+  ): Promise<IProviderAccount> {
     if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
 
-    const isRelogin = await this.isConnected();
+    const isRelogin = this.isConnected();
 
     if (isRelogin) {
       const { address, signature, multisig, impersonate } = this.account;
@@ -170,8 +171,16 @@ export class CrossWindowProvider {
     return this.initialized;
   }
 
-  async isConnected(): Promise<boolean> {
+  isConnected(): boolean {
     return Boolean(this.account.address);
+  }
+
+  getAccount(): IProviderAccount | null {
+    return this.account;
+  }
+
+  setAccount(account: IProviderAccount): void {
+    this.account = account;
   }
 
   async signTransaction(transaction: Transaction): Promise<Transaction> {
@@ -254,7 +263,7 @@ export class CrossWindowProvider {
     return signedPlainTransactions.map((tx) => Transaction.fromPlainObject(tx));
   }
 
-  async signMessage(message: SignableMessage): Promise<SignableMessage> {
+  async signMessage(messageToSign: Message): Promise<Message> {
     this.ensureConnected();
 
     const popupConsentResponse = await this.openPopupConsent();
@@ -268,7 +277,7 @@ export class CrossWindowProvider {
     } = await this.windowManager.postMessage({
       type: WindowProviderRequestEnums.signMessageRequest,
       payload: {
-        message: message.message.toString()
+        message: Buffer.from(messageToSign.data).toString()
       }
     });
 
@@ -282,9 +291,14 @@ export class CrossWindowProvider {
       throw new ErrCouldNotSignMessage();
     }
 
-    message.applySignature(Buffer.from(String(signature), 'hex'));
-
-    return message;
+    return new Message({
+      data: Buffer.from(messageToSign.data),
+      address:
+        messageToSign.address ?? Address.fromBech32(this.account.address),
+      signer: messageToSign.signer || 'wallet-cross-window',
+      version: messageToSign.version,
+      signature: Buffer.from(String(signature), 'hex')
+    });
   }
 
   cancelAction() {

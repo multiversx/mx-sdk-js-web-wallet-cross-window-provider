@@ -1,9 +1,8 @@
 import {
   WindowProviderRequestEnums,
   WindowProviderResponseEnums
-} from '@multiversx/sdk-dapp-utils/out/enums';
+} from '../../enums';
 import { getWalletWindowMock } from '../../test-utils';
-
 import { WindowManager } from '../WindowManager';
 
 describe('WindowManager', () => {

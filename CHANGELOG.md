@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Update README](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/55)
 
 
+## [2.0.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/67)] - 2024-09-19
+- [Stable version](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/66)
+
+## [2.0.0-alpha.1] - 2024-09-06
+- [Allow signer overrides](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/commit/7fe6c7167588e7d58e291f6d978701bb1ad8d59a)
+
+## [2.0.0-alpha.0] - 2024-09-06
+- [Standardize provider](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/65)
+
 ## [[1.0.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/61)] - 2024-08-29
 - [Upgrade sdk-dapp-utils - breaking changes](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/60)
 
