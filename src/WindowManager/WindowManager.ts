@@ -1,20 +1,19 @@
-import { responseTypeMap } from '@multiversx/sdk-dapp-utils/out/constants/windowProviderConstants';
+import { safeWindow, responseTypeMap } from '../constants';
 import {
   WindowProviderRequestEnums,
   WindowProviderResponseEnums
-} from '@multiversx/sdk-dapp-utils/out/enums';
-import {
-  PostMessageParamsType,
-  PostMessageReturnType,
-  ReplyWithPostMessageEventType,
-  ReplyWithPostMessagePayloadType
-} from '@multiversx/sdk-dapp-utils/out/types/windowProviderTypes';
-import { safeWindow } from '../constants';
+} from '../enums';
 import {
   ErrCannotEstablishHandshake,
   ErrProviderNotInitialized,
   ErrProviderNotInstantiated
 } from '../errors';
+import {
+  PostMessageParamsType,
+  PostMessageReturnType,
+  ReplyWithPostMessageEventType,
+  ReplyWithPostMessagePayloadType
+} from '../types';
 
 export class WindowManager {
   private _walletUrl = '';
