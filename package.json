@@ -1,6 +1,6 @@
 {
   "name": "@multiversx/sdk-web-wallet-cross-window-provider",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Signing provider for dApps: Cross Window",
   "main": "out/index.js",
   "types": "out/index.d.js",
@@ -36,14 +36,14 @@
     "jest-environment-jsdom": "28.1.3",
     "prettier": "3.1.0",
     "ts-jest": "29.1.1",
-    "typescript": "5.0.4"
+    "typescript": "5.0.4",
+    "@types/jest": "^29.5.11",
+    "@types/qs": "6.9.10"
   },
   "peerDependencies": {
     "@multiversx/sdk-core": ">= 13.5.0"
   },
   "dependencies": {
-    "@types/jest": "^29.5.11",
-    "@types/qs": "6.9.10",
     "qs": "6.11.2"
   }
 }
