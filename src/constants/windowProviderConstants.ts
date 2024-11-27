@@ -13,6 +13,8 @@ export const responseTypeMap: ResponseTypeMap = {
     WindowProviderResponseEnums.signMessageResponse,
   [WindowProviderRequestEnums.loginRequest]:
     WindowProviderResponseEnums.loginResponse,
+  [WindowProviderRequestEnums.reloginRequest]:
+    WindowProviderResponseEnums.reloginResponse,
   [WindowProviderRequestEnums.logoutRequest]:
     WindowProviderResponseEnums.disconnectResponse,
   [WindowProviderRequestEnums.cancelAction]:

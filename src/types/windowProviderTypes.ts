@@ -20,6 +20,9 @@ export type ReplyWithPostMessageObjectType = {
      * */
     impersonate?: string;
   };
+  [WindowProviderResponseEnums.reloginResponse]: {
+    accessToken?: string;
+  };
   [WindowProviderResponseEnums.disconnectResponse]: boolean;
   [WindowProviderResponseEnums.cancelResponse]: {
     address: string;
@@ -52,6 +55,7 @@ export type ResponseTypeMap = {
   [WindowProviderRequestEnums.signTransactionsRequest]: WindowProviderResponseEnums.signTransactionsResponse;
   [WindowProviderRequestEnums.signMessageRequest]: WindowProviderResponseEnums.signMessageResponse;
   [WindowProviderRequestEnums.loginRequest]: WindowProviderResponseEnums.loginResponse;
+  [WindowProviderRequestEnums.reloginRequest]: WindowProviderResponseEnums.reloginResponse;
   [WindowProviderRequestEnums.logoutRequest]: WindowProviderResponseEnums.disconnectResponse;
   [WindowProviderRequestEnums.guardTransactionsRequest]: WindowProviderResponseEnums.guardTransactionsResponse;
   [WindowProviderRequestEnums.cancelAction]: WindowProviderResponseEnums.cancelResponse;
@@ -61,6 +65,9 @@ export type ResponseTypeMap = {
 
 export type RequestPayloadType = {
   [WindowProviderRequestEnums.loginRequest]: {
+    token: string | undefined;
+  };
+  [WindowProviderRequestEnums.reloginRequest]: {
     token: string | undefined;
   };
   [WindowProviderRequestEnums.logoutRequest]: undefined;
