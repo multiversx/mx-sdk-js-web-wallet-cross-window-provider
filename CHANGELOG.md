@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-- [Added optional address field in signMessage request payload](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/72)
+- [Added session in the handshake payload](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/73)
 
 ## [2.0.2](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/70)] - 2024-11-27
 

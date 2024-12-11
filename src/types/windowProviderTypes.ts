@@ -6,7 +6,7 @@ import {
 } from '../enums';
 
 export type ReplyWithPostMessageObjectType = {
-  [WindowProviderResponseEnums.handshakeResponse]: boolean;
+  [WindowProviderResponseEnums.handshakeResponse]: string;
   [WindowProviderResponseEnums.loginResponse]: {
     address: string;
     signature: string;
@@ -74,11 +74,10 @@ export type RequestPayloadType = {
   [WindowProviderRequestEnums.signTransactionsRequest]: IPlainTransactionObject[];
   [WindowProviderRequestEnums.guardTransactionsRequest]: IPlainTransactionObject[];
   [WindowProviderRequestEnums.signMessageRequest]: {
-    address?: string;
     message: string;
   };
   [WindowProviderRequestEnums.cancelAction]: undefined;
-  [WindowProviderRequestEnums.finalizeHandshakeRequest]: undefined;
+  [WindowProviderRequestEnums.finalizeHandshakeRequest]: string;
   [WindowProviderRequestEnums.finalizeResetStateRequest]: undefined;
 };
 

@@ -16,6 +16,7 @@ import {
 } from '../types';
 
 export class WindowManager {
+  private _session = '';
   private _walletUrl = '';
   protected initialized = false;
   public walletWindow: Window | null = null;
@@ -51,6 +52,7 @@ export class WindowManager {
 
   async handshake(type: WindowProviderRequestEnums): Promise<boolean> {
     const isOpened = this.isWalletOpened(type);
+
     if (isOpened) {
       return true;
     }
@@ -66,9 +68,12 @@ export class WindowManager {
       throw new ErrCannotEstablishHandshake();
     }
 
+    this._session = this._session || isWalletReady.data || '';
+
     this.walletWindow?.postMessage(
       {
-        type: WindowProviderRequestEnums.finalizeHandshakeRequest
+        type: WindowProviderRequestEnums.finalizeHandshakeRequest,
+        payload: this._session
       },
       this.walletUrl
     );
@@ -93,11 +98,18 @@ export class WindowManager {
 
         switch (type) {
           case WindowProviderResponseEnums.handshakeResponse:
-            if (payload === false) {
+            if (!payload) {
               this.walletWindow?.close();
               this.walletWindow = null;
               safeWindow.removeEventListener?.('message', eventHandler);
+              break;
             }
+
+            // Save the current session and send it in later handshake requests
+            if (typeof payload === 'string') {
+              this._session = payload;
+            }
+
             break;
         }
       } catch (e) {
