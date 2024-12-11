@@ -277,6 +277,7 @@ export class CrossWindowProvider {
     } = await this.windowManager.postMessage({
       type: WindowProviderRequestEnums.signMessageRequest,
       payload: {
+        address: messageToSign.address?.bech32() || this.account.address,
         message: Buffer.from(messageToSign.data).toString()
       }
     });

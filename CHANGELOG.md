@@ -7,32 +7,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [Added optional address field in signMessage request payload](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/72)
+
 ## [2.0.2](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/70)] - 2024-11-27
+
 - [Fix build](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/71)
 - [Extends provider enums](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/69)
 
 ## [2.0.1](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/68)] - 2024-09-19
+
 - [Update README](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/55)
 
 ## [2.0.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/67)] - 2024-09-19
+
 - [Stable version](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/66)
 
 ## [2.0.0-alpha.1] - 2024-09-06
+
 - [Allow signer overrides](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/commit/7fe6c7167588e7d58e291f6d978701bb1ad8d59a)
 
 ## [2.0.0-alpha.0] - 2024-09-06
+
 - [Standardize provider](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/65)
 
 ## [[1.0.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/61)] - 2024-08-29
+
 - [Upgrade sdk-dapp-utils - breaking changes](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/60)
 
 ## [[0.4.2](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/59)] - 2024-08-12
+
 - [Added ability to close window before login](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/58)
 
 ## [[0.4.1](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/57)] - 2024-08-12
+
 - [Fix SSR support](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/56)
 
 ## [[0.4.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/54)] - 2024-08-07
+
 - [Remove IFrame Provider](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/53)
 
 ## [[0.3.1](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/52)] - 2024-08-07

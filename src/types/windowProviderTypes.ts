@@ -74,6 +74,7 @@ export type RequestPayloadType = {
   [WindowProviderRequestEnums.signTransactionsRequest]: IPlainTransactionObject[];
   [WindowProviderRequestEnums.guardTransactionsRequest]: IPlainTransactionObject[];
   [WindowProviderRequestEnums.signMessageRequest]: {
+    address?: string;
     message: string;
   };
   [WindowProviderRequestEnums.cancelAction]: undefined;
