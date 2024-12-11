@@ -306,8 +306,6 @@ export class CrossWindowProvider {
       WindowProviderRequestEnums.cancelAction
     );
 
-    console.log({ isWalletOpened });
-
     if (!isWalletOpened) {
       return;
     }
