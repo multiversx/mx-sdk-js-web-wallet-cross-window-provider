@@ -69,8 +69,6 @@ export class WindowManager {
     }
 
     this._session = this._session || payload.data || Date.now().toString();
-    console.log(this._session);
-
     this.walletWindow?.postMessage(
       {
         type: WindowProviderRequestEnums.finalizeHandshakeRequest,
@@ -165,11 +163,12 @@ export class WindowManager {
       throw new ErrProviderNotInitialized();
     }
 
-    this._session = Date.now().toString();
     await this.postMessage({
       type: WindowProviderRequestEnums.logoutRequest,
       payload: undefined
     });
+
+    this._session = Date.now().toString();
 
     return true;
   }
@@ -193,7 +192,6 @@ export class WindowManager {
     );
 
     const data = await this.listenOnce(responseTypeMap[type]);
-
     this.closeWalletWindow();
 
     return data;
