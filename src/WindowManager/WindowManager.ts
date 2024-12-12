@@ -168,6 +168,7 @@ export class WindowManager {
       payload: undefined
     });
 
+    // Reset the session on logout
     this._session = Date.now().toString();
 
     return true;
