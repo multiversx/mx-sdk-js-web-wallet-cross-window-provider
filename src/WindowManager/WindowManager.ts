@@ -60,15 +60,15 @@ export class WindowManager {
     this.closeWalletWindow();
     await this.setWalletWindow();
 
-    const { payload: isWalletReady } = await this.listenOnce(
+    const { payload } = await this.listenOnce(
       WindowProviderResponseEnums.handshakeResponse
     );
 
-    if (!isWalletReady) {
+    if (!payload) {
       throw new ErrCannotEstablishHandshake();
     }
 
-    this._session = this._session || isWalletReady.data || '';
+    this._session = this._session || payload.data || '';
 
     this.walletWindow?.postMessage(
       {
@@ -98,7 +98,7 @@ export class WindowManager {
 
         switch (type) {
           case WindowProviderResponseEnums.handshakeResponse:
-            if (!payload) {
+            if (payload === '') {
               this.walletWindow?.close();
               this.walletWindow = null;
               safeWindow.removeEventListener?.('message', eventHandler);
