@@ -165,6 +165,7 @@ export class WindowManager {
       throw new ErrProviderNotInitialized();
     }
 
+    this._session = Date.now().toString();
     await this.postMessage({
       type: WindowProviderRequestEnums.logoutRequest,
       payload: undefined
