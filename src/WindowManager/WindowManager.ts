@@ -68,7 +68,8 @@ export class WindowManager {
       throw new ErrCannotEstablishHandshake();
     }
 
-    this._session = this._session || payload.data || '';
+    this._session = this._session || payload.data || Date.now().toString();
+    console.log(this._session);
 
     this.walletWindow?.postMessage(
       {
