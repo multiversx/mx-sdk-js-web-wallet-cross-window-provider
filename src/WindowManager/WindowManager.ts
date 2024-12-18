@@ -20,6 +20,8 @@ export class WindowManager {
   private _walletUrl = '';
   protected initialized = false;
   public walletWindow: Window | null = null;
+  private activeListeners: Map<string, (event: MessageEvent) => void> =
+    new Map();
 
   constructor() {
     safeWindow.addEventListener?.('beforeunload', () => {
@@ -129,32 +131,42 @@ export class WindowManager {
       throw new ErrProviderNotInstantiated();
     }
 
-    return await new Promise((resolve) => {
+    return new Promise((resolve) => {
       const walletUrl = this.walletUrl;
 
-      safeWindow.addEventListener?.(
-        'message',
-        async function eventHandler(
-          event: MessageEvent<{
-            type: T;
-            payload: ReplyWithPostMessagePayloadType<T>;
-          }>
-        ) {
-          const { type, payload } = event.data;
-          const isWalletEvent = event.origin === new URL(walletUrl).origin;
-
-          const isCurrentAction =
-            action === type ||
-            type === WindowProviderResponseEnums.cancelResponse;
-
-          if (!isCurrentAction || !isWalletEvent) {
-            return;
-          }
-
-          safeWindow.removeEventListener?.('message', eventHandler);
-          resolve({ type, payload });
+      // Prevent duplicate listeners for the same action
+      if (this.activeListeners.has(action)) {
+        const existingHandler = this.activeListeners.get(action);
+        if (existingHandler) {
+          safeWindow.removeEventListener('message', existingHandler);
         }
-      );
+      }
+
+      const eventHandler = (
+        event: MessageEvent<{
+          type: T;
+          payload: ReplyWithPostMessagePayloadType<T>;
+        }>
+      ) => {
+        const { type, payload } = event.data;
+        const isWalletEvent = event.origin === new URL(walletUrl).origin;
+
+        const isCurrentAction =
+          action === type ||
+          type === WindowProviderResponseEnums.cancelResponse;
+
+        if (!isCurrentAction || !isWalletEvent) {
+          return;
+        }
+
+        safeWindow.removeEventListener('message', eventHandler);
+        this.activeListeners.delete(action);
+
+        resolve({ type, payload });
+      };
+
+      safeWindow.addEventListener('message', eventHandler);
+      this.activeListeners.set(action, eventHandler);
     });
   }
 
