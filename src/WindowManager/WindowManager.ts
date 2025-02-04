@@ -182,6 +182,7 @@ export class WindowManager {
 
     // Reset the session on logout
     this._session = Date.now().toString();
+    this.initialized = false;
 
     return true;
   }
