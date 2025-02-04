@@ -7,9 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.5](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/79) - 2025-02-04
+
+- [Fixed `dispose` does not reset the instance and `isInitialised`](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/78)
+
 ## [2.0.4](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/76) - 2024-12-18
 
-[Fixed duplicate event listeners](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/75)
+- [Fixed duplicate event listeners](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/75)
 
 ## [2.0.3](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/74)] - 2024-12-12
 
