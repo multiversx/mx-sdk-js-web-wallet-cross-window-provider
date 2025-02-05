@@ -85,6 +85,12 @@ export class CrossWindowProvider {
     return this.initialized;
   }
 
+  unInit(): boolean {
+    CrossWindowProvider._instance = null;
+    this.initialized = this.windowManager.unInit();
+    return this.initialized;
+  }
+
   async login(
     options: {
       token?: string;
@@ -143,7 +149,7 @@ export class CrossWindowProvider {
   async dispose(): Promise<boolean> {
     const connectionClosed = await this.windowManager.closeConnection();
     this.initialized = !connectionClosed;
-    // CrossWindowProvider._instance = null;
+    CrossWindowProvider._instance = null;
     return connectionClosed;
   }
 

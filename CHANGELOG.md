@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [Added `unInit` methods](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/80)
+
 ## [2.0.5](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/79) - 2025-02-04
 
 - [Fixed `dispose` does not reset the instance and `isInitialised`](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/78)

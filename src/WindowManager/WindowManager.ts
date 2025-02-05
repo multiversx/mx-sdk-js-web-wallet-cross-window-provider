@@ -45,6 +45,11 @@ export class WindowManager {
     return this.initialized;
   }
 
+  unInit(): boolean {
+    this.initialized = false;
+    return this.initialized;
+  }
+
   public isWalletOpened(type?: WindowProviderRequestEnums) {
     return (
       type === WindowProviderRequestEnums.cancelAction &&
