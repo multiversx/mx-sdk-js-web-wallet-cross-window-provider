@@ -142,8 +142,8 @@ export class CrossWindowProvider {
 
   async dispose(): Promise<boolean> {
     const connectionClosed = await this.windowManager.closeConnection();
-    this.initialized = false;
-    CrossWindowProvider._instance = null;
+    this.initialized = !connectionClosed;
+    // CrossWindowProvider._instance = null;
     return connectionClosed;
   }
 
