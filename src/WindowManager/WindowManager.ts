@@ -45,7 +45,7 @@ export class WindowManager {
     return this.initialized;
   }
 
-  unInit(): boolean {
+  onDestroy(): boolean {
     this.initialized = false;
     return this.initialized;
   }

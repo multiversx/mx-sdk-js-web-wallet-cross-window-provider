@@ -85,9 +85,9 @@ export class CrossWindowProvider {
     return this.initialized;
   }
 
-  unInit(): boolean {
+  onDestroy(): boolean {
     CrossWindowProvider._instance = null;
-    this.initialized = this.windowManager.unInit();
+    this.initialized = this.windowManager.onDestroy();
     return this.initialized;
   }
 
