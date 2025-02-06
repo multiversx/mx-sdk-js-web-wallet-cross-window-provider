@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.6](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/81) - 2025-02-06
+
 - [Added `onDestroy` method](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/80)
 
 ## [2.0.5](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/79) - 2025-02-04
