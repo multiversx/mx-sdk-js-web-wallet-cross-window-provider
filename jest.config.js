@@ -6,5 +6,8 @@ module.exports = {
   roots: ['<rootDir>/src'],
   transform: {
     '^.+\\.[t|j]sx?$': 'ts-jest'
+  },
+  moduleNameMapper: {
+    "^uuid$": require.resolve('uuid'),
   }
 };
