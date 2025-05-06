@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - [Added finalizeHandshakeResponse](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/83)
 
+## [[3.0.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/82)] - 2025-03-20
+
+- [Update sdk-core](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/82)
+
 ## [2.0.6](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/81) - 2025-02-06
 
 - [Added `onDestroy` method](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/80)
@@ -92,7 +96,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [Added type and constant imports from `@multiversx/sdk-dapp-utils`](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/34)
 
 ## [[0.0.39](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/33)] - 2024-04-23
-
-- [Update sdk-core](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/82)
-
-## [[3.0.0](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/82)] - 2025-03-20
