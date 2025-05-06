@@ -35,6 +35,7 @@ export type ReplyWithPostMessageObjectType = {
   };
   [WindowProviderResponseEnums.noneResponse]: null;
   [WindowProviderResponseEnums.resetStateResponse]: boolean;
+  [WindowProviderResponseEnums.finalizeHandshakeResponse]: string;
 };
 
 export type ReplyWithPostMessagePayloadType<
@@ -59,7 +60,7 @@ export type ResponseTypeMap = {
   [WindowProviderRequestEnums.logoutRequest]: WindowProviderResponseEnums.disconnectResponse;
   [WindowProviderRequestEnums.guardTransactionsRequest]: WindowProviderResponseEnums.guardTransactionsResponse;
   [WindowProviderRequestEnums.cancelAction]: WindowProviderResponseEnums.cancelResponse;
-  [WindowProviderRequestEnums.finalizeHandshakeRequest]: WindowProviderResponseEnums.noneResponse;
+  [WindowProviderRequestEnums.finalizeHandshakeRequest]: WindowProviderResponseEnums.finalizeHandshakeResponse;
   [WindowProviderRequestEnums.finalizeResetStateRequest]: WindowProviderResponseEnums.resetStateResponse;
 };
 
