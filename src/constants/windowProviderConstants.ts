@@ -20,7 +20,7 @@ export const responseTypeMap: ResponseTypeMap = {
   [WindowProviderRequestEnums.cancelAction]:
     WindowProviderResponseEnums.cancelResponse,
   [WindowProviderRequestEnums.finalizeHandshakeRequest]:
-    WindowProviderResponseEnums.noneResponse,
+    WindowProviderResponseEnums.finalizeHandshakeResponse,
   [WindowProviderRequestEnums.finalizeResetStateRequest]:
     WindowProviderResponseEnums.resetStateResponse
 };

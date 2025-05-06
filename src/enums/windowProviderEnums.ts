@@ -20,5 +20,6 @@ export enum WindowProviderResponseEnums {
   signTransactionsResponse = 'SIGN_TRANSACTIONS_RESPONSE',
   signMessageResponse = 'SIGN_MESSAGE_RESPONSE',
   noneResponse = 'NONE_RESPONSE',
-  resetStateResponse = 'RESET_STATE_RESPONSE'
+  resetStateResponse = 'RESET_STATE_RESPONSE',
+  finalizeHandshakeResponse = 'FINALIZE_HANDSHAKE_RESPONSE'
 }
