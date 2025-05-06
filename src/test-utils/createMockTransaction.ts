@@ -1,8 +1,4 @@
-import {
-  Address,
-  Transaction,
-  TransactionPayload
-} from '@multiversx/sdk-core/out';
+import { Address, Transaction } from '@multiversx/sdk-core';
 
 export const createMockTransaction = ({
   data,
@@ -21,15 +17,14 @@ export const createMockTransaction = ({
     receiver: new Address(
       'erd1wh9c0sjr2xn8hzf02lwwcr4jk2s84tat9ud2kaq6zr7xzpvl9l5q8awmex'
     ),
-    data: new TransactionPayload(data),
+    data: Buffer.from(data),
     receiverUsername: receiverUsername
       ? Buffer.from(receiverUsername).toString('base64')
       : undefined,
     senderUsername: senderUsername
       ? Buffer.from(senderUsername).toString('base64')
       : undefined,
-    gasLimit: 100000,
-    chainID: '1',
-    value: '0'
+    gasLimit: BigInt(100000),
+    chainID: '1'
   });
 };
