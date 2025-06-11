@@ -22,6 +22,7 @@ export class WindowManager {
   public walletWindow: Window | null = null;
   private activeListeners: Map<string, (event: MessageEvent) => void> =
     new Map();
+  private static readonly SESSION_STORAGE_KEY = 'mx-wallet-session-id';
 
   constructor() {
     safeWindow.addEventListener?.('beforeunload', () => {
@@ -29,6 +30,7 @@ export class WindowManager {
     });
 
     safeWindow.name = safeWindow.location?.origin;
+    this._loadSessionFromStorage();
   }
 
   public get walletUrl(): string {
@@ -38,6 +40,33 @@ export class WindowManager {
   public setWalletUrl(url: string): WindowManager {
     this._walletUrl = url;
     return this;
+  }
+
+  private _loadSessionFromStorage(): void {
+    try {
+      const storedSession = safeWindow.sessionStorage?.getItem(WindowManager.SESSION_STORAGE_KEY);
+      if (storedSession) {
+        this._session = storedSession;
+      }
+    } catch (error) {
+      console.warn('Failed to load session from sessionStorage:', error);
+    }
+  }
+
+  private _saveSessionToStorage(sessionId: string): void {
+    try {
+      safeWindow.sessionStorage?.setItem(WindowManager.SESSION_STORAGE_KEY, sessionId);
+    } catch (error) {
+      console.warn('Failed to save session to sessionStorage:', error);
+    }
+  }
+
+  private _clearSessionFromStorage(): void {
+    try {
+      safeWindow.sessionStorage?.removeItem(WindowManager.SESSION_STORAGE_KEY);
+    } catch (error) {
+      console.warn('Failed to clear session from sessionStorage:', error);
+    }
   }
 
   async init(): Promise<boolean> {
@@ -75,7 +104,10 @@ export class WindowManager {
       throw new ErrCannotEstablishHandshake();
     }
 
-    this._session = this._session || payload.data || Date.now().toString();
+    this._session =  this._session || payload.data || Date.now().toString();
+    // Save the current session in sessionStorage to preserve it across page reloads
+    this._saveSessionToStorage(this._session);
+
     this.walletWindow?.postMessage(
       {
         type: WindowProviderRequestEnums.finalizeHandshakeRequest,
@@ -114,6 +146,7 @@ export class WindowManager {
             // Save the current session and send it in later handshake requests
             if (typeof payload === 'string') {
               this._session = payload;
+              this._saveSessionToStorage(this._session);
             }
 
             break;
@@ -187,6 +220,7 @@ export class WindowManager {
 
     // Reset the session on logout
     this._session = Date.now().toString();
+    this._clearSessionFromStorage();
     this.initialized = false;
 
     return true;
