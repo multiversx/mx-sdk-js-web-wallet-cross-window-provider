@@ -44,7 +44,9 @@ export class WindowManager {
 
   private _loadSessionFromStorage(): void {
     try {
-      const storedSession = safeWindow.sessionStorage?.getItem(WindowManager.SESSION_STORAGE_KEY);
+      const storedSession = safeWindow.sessionStorage?.getItem(
+        WindowManager.SESSION_STORAGE_KEY
+      );
       if (storedSession) {
         this._session = storedSession;
       }
@@ -55,7 +57,10 @@ export class WindowManager {
 
   private _saveSessionToStorage(sessionId: string): void {
     try {
-      safeWindow.sessionStorage?.setItem(WindowManager.SESSION_STORAGE_KEY, sessionId);
+      safeWindow.sessionStorage?.setItem(
+        WindowManager.SESSION_STORAGE_KEY,
+        sessionId
+      );
     } catch (error) {
       console.warn('Failed to save session to sessionStorage:', error);
     }
@@ -104,7 +109,10 @@ export class WindowManager {
       throw new ErrCannotEstablishHandshake();
     }
 
-    this._session =  this._session || payload.data || Date.now().toString();
+    const receivedSession =
+      typeof payload === 'string' ? payload : payload.data;
+
+    this._session = this._session || receivedSession || Date.now().toString();
     // Save the current session in sessionStorage to preserve it across page reloads
     this._saveSessionToStorage(this._session);
 
