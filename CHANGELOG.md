@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[3.1.1](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/87)] - 2025-06-12
+
 - [Added session storage support to preserve session ID across window refreshes](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/86)
 - [Added `finalizeResetStateRequest` string optional payload](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/85)
 
