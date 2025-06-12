@@ -79,7 +79,7 @@ export type RequestPayloadType = {
   };
   [WindowProviderRequestEnums.cancelAction]: undefined;
   [WindowProviderRequestEnums.finalizeHandshakeRequest]: string;
-  [WindowProviderRequestEnums.finalizeResetStateRequest]: undefined;
+  [WindowProviderRequestEnums.finalizeResetStateRequest]: string | undefined;
 };
 
 export type RequestMessageType = {
