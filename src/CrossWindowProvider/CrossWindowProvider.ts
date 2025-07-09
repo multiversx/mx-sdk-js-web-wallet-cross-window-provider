@@ -1,5 +1,4 @@
 import { Address, Message, Transaction } from '@multiversx/sdk-core';
-import { safeWindow } from '../constants';
 import {
   WindowProviderRequestEnums,
   WindowProviderResponseEnums,
@@ -16,8 +15,6 @@ import {
   ErrTransactionCancelled
 } from '../errors';
 import { WindowManager } from '../WindowManager';
-import { confirmationDialogTag } from './PopupConsent/constants';
-import { PopupConsentModel } from './PopupConsent/PopupConsent.model';
 
 export interface IProviderAccount {
   address: string;
@@ -32,15 +29,10 @@ export class CrossWindowProvider {
 
   protected initialized = false;
   protected windowManager: WindowManager;
-  protected _shouldShowConsentPopup = false;
   protected static _instance: CrossWindowProvider | null = null;
 
   public constructor() {
     this.windowManager = new WindowManager();
-  }
-
-  public setShouldShowConsentPopup(shouldShow: boolean) {
-    this._shouldShowConsentPopup = shouldShow;
   }
 
   protected ensureConnected() {
@@ -114,12 +106,6 @@ export class CrossWindowProvider {
 
     this.accessToken = options.token;
 
-    const popupConsentResponse = await this.openPopupConsent();
-
-    if (!popupConsentResponse) {
-      throw new ErrCouldNotLogin();
-    }
-
     const {
       payload: { data, error }
     } = await this.windowManager.postMessage({
@@ -154,9 +140,7 @@ export class CrossWindowProvider {
   }
 
   async logout(): Promise<boolean> {
-    const popupConsentResponse = await this.openPopupConsent();
-
-    if (!this.initialized || !popupConsentResponse) {
+    if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
 
@@ -206,12 +190,6 @@ export class CrossWindowProvider {
   async signTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     this.ensureConnected();
 
-    const popupConsentResponse = await this.openPopupConsent();
-
-    if (!popupConsentResponse) {
-      throw new ErrTransactionCancelled();
-    }
-
     const {
       type,
       payload: { data: signedPlainTransactions, error }
@@ -240,12 +218,6 @@ export class CrossWindowProvider {
   async guardTransactions(transactions: Transaction[]): Promise<Transaction[]> {
     this.ensureConnected();
 
-    const popupConsentResponse = await this.openPopupConsent();
-
-    if (!popupConsentResponse) {
-      throw new ErrTransactionCancelled();
-    }
-
     const {
       type,
       payload: { data: signedPlainTransactions, error }
@@ -273,12 +245,6 @@ export class CrossWindowProvider {
 
   async signMessage(messageToSign: Message): Promise<Message> {
     this.ensureConnected();
-
-    const popupConsentResponse = await this.openPopupConsent();
-
-    if (!popupConsentResponse) {
-      throw new ErrCouldNotSignMessage();
-    }
 
     const {
       payload: { data, error }
@@ -322,47 +288,5 @@ export class CrossWindowProvider {
       type: WindowProviderRequestEnums.cancelAction,
       payload: undefined
     });
-  }
-
-  public async openPopupConsent(): Promise<boolean> {
-    if (
-      !this._shouldShowConsentPopup ||
-      typeof document === 'undefined' ||
-      typeof window === 'undefined'
-    ) {
-      return true;
-    }
-
-    const module = await import('./PopupConsent/PopupConsent');
-    const PopupConsent = module.PopupConsent;
-
-    const customElements = safeWindow.customElements;
-    if (customElements && !customElements.get(confirmationDialogTag)) {
-      customElements.define(confirmationDialogTag, PopupConsent);
-    }
-
-    const popup = document.createElement(
-      confirmationDialogTag
-    ) as PopupConsentModel & HTMLElement;
-
-    popup.walletUrl = this.windowManager.walletUrl;
-
-    document.body.appendChild(popup);
-
-    const popupConsentResponse: boolean = await new Promise<boolean>(
-      (resolve) => {
-        popup.onConfirm = () => {
-          resolve(true);
-          document.body.removeChild(popup);
-        };
-        popup.onCancel = () => {
-          resolve(false);
-          document.body.removeChild(popup);
-        };
-      }
-    );
-
-    this._shouldShowConsentPopup = false;
-    return popupConsentResponse;
   }
 }

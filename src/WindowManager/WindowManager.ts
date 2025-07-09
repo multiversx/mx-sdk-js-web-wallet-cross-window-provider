@@ -1,12 +1,14 @@
 import { safeWindow, responseTypeMap } from '../constants';
+import { confirmationDialogTag } from '../CrossWindowProvider/PopupConsent/constants';
+import { PopupConsentModel } from '../CrossWindowProvider/PopupConsent/PopupConsent.model';
 import {
   WindowProviderRequestEnums,
   WindowProviderResponseEnums
 } from '../enums';
 import {
   ErrCannotEstablishHandshake,
-  ErrProviderNotInitialized,
-  ErrProviderNotInstantiated
+  ErrCouldNotLogin,
+  ErrProviderNotInitialized
 } from '../errors';
 import {
   PostMessageParamsType,
@@ -20,6 +22,8 @@ export class WindowManager {
   private _walletUrl = '';
   protected initialized = false;
   public walletWindow: Window | null = null;
+  public popupBlocked = false;
+
   private activeListeners: Map<string, (event: MessageEvent) => void> =
     new Map();
   private static readonly SESSION_STORAGE_KEY = 'mx-wallet-session-id';
@@ -91,6 +95,50 @@ export class WindowManager {
     );
   }
 
+  public async openPopupConsent(): Promise<boolean> {
+    if (
+      typeof document === 'undefined' ||
+      typeof window === 'undefined' ||
+      !this.popupBlocked
+    ) {
+      return true;
+    }
+
+    const module = await import(
+      '../CrossWindowProvider/PopupConsent/PopupConsent'
+    );
+    const PopupConsent = module.PopupConsent;
+
+    const customElements = safeWindow.customElements;
+    if (customElements && !customElements.get(confirmationDialogTag)) {
+      customElements.define(confirmationDialogTag, PopupConsent);
+    }
+
+    const popup = document.createElement(
+      confirmationDialogTag
+    ) as PopupConsentModel & HTMLElement;
+
+    popup.walletUrl = this.walletUrl;
+
+    console.log({ walletUrl: popup.walletUrl, test: this.walletUrl });
+    document.body.appendChild(popup);
+
+    const popupConsentResponse: boolean = await new Promise<boolean>(
+      (resolve) => {
+        popup.onConfirm = () => {
+          resolve(true);
+          document.body.removeChild(popup);
+        };
+        popup.onCancel = () => {
+          resolve(false);
+          document.body.removeChild(popup);
+        };
+      }
+    );
+
+    return popupConsentResponse;
+  }
+
   async handshake(type: WindowProviderRequestEnums): Promise<boolean> {
     const isOpened = this.isWalletOpened(type);
 
@@ -100,6 +148,12 @@ export class WindowManager {
 
     this.closeWalletWindow();
     await this.setWalletWindow();
+
+    const popupConsentResponse = await this.openPopupConsent();
+
+    if (!popupConsentResponse) {
+      throw new ErrCouldNotLogin();
+    }
 
     const { payload } = await this.listenOnce(
       WindowProviderResponseEnums.handshakeResponse
@@ -174,7 +228,7 @@ export class WindowManager {
     payload: ReplyWithPostMessagePayloadType<T>;
   }> {
     if (!this.walletWindow) {
-      throw new ErrProviderNotInstantiated();
+      await this.setWalletWindow();
     }
 
     return new Promise((resolve) => {
@@ -265,5 +319,7 @@ export class WindowManager {
   public async setWalletWindow(): Promise<void> {
     this.walletWindow =
       safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
+
+    this.popupBlocked = !Boolean(this.walletWindow);
   }
 }
