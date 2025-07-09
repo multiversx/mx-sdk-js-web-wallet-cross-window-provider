@@ -68,7 +68,7 @@ export class CrossWindowProvider {
     return this;
   }
 
-  public setWalletWindow(): Promise<void> {
+  public setWalletWindow(): Promise<boolean> {
     return this.windowManager.setWalletWindow();
   }
 

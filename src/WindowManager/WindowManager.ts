@@ -8,7 +8,8 @@ import {
 import {
   ErrCannotEstablishHandshake,
   ErrCouldNotLogin,
-  ErrProviderNotInitialized
+  ErrProviderNotInitialized,
+  ErrProviderNotInstantiated
 } from '../errors';
 import {
   PostMessageParamsType,
@@ -22,7 +23,7 @@ export class WindowManager {
   private _walletUrl = '';
   protected initialized = false;
   public walletWindow: Window | null = null;
-  public popupBlocked = false;
+  public isPopupBlocked = false;
 
   private activeListeners: Map<string, (event: MessageEvent) => void> =
     new Map();
@@ -99,7 +100,7 @@ export class WindowManager {
     if (
       typeof document === 'undefined' ||
       typeof window === 'undefined' ||
-      !this.popupBlocked
+      !this.isPopupBlocked
     ) {
       return true;
     }
@@ -120,7 +121,6 @@ export class WindowManager {
 
     popup.walletUrl = this.walletUrl;
 
-    console.log({ walletUrl: popup.walletUrl, test: this.walletUrl });
     document.body.appendChild(popup);
 
     const popupConsentResponse: boolean = await new Promise<boolean>(
@@ -147,12 +147,14 @@ export class WindowManager {
     }
 
     this.closeWalletWindow();
-    await this.setWalletWindow();
+    const isWindowInitialized = await this.setWalletWindow();
 
-    const popupConsentResponse = await this.openPopupConsent();
+    if (!isWindowInitialized) {
+      const popupConsentResponse = await this.openPopupConsent();
 
-    if (!popupConsentResponse) {
-      throw new ErrCouldNotLogin();
+      if (!popupConsentResponse) {
+        throw new ErrCouldNotLogin();
+      }
     }
 
     const { payload } = await this.listenOnce(
@@ -227,8 +229,14 @@ export class WindowManager {
     type: T;
     payload: ReplyWithPostMessagePayloadType<T>;
   }> {
+    // If the wallet window was previously blocked (e.g., by a popup blocker),
+    // reinitialize the connection by opening the wallet window again.
     if (!this.walletWindow) {
-      await this.setWalletWindow();
+      const isWindowInitialized = await this.setWalletWindow();
+
+      if (!isWindowInitialized) {
+        throw new ErrProviderNotInstantiated();
+      }
     }
 
     return new Promise((resolve) => {
@@ -316,10 +324,13 @@ export class WindowManager {
     this.walletWindow?.close();
   }
 
-  public async setWalletWindow(): Promise<void> {
+  public async setWalletWindow(): Promise<boolean> {
     this.walletWindow =
       safeWindow.open?.(this.walletUrl, this.walletUrl) ?? null;
 
-    this.popupBlocked = !Boolean(this.walletWindow);
+    const isWindowInitialized = Boolean(this.walletWindow);
+    this.isPopupBlocked = !isWindowInitialized;
+
+    return isWindowInitialized;
   }
 }
