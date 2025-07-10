@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [[3.1.3](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/91)] - 2025-07-10
+
+- [Added safeguard for multiple logout requests](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/90)
+
 ## [[3.1.2](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/89)] - 2025-07-09
 
 - [Update PopupConsent to be inside WindowManager](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/88)
