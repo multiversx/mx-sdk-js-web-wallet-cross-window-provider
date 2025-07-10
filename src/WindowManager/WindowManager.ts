@@ -24,6 +24,7 @@ export class WindowManager {
   protected initialized = false;
   public walletWindow: Window | null = null;
   public isPopupBlocked = false;
+  private _isLoggingOut = false;
 
   private activeListeners: Map<string, (event: MessageEvent) => void> =
     new Map();
@@ -279,21 +280,31 @@ export class WindowManager {
   }
 
   async closeConnection(): Promise<boolean> {
+    if (this._isLoggingOut) {
+      console.warn('Logout already in progress');
+      return false;
+    }
+
     if (!this.initialized) {
       throw new ErrProviderNotInitialized();
     }
 
-    await this.postMessage({
-      type: WindowProviderRequestEnums.logoutRequest,
-      payload: undefined
-    });
+    this._isLoggingOut = true;
 
-    // Reset the session on logout
-    this._session = Date.now().toString();
-    this._clearSessionFromStorage();
-    this.initialized = false;
+    try {
+      await this.postMessage({
+        type: WindowProviderRequestEnums.logoutRequest,
+        payload: undefined
+      });
 
-    return true;
+      this._session = Date.now().toString();
+      this._clearSessionFromStorage();
+      this.initialized = false;
+
+      return true;
+    } finally {
+      this._isLoggingOut = false;
+    }
   }
 
   isInitialized(): boolean {
