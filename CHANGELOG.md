@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- [Updated styles on confirm pop-up ](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/92)
+
 ## [[3.1.3](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/91)] - 2025-07-10
 
 - [Added safeguard for multiple logout requests](https://github.com/multiversx/mx-sdk-js-web-wallet-cross-window-provider/pull/90)
