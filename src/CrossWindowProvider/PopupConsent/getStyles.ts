@@ -21,7 +21,7 @@ export const getStyles = (dialogId: string) => `#${dialogId} {
 }
 
 #${dialogId} .content {
-  background: #fff;
+  background: var(--mvx-bg-color-primary);
   border-radius: 20px;
   z-index: 9999;
   max-width: 500px;
@@ -33,7 +33,13 @@ export const getStyles = (dialogId: string) => `#${dialogId} {
 
 #${dialogId} .body {
   padding: 50px 0;
-  color: #262525;
+  background-color: var(--mvx-bg-color-primary);
+  color: var(--mvx-text-color-primary);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 #${dialogId} .title {
@@ -60,26 +66,28 @@ export const getStyles = (dialogId: string) => `#${dialogId} {
 
 #${dialogId} button {
   border-radius: 8px;
-  border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #efeeee;
+  background-color: var(--mvx-button-bg-secondary);
+  color: var(--mvx-button-text-secondary);
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 #${dialogId} button:hover {
-  border-color: #cacaca;
-}
-#${dialogId} button:focus,
-#${dialogId} button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  color: var(--mvx-button-text-primary);
+  background-color: var(--mvx-button-bg-primary);
 }
 
 #${dialogId} .btn-proceed {
-  background-color: #262626;
-  color: #fff;
+  color: var(--mvx-button-text-primary);
+  background-color: var(--mvx-button-bg-primary);
   padding-left: 40px;
   padding-right: 40px;
+}
+  
+#${dialogId} .btn-proceed:hover {
+  opacity: 0.75;
 }`;
