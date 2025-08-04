@@ -1,8 +1,8 @@
 import { Address, Message, Transaction } from '@multiversx/sdk-core';
 import {
+  SignMessageStatusEnum,
   WindowProviderRequestEnums,
-  WindowProviderResponseEnums,
-  SignMessageStatusEnum
+  WindowProviderResponseEnums
 } from '../enums';
 import {
   ErrAccountNotConnected,
@@ -212,7 +212,9 @@ export class CrossWindowProvider {
       throw new ErrCouldNotSignTransactions();
     }
 
-    return signedPlainTransactions.map((tx) => Transaction.fromPlainObject(tx));
+    return signedPlainTransactions.map((tx) =>
+      Transaction.newFromPlainObject(tx)
+    );
   }
 
   async guardTransactions(transactions: Transaction[]): Promise<Transaction[]> {
@@ -240,7 +242,9 @@ export class CrossWindowProvider {
       throw new ErrCouldNotGuardTransactions();
     }
 
-    return signedPlainTransactions.map((tx) => Transaction.fromPlainObject(tx));
+    return signedPlainTransactions.map((tx) =>
+      Transaction.newFromPlainObject(tx)
+    );
   }
 
   async signMessage(messageToSign: Message): Promise<Message> {
@@ -268,7 +272,7 @@ export class CrossWindowProvider {
     return new Message({
       data: Buffer.from(messageToSign.data),
       address:
-        messageToSign.address ?? Address.fromBech32(this.account.address),
+        messageToSign.address ?? Address.newFromBech32(this.account.address),
       signer: messageToSign.signer || 'wallet-cross-window',
       version: messageToSign.version,
       signature: Buffer.from(String(signature), 'hex')
