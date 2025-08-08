@@ -20,7 +20,7 @@
   "author": "MultiversX",
   "license": "MIT",
   "devDependencies": {
-    "@multiversx/sdk-core": "^14.0.0 || ^15.0.0",
+    "@multiversx/sdk-core": "^15.0.0",
     "@types/jest": "^29.5.11",
     "@types/node": "18.19.0",
     "@types/qs": "6.9.10",
