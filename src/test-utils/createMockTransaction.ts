@@ -1,4 +1,5 @@
-import { Address, Transaction } from '@multiversx/sdk-core';
+import { Address } from '@multiversx/sdk-core/out/core/address';
+import { Transaction } from '@multiversx/sdk-core/out/core/transaction';
 
 export const createMockTransaction = ({
   data,
