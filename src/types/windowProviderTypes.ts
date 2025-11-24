@@ -1,4 +1,4 @@
-import type { IPlainTransactionObject } from '@multiversx/sdk-core';
+import type { IPlainTransactionObject } from '@multiversx/sdk-core/out/core/interfaces';
 import {
   WindowProviderRequestEnums,
   WindowProviderResponseEnums,

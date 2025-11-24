@@ -1,4 +1,4 @@
-import { Transaction } from '@multiversx/sdk-core';
+import { Transaction } from '@multiversx/sdk-core/out/core/transaction';
 import {
   createMockTransaction,
   getWalletWindowMock,
