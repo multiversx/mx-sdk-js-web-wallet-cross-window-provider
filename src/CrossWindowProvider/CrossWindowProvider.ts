@@ -1,4 +1,7 @@
-import { Address, Message, Transaction } from '@multiversx/sdk-core';
+import { Address } from '@multiversx/sdk-core/out/core/address';
+import { Message } from '@multiversx/sdk-core/out/core/message';
+import { Transaction } from '@multiversx/sdk-core/out/core/transaction';
+
 import {
   SignMessageStatusEnum,
   WindowProviderRequestEnums,

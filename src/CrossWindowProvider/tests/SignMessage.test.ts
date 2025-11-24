@@ -1,6 +1,6 @@
+import { Message } from '@multiversx/sdk-core/out/core/message';
 import { getWalletWindowMock, WalletWindowMockType } from '../../test-utils';
 import { CrossWindowProvider } from '../CrossWindowProvider';
-import { Message } from '@multiversx/sdk-core/out';
 
 describe('CrossWindowProvider Login', () => {
   let crossWindowProvider: CrossWindowProvider;
