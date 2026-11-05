@@ -106,9 +106,8 @@ export class WindowManager {
       return true;
     }
 
-    const module = await import(
-      '../CrossWindowProvider/PopupConsent/PopupConsent'
-    );
+    const module =
+      await import('../CrossWindowProvider/PopupConsent/PopupConsent');
     const PopupConsent = module.PopupConsent;
 
     const customElements = safeWindow.customElements;
