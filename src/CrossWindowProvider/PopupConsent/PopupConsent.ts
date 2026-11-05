@@ -57,7 +57,7 @@ export class PopupConsent extends HTMLElement implements PopupConsentModel {
             <div class="content">
                 <div class="body">
                     <div class="title">Confirm on MultiversX Wallet</div>
-                    <div class="subtitle">Continue to ${this.walletUrl}</div>
+                    <div class="subtitle"></div>
                     <div class="actions-container">
                         <button
                             class="button"
@@ -78,6 +78,12 @@ export class PopupConsent extends HTMLElement implements PopupConsentModel {
             </div>
         </div>
       `;
+
+    // Set as text, not HTML, so the URL can't inject markup
+    const subtitle = this.querySelector('.subtitle');
+    if (subtitle) {
+      subtitle.textContent = `Continue to ${this.walletUrl}`;
+    }
   }
 
   toggleEvents(action: 'removeEventListener' | 'addEventListener') {

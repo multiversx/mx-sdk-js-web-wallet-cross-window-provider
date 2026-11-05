@@ -16,16 +16,22 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org/
           package-manager-cache: false
-
+      
       - name: Install dependencies
-        run: npm ci
+        run: npm ci --ignore-scripts
 
       - name: Build project
         run: npm run compile
 
       - name: Get package info
         id: package
-        uses: andreigiura/action-nodejs-package-info@v1.0.2
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [[ "$version" == *-* ]]; then
+            echo "is-prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "is-prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Publish to npmjs next version
         if: ${{ steps.package.outputs.is-prerelease == 'true' }}
