@@ -28,6 +28,8 @@ export class WindowManager {
 
   private activeListeners: Map<string, (event: MessageEvent) => void> =
     new Map();
+  private handshakeChangeListener: ((event: MessageEvent) => void) | null =
+    null;
   private static readonly SESSION_STORAGE_KEY = 'mx-wallet-session-id';
 
   constructor() {
@@ -106,9 +108,8 @@ export class WindowManager {
       return true;
     }
 
-    const module = await import(
-      '../CrossWindowProvider/PopupConsent/PopupConsent'
-    );
+    const module =
+      await import('../CrossWindowProvider/PopupConsent/PopupConsent');
     const PopupConsent = module.PopupConsent;
 
     const customElements = safeWindow.customElements;
@@ -184,20 +185,33 @@ export class WindowManager {
     this.addHandshakeChangeListener();
     return true;
   }
+  
+  private isFromWallet(event: MessageEvent, walletUrl: string): boolean {
+    if (!this.walletWindow || event.source !== this.walletWindow) {
+      return false;
+    }
 
-  private async addHandshakeChangeListener() {
-    const walletUrl = this.walletUrl;
+    try {
+      return event.origin === new URL(walletUrl).origin;
+    } catch {
+      return false;
+    }
+  }
+
+  private async addHandshakeChangeListener() {    
+    if (this.handshakeChangeListener) {
+      safeWindow.removeEventListener?.('message', this.handshakeChangeListener);
+    }
 
     const eventHandler = (
       event: MessageEvent<ReplyWithPostMessageEventType>
     ) => {
       try {
-        const { type, payload } = event.data;
-        const isWalletEvent = event.origin === new URL(walletUrl).origin;
-
-        if (!isWalletEvent) {
+        if (!this.isFromWallet(event, this.walletUrl)) {
           return;
         }
+
+        const { type, payload } = event.data;
 
         switch (type) {
           case WindowProviderResponseEnums.handshakeResponse:
@@ -205,6 +219,9 @@ export class WindowManager {
               this.walletWindow?.close();
               this.walletWindow = null;
               safeWindow.removeEventListener?.('message', eventHandler);
+              if (this.handshakeChangeListener === eventHandler) {
+                this.handshakeChangeListener = null;
+              }
               break;
             }
 
@@ -221,6 +238,7 @@ export class WindowManager {
       }
     };
 
+    this.handshakeChangeListener = eventHandler;
     safeWindow.addEventListener?.('message', eventHandler);
   }
 
@@ -257,14 +275,18 @@ export class WindowManager {
           payload: ReplyWithPostMessagePayloadType<T>;
         }>
       ) => {
+        // Checked against the wallet URL the request was sent to
+        if (!this.isFromWallet(event, walletUrl)) {
+          return;
+        }
+
         const { type, payload } = event.data;
-        const isWalletEvent = event.origin === new URL(walletUrl).origin;
 
         const isCurrentAction =
           action === type ||
           type === WindowProviderResponseEnums.cancelResponse;
 
-        if (!isCurrentAction || !isWalletEvent) {
+        if (!isCurrentAction) {
           return;
         }
 
